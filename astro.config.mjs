@@ -1,10 +1,30 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import remarkCodeImport from "remark-code-import"
+import rehypeMermaid from "rehype-mermaid"
 import starlightLinksValidator from "starlight-links-validator"
+import path from "node:path"
+
+/** @type {Parameters<typeof import("remark-code-import").default>[0]} */
+const remarkCodeImportOptions = {
+  rootDir: path.resolve("src/snippets")
+}
+
+/** @type {import("rehype-mermaid").RehypeMermaidOptions} */
+const rehypeMermaidOptions = {
+  strategy: "img-svg",
+  dark: true
+}
 
 export default defineConfig({
   markdown: {
+    remarkPlugins: [
+      [/** @type {any} */(remarkCodeImport), remarkCodeImportOptions]
+    ],
+    rehypePlugins: [
+      [rehypeMermaid, rehypeMermaidOptions]
+    ],
     shikiConfig: {
       themes: {
         light: "github-light",
