@@ -1,0 +1,49 @@
+name: Build and Deploy to Netlify
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          cache: pnpm
+          node-version: 20.14.0
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Install Playwright
+        run: pnpx playwright-core install --with-deps chromium
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish Preview to Netlify
+        if: github.event_name == 'pull_request'
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --dir=dist
+
+      - name: Publish to Netlify
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --dir=dist --prod
