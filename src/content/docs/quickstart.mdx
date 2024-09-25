@@ -146,7 +146,12 @@ touch src/index.ts
 
 Open the `index.ts` file and add the following code:
 
-```ts twoslash title="src/index.ts" file=<rootDir>/test.ts#L1
+```ts twoslash title="src/index.ts"
+import { Effect, Console } from "effect"
+
+const program = Console.log("Hello, World!")
+
+Effect.runSync(program)
 ```
 
 Run the `index.ts` file. Here we are using [tsx](https://github.com/privatenumber/tsx) to run the `index.ts` file in the terminal:
