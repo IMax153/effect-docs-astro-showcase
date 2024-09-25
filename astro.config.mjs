@@ -35,10 +35,13 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Effect Documentation",
+      lastUpdated: true,
       editLink: {
         baseUrl: "https://github.com/Effect-TS/website/edit/main/docs/",
       },
-      lastUpdated: true,
+      components: {
+        Head: "./src/components/Head.astro"
+      },
       logo: {
         light: "./src/assets/logo-light.svg",
         dark: "./src/assets/logo-dark.svg",
