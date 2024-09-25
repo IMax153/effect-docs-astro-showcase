@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7f5975eb-091b-485a-a859-7369b5c9acd1/deploy-status)](https://app.netlify.com/sites/mellow-cheesecake-63f4e8/deploys)
+
 # Starlight Starter Kit: Basics
 
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
