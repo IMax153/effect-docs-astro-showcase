@@ -9,7 +9,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "pnpm:devPreinstall": "pnpx playwright-core install --with-deps chromium",
-    "snippets": "tsc --noEmit --skipLibCheck src/snippets/**/*.ts"
+    "snippets": "tsc --noEmit --skipLibCheck --downlevelIteration src/snippets/**/*.ts"
   },
   "peerDependencies": {
     "@expressive-code/core": "^0.35.6"
