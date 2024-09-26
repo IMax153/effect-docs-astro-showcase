@@ -130,15 +130,15 @@ If you prefer, you can utilize a pre-made guard like [Predicate.isNotNull](https
 
 ## Inspecting Errors
 
-Similar to [tapping](/guides/essentials/using-pipelines#tap) for success values, Effect provides several operators for **inspecting error values**. These operators allow developers to observe failures or underlying issues without modifying the outcome:
+Similar to [tapping](/workflows/using-pipelines#tap) for success values, Effect provides several operators for **inspecting error values**. These operators allow developers to observe failures or underlying issues without modifying the outcome:
 
-| Function        | Description                                                                                                                                |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tapError`      | Executes an effectful operation to inspect the failure of an effect without altering it.                                                   |
-| `tapErrorTag`   | Specifically inspects a failure with a particular tag, allowing focused error handling.                                                    |
-| `tapErrorCause` | Inspects the underlying cause of an effect's failure.                                                                                      |
-| `tapDefect`     | Specifically inspects non-recoverable failures or defects in an effect (i.e., one or more [Die](/other/data-types/cause#die) causes). |
-| `tapBoth`       | Inspects both success and failure outcomes of an effect, performing different actions based on the result.                                 |
+| Function        | Description                                                                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `tapError`      | Executes an effectful operation to inspect the failure of an effect without altering it.                                        |
+| `tapErrorTag`   | Specifically inspects a failure with a particular tag, allowing focused error handling.                                         |
+| `tapErrorCause` | Inspects the underlying cause of an effect's failure.                                                                           |
+| `tapDefect`     | Specifically inspects non-recoverable failures or defects in an effect (i.e., one or more [Die](/data-types/cause#die) causes). |
+| `tapBoth`       | Inspects both success and failure outcomes of an effect, performing different actions based on the result.                      |
 
 <Aside type="note">
   Utilizing these error inspection tools **does not alter** the outcome or
@@ -248,7 +248,7 @@ error cause: RuntimeException: Something went wrong
 
 ### tapDefect
 
-Specifically inspects non-recoverable failures or defects in an effect (i.e., one or more [Die](/other/data-types/cause#die) causes).
+Specifically inspects non-recoverable failures or defects in an effect (i.e., one or more [Die](/data-types/cause#die) causes).
 
 ```ts
 import { Effect, Console } from "effect"
@@ -315,7 +315,7 @@ failure: random number is negative
 
 ## Exposing Errors in The Success Channel
 
-You can use the `Effect.either` function to convert an `Effect<A, E, R>` into another effect where both its failure (`E`) and success (`A`) channels have been lifted into an [Either&lt;A, E&gt;](/other/data-types/either) data type:
+You can use the `Effect.either` function to convert an `Effect<A, E, R>` into another effect where both its failure (`E`) and success (`A`) channels have been lifted into an [`Either<A, E>`](/data-types/either) data type:
 
 ```ts
 Effect<A, E, R> -> Effect<Either<A, E>, never, R>

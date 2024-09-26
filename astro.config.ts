@@ -1,5 +1,5 @@
-import { defineConfig } from "astro/config";
-import starlight from "@astrojs/starlight";
+import { defineConfig } from "astro/config"
+import starlight from "@astrojs/starlight"
 import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid"
 import starlightLinksValidator from "starlight-links-validator"
 import path from "node:path"
@@ -12,9 +12,7 @@ const rehypeMermaidOptions: RehypeMermaidOptions = {
 
 export default defineConfig({
   markdown: {
-    rehypePlugins: [
-      [rehypeMermaid, rehypeMermaidOptions]
-    ],
+    rehypePlugins: [[rehypeMermaid, rehypeMermaidOptions]],
     shikiConfig: {
       themes: {
         light: "github-light",
@@ -27,7 +25,7 @@ export default defineConfig({
       title: "Effect Documentation",
       lastUpdated: true,
       editLink: {
-        baseUrl: "https://github.com/Effect-TS/website/edit/main/docs/",
+        baseUrl: "https://github.com/Effect-TS/website/edit/main/docs/"
       },
       components: {
         Head: "./src/components/Head.astro"
@@ -36,7 +34,7 @@ export default defineConfig({
         plugins: [
           codeImportPlugin({
             rootDir: path.resolve("src/snippets")
-          }),
+          })
         ]
       },
       logo: {
@@ -48,24 +46,40 @@ export default defineConfig({
         discord: "https://discord.gg/effect-ts",
         github: "https://github.com/Effect-TS"
       },
-      plugins: [
-        starlightLinksValidator()
-      ],
+      plugins: [starlightLinksValidator()],
       sidebar: [
         { label: "Introduction", slug: "introduction" },
         { label: "Why Effect", slug: "why-effect" },
         { label: "Quickstart", slug: "quickstart" },
         {
-          label: "Guides",
+          label: "Key Features",
           items: [
-            { label: "Essentials", autogenerate: { directory: "guides/essentials" }, collapsed: true },
-            { label: "Error Management", autogenerate: { directory: "guides/error-management" }, collapsed: true },
-            { label: "Requirements Management", autogenerate: { directory: "guides/context-management" }, collapsed: true },
+            {
+              label: "Workflows",
+              autogenerate: { directory: "workflows" },
+              collapsed: true
+            },
+            {
+              label: "Error Management",
+              autogenerate: { directory: "guides/error-management" },
+              collapsed: true
+            },
+            {
+              label: "Requirements Management",
+              autogenerate: { directory: "guides/context-management" },
+              collapsed: true
+            },
             {
               label: "Resource Management",
               items: [
                 { label: "Scope", slug: "guides/resource-management/scope" },
-                { label: "Patterns", autogenerate: { directory: "guides/resource-management/patterns" }, collapsed: true }
+                {
+                  label: "Patterns",
+                  autogenerate: {
+                    directory: "guides/resource-management/patterns"
+                  },
+                  collapsed: true
+                }
               ],
               collapsed: true
             },
@@ -73,68 +87,157 @@ export default defineConfig({
               label: "Observability",
               items: [
                 { label: "Logging", slug: "guides/observability/logging" },
-                { label: "Supervisor", slug: "guides/observability/supervisor" },
-                { label: "Telemetry", autogenerate: { directory: "guides/observability/telemetry" }, collapsed: true },
+                {
+                  label: "Supervisor",
+                  slug: "guides/observability/supervisor"
+                },
+                {
+                  label: "Telemetry",
+                  autogenerate: {
+                    directory: "guides/observability/telemetry"
+                  },
+                  collapsed: true
+                }
               ],
               collapsed: true
             },
             { label: "Configuration", slug: "guides/configuration" },
             { label: "Runtime", slug: "guides/runtime" },
-            { label: "Scheduling", autogenerate: { directory: "guides/scheduling" }, collapsed: true },
-            { label: "State Management", autogenerate: { directory: "guides/state-management" }, collapsed: true },
+            {
+              label: "Scheduling",
+              autogenerate: { directory: "guides/scheduling" },
+              collapsed: true
+            },
+            {
+              label: "State Management",
+              autogenerate: { directory: "guides/state-management" },
+              collapsed: true
+            },
             { label: "Batching", slug: "guides/batching" },
-            { label: "Caching", autogenerate: { directory: "guides/caching" }, collapsed: true },
-            { label: "Concurrency", autogenerate: { directory: "guides/concurrency" }, collapsed: true },
+            {
+              label: "Caching",
+              autogenerate: { directory: "guides/caching" },
+              collapsed: true
+            },
+            {
+              label: "Concurrency",
+              autogenerate: { directory: "guides/concurrency" },
+              collapsed: true
+            },
             {
               label: "Streaming",
               items: [
-                { label: "Stream", autogenerate: { directory: "guides/streaming/stream" }, collapsed: true },
-                { label: "Sink", autogenerate: { directory: "guides/streaming/sink" }, collapsed: true },
-                { label: "SubscriptionRef", slug: "guides/observability/logging" },
+                {
+                  label: "Stream",
+                  autogenerate: { directory: "guides/streaming/stream" },
+                  collapsed: true
+                },
+                {
+                  label: "Sink",
+                  autogenerate: { directory: "guides/streaming/sink" },
+                  collapsed: true
+                },
+                {
+                  label: "SubscriptionRef",
+                  slug: "guides/observability/logging"
+                }
               ],
               collapsed: true
             },
-            { label: "Testing", autogenerate: { directory: "guides/testing" }, collapsed: true },
-            { label: "Control Flow", slug: "guides/control-flow" },
-            { label: "Code Style", autogenerate: { directory: "guides/style" }, collapsed: true },
             {
-              label: "Schema",
-              items: [
-                { label: "Introduction", slug: "guides/schema/introduction" },
-                { label: "Getting Started", slug: "guides/schema/getting-started" },
-                { label: "Basic Usage", slug: "guides/schema/basic-usage" },
-                { label: "Projections", slug: "guides/schema/projections" },
-                { label: "Transformations", slug: "guides/schema/transformations" },
-                { label: "Annotations", slug: "guides/schema/annotations" },
-                { label: "Error Messages", slug: "guides/schema/error-messages" },
-                { label: "Error Formatters", slug: "guides/schema/error-formatters" },
-                { label: "Class APIs", slug: "guides/schema/classes" },
-                { label: "Default Constructors", slug: "guides/schema/default-constructors" },
-                { label: "Effect Data Types", slug: "guides/schema/effect-data-types" },
-                { label: "Schema to X", autogenerate: { directory: "guides/schema/schema-to-x" }, collapsed: true }
-              ],
+              label: "Testing",
+              autogenerate: { directory: "guides/testing" },
               collapsed: true
             },
-            { label: "Platform", autogenerate: { directory: "guides/platform" }, collapsed: true },
+            { label: "Control Flow", slug: "guides/control-flow" },
+            {
+              label: "Code Style",
+              autogenerate: { directory: "guides/style" },
+              collapsed: true
+            },
+            {
+              label: "Data Types",
+              autogenerate: { directory: "data-types" },
+              collapsed: true
+            },
+            {
+              label: "Traits",
+              autogenerate: { directory: "trait" },
+              collapsed: true
+            },
+            {
+              label: "Behaviours",
+              autogenerate: { directory: "behaviour" },
+              collapsed: true
+            }
           ]
+        },
+        {
+          label: "Micro",
+          badge: { text: "Unstable", variant: "caution" },
+          autogenerate: { directory: "micro" },
+          collapsed: true
+        },
+        {
+          label: "Schema",
+          badge: { text: "Unstable", variant: "caution" },
+          items: [
+            { label: "Introduction", slug: "schema/introduction" },
+            {
+              label: "Getting Started",
+              slug: "schema/getting-started"
+            },
+            { label: "Basic Usage", slug: "schema/basic-usage" },
+            { label: "Projections", slug: "schema/projections" },
+            {
+              label: "Transformations",
+              slug: "schema/transformations"
+            },
+            { label: "Annotations", slug: "schema/annotations" },
+            {
+              label: "Error Messages",
+              slug: "schema/error-messages"
+            },
+            {
+              label: "Error Formatters",
+              slug: "schema/error-formatters"
+            },
+            { label: "Class APIs", slug: "schema/classes" },
+            {
+              label: "Default Constructors",
+              slug: "schema/default-constructors"
+            },
+            {
+              label: "Effect Data Types",
+              slug: "schema/effect-data-types"
+            },
+            {
+              label: "Schema to X",
+              autogenerate: { directory: "schema/schema-to-x" },
+              collapsed: true
+            }
+          ],
+          collapsed: true
+        },
+        {
+          label: "Platform",
+          badge: { text: "Unstable", variant: "caution" },
+          autogenerate: { directory: "platform" },
+          collapsed: true
         },
         {
           label: "Other",
           items: [
-            { label: "Micro", autogenerate: { directory: "other/micro" }, collapsed: true },
             { label: "FAQ", slug: "other/faq" },
             { label: "Myths", slug: "other/myths" },
             { label: "Glossary", slug: "other/glossary" },
-            { label: "Data Types", autogenerate: { directory: "other/data-types" }, collapsed: true },
-            { label: "Traits", autogenerate: { directory: "other/trait" }, collapsed: true },
-            { label: "Behaviours", autogenerate: { directory: "other/behaviour" }, collapsed: true },
             { label: "API Reference", slug: "other/api-reference" },
             { label: "Coming from ZIO", slug: "other/coming-from-zio" },
             { label: "Effect vs fp-ts", slug: "other/fp-ts" },
-            { label: "Effect vs Promise", slug: "other/effect-vs-promise" },
+            { label: "Effect vs Promise", slug: "other/effect-vs-promise" }
           ]
-        },
+        }
       ]
-    }),
-  ],
-});
+    })
+  ]
+})

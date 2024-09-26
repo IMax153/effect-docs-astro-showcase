@@ -5,7 +5,7 @@ sidebar:
   order: 11
 ---
 
-"Yieldable Errors" are special types of errors that can be yielded within a [generator function](/guides/essentials/using-generators) used by `Effect.gen`. The unique feature of these errors is that you don't need to use the `Effect.fail` API explicitly to handle them. They offer a more intuitive and convenient way to work with custom errors in your code.
+"Yieldable Errors" are special types of errors that can be yielded within a [generator function](/workflows/using-generators) used by `Effect.gen`. The unique feature of these errors is that you don't need to use the `Effect.fail` API explicitly to handle them. They offer a more intuitive and convenient way to work with custom errors in your code.
 
 ## Data.Error
 
@@ -54,8 +54,8 @@ export const program = Effect.gen(function* () {
   return n > 0.5
     ? "yay!"
     : n < 0.2
-      ? yield* new FooError({ message: "Oh no!" })
-      : yield* new BarError({ randomNumber: n })
+    ? yield* new FooError({ message: "Oh no!" })
+    : yield* new BarError({ randomNumber: n })
 }).pipe(
   Effect.catchTags({
     Foo: (error) => Effect.succeed(`Foo error: ${error.message}`),

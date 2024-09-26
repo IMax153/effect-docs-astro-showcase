@@ -101,7 +101,7 @@ Effect provides two functions that allow you to handle unexpected errors that ma
 
 ### exit
 
-The `Effect.exit` function transforms an `Effect<A, E, R>` into an effect that encapsulates both potential failure and success within an [Exit](/other/data-types/exit) data type:
+The `Effect.exit` function transforms an `Effect<A, E, R>` into an effect that encapsulates both potential failure and success within an [Exit](/data-types/exit) data type:
 
 ```ts
 Effect<A, E, R> -> Effect<Exit<A, E>, never, R>

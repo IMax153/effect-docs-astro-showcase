@@ -46,8 +46,8 @@ export class SendEmailError {
 <Aside type="note" title="Precision">
   In a real world scenario we may want to use a more precise types instead of
   directly using primitives for identifiers (see [Branded
-  Types](/guides/style/branded-types)). Additionally, you may want to include more
-  detailed information in the errors.
+  Types](/guides/style/branded-types)). Additionally, you may want to include
+  more detailed information in the errors.
 </Aside>
 
 ### Defining API Functions
@@ -170,7 +170,7 @@ Let's assume that `getUserById` and `sendEmail` can be batched. This means that 
 
 **Important Considerations**
 
-It's crucial for the requests to be modeled in a way that allows them to be comparable. This means implementing comparability (using methods like [Equals.equals](/other/trait/equal)) to identify and batch identical requests effectively.
+It's crucial for the requests to be modeled in a way that allows them to be comparable. This means implementing comparability (using methods like [Equals.equals](/trait/equal)) to identify and batch identical requests effectively.
 
 ### Declaring Requests
 
@@ -354,10 +354,7 @@ export const getTodos: Effect.Effect<
 
 // Defines a query to fetch a user by their ID
 export const getUserById = (id: number) =>
-  Effect.request(
-    Requests.GetUserById({ id }),
-    Resolvers.GetUserByIdResolver
-  )
+  Effect.request(Requests.GetUserById({ id }), Resolvers.GetUserByIdResolver)
 
 // Defines a query to send an email to a specific address
 export const sendEmail = (address: string, text: string) =>

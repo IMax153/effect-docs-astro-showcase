@@ -12,7 +12,7 @@ In this guide you will learn:
 - How Effect represents expected errors
 - The tools Effect provides for robust and comprehensive error management
 
-As we saw in the guide [Creating Effects](/guides/essentials/creating-effects), we can use the `fail` constructor to create an Effect
+As we saw in the guide [Creating Effects](/workflows/creating-effects), we can use the `fail` constructor to create an Effect
 that represents an error:
 
 ```ts twoslash
@@ -75,8 +75,7 @@ export const program = Effect.gen(function* () {
   const n1 = yield* Random.next
   const n2 = yield* Random.next
 
-  const httpResult =
-    n1 > 0.5 ? "yay!" : yield* Effect.fail(new HttpError())
+  const httpResult = n1 > 0.5 ? "yay!" : yield* Effect.fail(new HttpError())
   const validationResult =
     n2 > 0.5 ? "yay!" : yield* Effect.fail(new ValidationError())
 
@@ -233,7 +232,7 @@ In this specific example, `task3` is never executed because an error occurs in `
 
 ### either
 
-The `Effect.either` function transforms an `Effect<A, E, R>` into an effect that encapsulates both potential failure and success within an [Either](/other/data-types/either) data type:
+The `Effect.either` function transforms an `Effect<A, E, R>` into an effect that encapsulates both potential failure and success within an [Either](/data-types/either) data type:
 
 ```ts
 Effect<A, E, R> -> Effect<Either<A, E>, never, R>

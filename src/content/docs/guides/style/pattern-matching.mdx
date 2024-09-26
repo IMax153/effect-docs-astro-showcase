@@ -159,7 +159,7 @@ console.log(match("hello")) // Output: "I literally do not understand"
 
 ### option
 
-The `option` transformation returns the result encapsulated within an [Option](/other/data-types/option). When the match succeeds, it represents the result as `Some`, and when there's no match, it signifies the absence of a value with `None`.
+The `option` transformation returns the result encapsulated within an [Option](/data-types/option). When the match succeeds, it represents the result as `Some`, and when there's no match, it signifies the absence of a value with `None`.
 
 ```ts twoslash
 import { Match, Either } from "effect"
@@ -174,7 +174,7 @@ console.log(result) // Output: { _id: 'Option', _tag: 'Some', value: 0 }
 
 ### either
 
-The `either` transformation might match a value, returning an [Either](/other/data-types/either) following the format `Either<MatchResult, NoMatchResult>`.
+The `either` transformation might match a value, returning an [Either](/data-types/either) following the format `Either<MatchResult, NoMatchResult>`.
 
 ```ts twoslash
 import { Match } from "effect"
