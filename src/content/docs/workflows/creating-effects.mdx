@@ -120,7 +120,7 @@ The `program` has the type `Effect<void, never, never>`, indicating that:
 
 Important Notes:
 
-- **Execution**: The side effect (logging to the console) encapsulated within `program` won't occur until the effect is explicitly [run](/guides/essentials/running-effects). This allows you to define side effects at one point in your code and control when they are activated, improving manageability and predictability of side effects in larger applications.
+- **Execution**: The side effect (logging to the console) encapsulated within `program` won't occur until the effect is explicitly [run](/workflows/running-effects). This allows you to define side effects at one point in your code and control when they are activated, improving manageability and predictability of side effects in larger applications.
 - **Error Handling**: It's crucial that the function you pass to `Effect.sync` does not throw any errors. If you anticipate potential errors, consider using [try](#try) instead, which handles errors gracefully.
 
 <Aside type="caution">
@@ -268,8 +268,8 @@ Also, when effects with side effects or scoped captures are created, use `Effect
 
 <Aside type="tip">
   This example utilizes `Effect.runSync` to execute effects and display their
-  results (refer to [Running
-  Effects](/guides/essentials/running-effects#runsync) for more details).
+  results (refer to [Running Effects](/workflows/running-effects#runsync) for
+  more details).
 </Aside>
 
 In this example, `bad` is the result of calling `Effect.succeed(i++)` a single time, which increments the scoped variable but [returns its original value](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Increment#postfix_increment). `Effect.runSync(bad)` does not result in any new computation, because `Effect.succeed(i++)` has already been called. On the other hand, each time `Effect.runSync(good)` is called, the thunk passed to `Effect.suspend()` will be executed, outputting the scoped variable's most recent value.
@@ -321,4 +321,4 @@ The table provides a summary of the available constructors, along with their inp
 You can find the complete list of constructors [here](https://effect-ts.github.io/effect/effect/Effect.ts.html#constructors).
 
 Now that we know how to create effects, it's time to learn how to run them.
-Check out the next guide on [Running Effects](/guides/essentials/running-effects) to find out more.
+Check out the next guide on [Running Effects](/workflows/running-effects) to find out more.

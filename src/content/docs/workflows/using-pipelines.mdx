@@ -214,7 +214,7 @@ Let's see an example where we can compare the use of `Effect.andThen` instead of
 
 ```
 
-It's worth noting that [Option](/other/data-types/option#interop-with-effect) and [Either](/other/data-types/either#interop-with-effect), types commonly used to handle optional values and simple error scenarios, are also compatible with `Effect.andThen`.
+It's worth noting that [Option](/data-types/option#interop-with-effect) and [Either](/data-types/either#interop-with-effect), types commonly used to handle optional values and simple error scenarios, are also compatible with `Effect.andThen`.
 However, it is important to understand that when these types are used, the operations are categorized under scenarios 5 and 6 as described previously, as both `Option` and `Either` operate as `Effect`s in this context.
 
 **Example with Option**

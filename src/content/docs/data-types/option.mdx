@@ -463,7 +463,7 @@ const struct = Option.all({ name: maybeName, age: maybeAge })
 
 ## gen
 
-Similar to [Effect.gen](/guides/essentials/using-generators), there's also `Option.gen`, which provides a convenient syntax, akin to async/await, for writing code involving `Option` and using generators.
+Similar to [Effect.gen](/workflows/using-generators), there's also `Option.gen`, which provides a convenient syntax, akin to async/await, for writing code involving `Option` and using generators.
 
 Let's revisit the previous example, this time using `Option.gen` instead of `Option.zipWith`:
 
@@ -523,7 +523,7 @@ const myEquivalence = Option.getEquivalence(Equivalence.number)
 
 console.log(myEquivalence(Option.some(1), Option.some(1))) // Output: true, because both options contain the number 1
 console.log(myEquivalence(Option.some(1), Option.some(2))) // Output: false, because the numbers are different
-console.log(myEquivalence(Option.some(1), Option.none()))  // Output: false, because one is a number and the other is empty
+console.log(myEquivalence(Option.some(1), Option.none())) // Output: false, because one is a number and the other is empty
 ```
 
 ## Sorting Option Values with Order
@@ -538,11 +538,7 @@ Suppose you have a list of optional numbers and you want to sort them in ascendi
 ```ts twoslash
 import { Option, Array, Order } from "effect"
 
-const items = [
-  Option.some(1),
-  Option.none(),
-  Option.some(2)
-]
+const items = [Option.some(1), Option.none(), Option.some(2)]
 
 const myOrder = Option.getOrder(Order.number)
 
@@ -575,7 +571,7 @@ const items = [
 // Define the order to sort dates within Option values in reverse
 const sorted = Array.sortWith(
   items,
-  item => item.data,
+  (item) => item.data,
   Order.reverse(Option.getOrder(Order.Date))
 )
 

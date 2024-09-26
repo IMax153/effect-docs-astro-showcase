@@ -14,7 +14,7 @@ Classes offer several features that simplify the schema creation process:
 
 - **All-in-One Definition**: With classes, you can define both a schema and an opaque type simultaneously.
 - **Shared Functionality**: You can incorporate shared functionality using class methods or getters.
-- **Value Hashing and Equality**: Utilize the built-in capability for checking value equality and applying hashing (thanks to `Class` implementing [Data.Class](/other/data-types/data#class)).
+- **Value Hashing and Equality**: Utilize the built-in capability for checking value equality and applying hashing (thanks to `Class` implementing [Data.Class](/data-types/data#class)).
 
 ## Definition
 
@@ -141,7 +141,7 @@ new Person({ id: 1, name: "" }, { disableValidation: true })
 
 ## Hashing and Equality
 
-Thanks to the implementation of [Data.Class](/other/data-types/data#class), instances of your classes automatically support the [Equal](/other/trait/equal) trait, which allows for easy comparison:
+Thanks to the implementation of [Data.Class](/data-types/data#class), instances of your classes automatically support the [Equal](/trait/equal) trait, which allows for easy comparison:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -455,7 +455,7 @@ class Category extends Schema.Class<Category>("Category")({
 
 ## Tagged Class variants
 
-You can also create classes that extend [TaggedClass](/other/data-types/data#taggedclass) and [TaggedError](/other/data-types/data#taggederror) from the `effect/Data` module.
+You can also create classes that extend [TaggedClass](/data-types/data#taggedclass) and [TaggedError](/data-types/data#taggederror) from the `effect/Data` module.
 
 **Example**
 

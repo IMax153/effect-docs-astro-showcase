@@ -55,8 +55,8 @@ export default defineConfig({
           label: "Key Features",
           items: [
             {
-              label: "Essentials",
-              autogenerate: { directory: "guides/essentials" },
+              label: "Workflows",
+              autogenerate: { directory: "workflows" },
               collapsed: true
             },
             {
@@ -154,11 +154,33 @@ export default defineConfig({
               label: "Code Style",
               autogenerate: { directory: "guides/style" },
               collapsed: true
+            },
+            {
+              label: "Data Types",
+              autogenerate: { directory: "data-types" },
+              collapsed: true
+            },
+            {
+              label: "Traits",
+              autogenerate: { directory: "trait" },
+              collapsed: true
+            },
+            {
+              label: "Behaviours",
+              autogenerate: { directory: "behaviour" },
+              collapsed: true
             }
           ]
         },
         {
+          label: "Micro",
+          badge: { text: "Unstable", variant: "caution" },
+          autogenerate: { directory: "micro" },
+          collapsed: true
+        },
+        {
           label: "Schema",
+          badge: { text: "Unstable", variant: "caution" },
           items: [
             { label: "Introduction", slug: "schema/introduction" },
             {
@@ -199,35 +221,16 @@ export default defineConfig({
         },
         {
           label: "Platform",
+          badge: { text: "Unstable", variant: "caution" },
           autogenerate: { directory: "platform" },
           collapsed: true
         },
         {
           label: "Other",
           items: [
-            {
-              label: "Micro",
-              autogenerate: { directory: "other/micro" },
-              collapsed: true
-            },
             { label: "FAQ", slug: "other/faq" },
             { label: "Myths", slug: "other/myths" },
             { label: "Glossary", slug: "other/glossary" },
-            {
-              label: "Data Types",
-              autogenerate: { directory: "other/data-types" },
-              collapsed: true
-            },
-            {
-              label: "Traits",
-              autogenerate: { directory: "other/trait" },
-              collapsed: true
-            },
-            {
-              label: "Behaviours",
-              autogenerate: { directory: "other/behaviour" },
-              collapsed: true
-            },
             { label: "API Reference", slug: "other/api-reference" },
             { label: "Coming from ZIO", slug: "other/coming-from-zio" },
             { label: "Effect vs fp-ts", slug: "other/fp-ts" },
