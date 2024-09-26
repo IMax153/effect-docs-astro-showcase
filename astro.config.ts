@@ -24,11 +24,14 @@ export default defineConfig({
     starlight({
       title: "Effect Documentation",
       lastUpdated: true,
-      editLink: {
-        baseUrl: "https://github.com/Effect-TS/website/edit/main/docs/"
-      },
       components: {
         Head: "./src/components/Head.astro"
+      },
+      customCss: [
+        "./src/styles/custom.css"
+      ],
+      editLink: {
+        baseUrl: "https://github.com/Effect-TS/website/edit/main/docs/"
       },
       expressiveCode: {
         plugins: [

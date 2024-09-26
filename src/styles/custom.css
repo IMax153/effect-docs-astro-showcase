@@ -1,0 +1,23 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Sidebar Overrides
+ * ----------------------------------------------------------------------------
+ */
+
+/* Normalize sidebar group label font-weight */
+.sidebar .large {
+  font-weight: 400;
+}
+
+/** By default, all sidebar items are white with a normal font size */
+.sidebar .top-level ul li span {
+  color: var(--sl-color-white);
+  font-size: var(--sl-text-base);
+}
+
+/** On larger screens, give non-root sidebar items a visual hierarchy */
+@media (min-width: 50rem) {
+  .sidebar .top-level ul li span {
+    font-size: var(--sl-text-sm);
+  }
+}
