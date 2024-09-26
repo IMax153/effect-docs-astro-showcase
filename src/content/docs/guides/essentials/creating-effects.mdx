@@ -254,46 +254,52 @@ The `Effect.suspend` function takes a thunk that represents the effect, and it w
 const suspendedEffect = Effect.suspend(() => effect)
 ```
 
-Let's explore some common scenarios where `Effect.suspend` proves useful:
+Let's explore some common scenarios where `Effect.suspend` proves useful.
 
-1. **Lazy Evaluation**. When you want to defer the evaluation of an effect until it is required. This can be useful for optimizing the execution of effects, especially when they are not always needed or when their computation is expensive.
+### Lazy Evaluation
 
-   Also, when effects with side effects or scoped captures are created, use `Effect.suspend` to re-execute on each invocation.
+When you want to defer the evaluation of an effect until it is required. This can be useful for optimizing the execution of effects, especially when they are not always needed or when their computation is expensive.
 
-   ```ts twoslash file=<rootDir>/essentials/suspend-lazy-evaluation.ts
+Also, when effects with side effects or scoped captures are created, use `Effect.suspend` to re-execute on each invocation.
 
-   ```
+```ts twoslash file=<rootDir>/essentials/suspend-lazy-evaluation.ts
 
-   <Aside type="note">
-     This example utilizes `Effect.runSync` to execute effects and display
-     their results (refer to [Running
-     Effects](/guides/essentials/running-effects#runsync) for more details).
-   </Aside>
+```
 
-   In this example, `bad` is the result of calling `Effect.succeed(i++)` a single time, which increments the scoped variable but [returns its original value](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Increment#postfix_increment). `Effect.runSync(bad)` does not result in any new computation, because `Effect.succeed(i++)` has already been called. On the other hand, each time `Effect.runSync(good)` is called, the thunk passed to `Effect.suspend()` will be executed, outputting the scoped variable's most recent value.
+<Aside type="tip">
+  This example utilizes `Effect.runSync` to execute effects and display their
+  results (refer to [Running
+  Effects](/guides/essentials/running-effects#runsync) for more details).
+</Aside>
 
-2. **Handling Circular Dependencies**. `Effect.suspend` is helpful in managing circular dependencies between effects, where one effect depends on another, and vice versa.
-   For example it's fairly common for `Effect.suspend` to be used in recursive functions to escape an eager call. For instance:
+In this example, `bad` is the result of calling `Effect.succeed(i++)` a single time, which increments the scoped variable but [returns its original value](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Increment#postfix_increment). `Effect.runSync(bad)` does not result in any new computation, because `Effect.succeed(i++)` has already been called. On the other hand, each time `Effect.runSync(good)` is called, the thunk passed to `Effect.suspend()` will be executed, outputting the scoped variable's most recent value.
 
-   ```ts twoslash file=<rootDir>/essentials/suspend-circular-dependencies.ts
+### Handling Circular Dependencies
 
-   ```
+`Effect.suspend` is helpful in managing circular dependencies between effects, where one effect depends on another, and vice versa.
+For example it's fairly common for `Effect.suspend` to be used in recursive functions to escape an eager call. For instance:
 
-   <Aside type="note">
-     This example utilizes `Effect.zipWith` to combine the results of two
-     effects (refer to the documentation on
-     [zipping](/guides/control-flow#zipwith) for more details).
-   </Aside>
+```ts twoslash file=<rootDir>/essentials/suspend-circular-dependencies.ts
 
-   The `blowsUp` function creates a recursive Fibonacci sequence without deferring execution. Each call to `blowsUp` triggers further immediate recursive calls, rapidly increasing the JavaScript call stack size.
+```
 
-   Conversely, `allGood` avoids stack overflow by using `Effect.suspend` to defer the recursive calls. This mechanism doesn't immediately execute the recursive effects but schedules them to be run later, thus keeping the call stack shallow and preventing a crash.
+<Aside type="tip">
+  This example utilizes `Effect.zipWith` to combine the results of two effects
+  (refer to the documentation on [zipping](/guides/control-flow#zipwith) for
+  more details).
+</Aside>
 
-3. **Unifying Return Type**. In situations where TypeScript struggles to unify the returned effect type, `Effect.suspend` can be employed to resolve this issue. For example:
+The `blowsUp` function creates a recursive Fibonacci sequence without deferring execution. Each call to `blowsUp` triggers further immediate recursive calls, rapidly increasing the JavaScript call stack size.
 
-   ```ts twoslash file=<rootDir>/essentials/suspend-unifying-return-type.ts
+Conversely, `allGood` avoids stack overflow by using `Effect.suspend` to defer the recursive calls. This mechanism doesn't immediately execute the recursive effects but schedules them to be run later, thus keeping the call stack shallow and preventing a crash.
 
-   ```
+### Unifying Return Type
+
+In situations where TypeScript struggles to unify the returned effect type, `Effect.suspend` can be employed to resolve this issue. For example:
+
+```ts twoslash file=<rootDir>/essentials/suspend-unifying-return-type.ts
+
+```
 
 ## Cheatsheet
 
