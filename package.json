@@ -8,7 +8,8 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "pnpm:devPreinstall": "pnpx playwright-core install --with-deps chromium"
+    "pnpm:devPreinstall": "pnpx playwright-core install --with-deps chromium",
+    "snippets": "tsc --noEmit --skipLibCheck src/snippets/**/*.ts"
   },
   "peerDependencies": {
     "@expressive-code/core": "^0.35.6"
@@ -19,6 +20,7 @@
     "@expressive-code/core": "^0.35.6",
     "astro": "^4.15.9",
     "astro-vtbot": "^1.10.1",
+    "effect": "^3.8.4",
     "rehype-mermaid": "^2.1.0",
     "sharp": "^0.32.6",
     "starlight-links-validator": "^0.12.1",

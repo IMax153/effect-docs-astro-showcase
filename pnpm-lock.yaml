@@ -23,6 +23,9 @@ importers:
       astro-vtbot:
         specifier: ^1.10.1
         version: 1.10.1
+      effect:
+        specifier: ^3.8.4
+        version: 3.8.4
       rehype-mermaid:
         specifier: ^2.1.0
         version: 2.1.0
@@ -1224,6 +1227,9 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+
+  effect@3.8.4:
+    resolution: {integrity: sha512-rOZ1XAi+Fb+fAHoUJ5FnJPSPZEBxVbCl5QWtOWFTgOeFHx0QpbK3pezWvq9OIxQPdwvSkPOw926qrs4xdD9dLA==}
 
   electron-to-chromium@1.5.28:
     resolution: {integrity: sha512-VufdJl+rzaKZoYVUijN13QcXVF5dWPZANeFTLNy+OSpHdDL5ynXTF35+60RSBbaQYB1ae723lQXHCrf4pyLsMw==}
@@ -4056,6 +4062,8 @@ snapshots:
   dset@3.1.4: {}
 
   eastasianwidth@0.2.0: {}
+
+  effect@3.8.4: {}
 
   electron-to-chromium@1.5.28: {}
 
