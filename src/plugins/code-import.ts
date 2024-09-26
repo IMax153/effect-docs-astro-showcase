@@ -40,7 +40,7 @@ export default function pluginCodeImport(options: CodeImportOptions = {}) {
           }
 
           const parsedPath = parsedFileMeta.groups.path
-          const normalizedPath = parsedPath.replace("^<rootDir>", rootDir).replace(/\\ /g, " ")
+          const normalizedPath = parsedPath.replace(/^<rootDir>/, rootDir).replace(/\\ /g, " ")
           const sourceFileDir = path.dirname(context.codeBlock.parentDocument?.sourceFilePath || "")
           const absolutePath = path.resolve(sourceFileDir, normalizedPath)
 
