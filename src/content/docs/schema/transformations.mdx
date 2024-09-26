@@ -75,7 +75,7 @@ const ReadonlySetFromArray = <A, I, R>(
 
 <Aside type="note">
   Please note that to define the target schema, we used
-  [Schema.typeSchema](/guides/schema/projections#typeschema). This is because the
+  [Schema.typeSchema](/schema/projections#typeschema). This is because the
   decoding/encoding of the elements is already handled by the `from` schema,
   `Schema.Array(itemSchema)`.
 </Aside>
@@ -259,7 +259,7 @@ In this example:
 - **Decoding:** Attempts to parse the input string into a number. If the parsing results in `NaN` (indicating that the string is not a valid number), it fails with a descriptive error.
 - **Encoding:** Converts the number back to a string, assuming that the input number is valid.
 
-Both `decode` and `encode` functions not only receive the value to transform (`input`), but also the [parse options](/guides/schema/getting-started#parse-options) that the user sets when using the resulting schema, and the `ast`, which represents the low level definition of the schema you're transforming.
+Both `decode` and `encode` functions not only receive the value to transform (`input`), but also the [parse options](/schema/getting-started#parse-options) that the user sets when using the resulting schema, and the `ast`, which represents the low level definition of the schema you're transforming.
 
 ### Async Transformations
 

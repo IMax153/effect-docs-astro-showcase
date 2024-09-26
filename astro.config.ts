@@ -52,7 +52,7 @@ export default defineConfig({
         { label: "Why Effect", slug: "why-effect" },
         { label: "Quickstart", slug: "quickstart" },
         {
-          label: "Guides",
+          label: "Key Features",
           items: [
             {
               label: "Essentials",
@@ -154,53 +154,53 @@ export default defineConfig({
               label: "Code Style",
               autogenerate: { directory: "guides/style" },
               collapsed: true
-            },
-            {
-              label: "Schema",
-              items: [
-                { label: "Introduction", slug: "guides/schema/introduction" },
-                {
-                  label: "Getting Started",
-                  slug: "guides/schema/getting-started"
-                },
-                { label: "Basic Usage", slug: "guides/schema/basic-usage" },
-                { label: "Projections", slug: "guides/schema/projections" },
-                {
-                  label: "Transformations",
-                  slug: "guides/schema/transformations"
-                },
-                { label: "Annotations", slug: "guides/schema/annotations" },
-                {
-                  label: "Error Messages",
-                  slug: "guides/schema/error-messages"
-                },
-                {
-                  label: "Error Formatters",
-                  slug: "guides/schema/error-formatters"
-                },
-                { label: "Class APIs", slug: "guides/schema/classes" },
-                {
-                  label: "Default Constructors",
-                  slug: "guides/schema/default-constructors"
-                },
-                {
-                  label: "Effect Data Types",
-                  slug: "guides/schema/effect-data-types"
-                },
-                {
-                  label: "Schema to X",
-                  autogenerate: { directory: "guides/schema/schema-to-x" },
-                  collapsed: true
-                }
-              ],
-              collapsed: true
-            },
-            {
-              label: "Platform",
-              autogenerate: { directory: "guides/platform" },
-              collapsed: true
             }
           ]
+        },
+        {
+          label: "Schema",
+          items: [
+            { label: "Introduction", slug: "schema/introduction" },
+            {
+              label: "Getting Started",
+              slug: "schema/getting-started"
+            },
+            { label: "Basic Usage", slug: "schema/basic-usage" },
+            { label: "Projections", slug: "schema/projections" },
+            {
+              label: "Transformations",
+              slug: "schema/transformations"
+            },
+            { label: "Annotations", slug: "schema/annotations" },
+            {
+              label: "Error Messages",
+              slug: "schema/error-messages"
+            },
+            {
+              label: "Error Formatters",
+              slug: "schema/error-formatters"
+            },
+            { label: "Class APIs", slug: "schema/classes" },
+            {
+              label: "Default Constructors",
+              slug: "schema/default-constructors"
+            },
+            {
+              label: "Effect Data Types",
+              slug: "schema/effect-data-types"
+            },
+            {
+              label: "Schema to X",
+              autogenerate: { directory: "schema/schema-to-x" },
+              collapsed: true
+            }
+          ],
+          collapsed: true
+        },
+        {
+          label: "Platform",
+          autogenerate: { directory: "platform" },
+          collapsed: true
         },
         {
           label: "Other",
