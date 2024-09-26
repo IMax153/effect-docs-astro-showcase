@@ -9,28 +9,26 @@ import { Steps, Tabs, TabItem } from "@astrojs/starlight/components"
 
 In this tutorial, we will guide you through the process of setting up a new Effect project from scratch using plain **TypeScript 5.4 or newer**.
 
-<Tabs>
+## Node.js
 
-<TabItem label="Node.js" icon="node">
-
-Follow these steps to create a new Effect project for **Node.js**:
+Follow these steps to create a new Effect project for [Node.js](https://nodejs.org/):
 
 <Steps>
 
-1. As a first step, create a project directory and navigate into it:
+1. Create a project directory and navigate into it:
 
-   ```sh title="Terminal"
+   ```sh
    mkdir hello-effect
    cd hello-effect
    ```
 
-2. Next, initialize a TypeScript project using npm (make sure you have TypeScript 5.0 or newer):
+2. Initialize a TypeScript project:
 
    <Tabs syncKey="package-manager">
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh title="Terminal"
+   ```sh
    npm init -y
    npm install --save-dev typescript
    ```
@@ -39,7 +37,7 @@ Follow these steps to create a new Effect project for **Node.js**:
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh title="Terminal"
+   ```sh
    pnpm init -y
    pnpm add --save-dev typescript
    ```
@@ -48,7 +46,7 @@ Follow these steps to create a new Effect project for **Node.js**:
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh title="Terminal"
+   ```sh
    yarn init -y
    yarn add --dev typescript
    ```
@@ -59,13 +57,13 @@ Follow these steps to create a new Effect project for **Node.js**:
 
    This creates a `package.json` file with an initial setup for your TypeScript project.
 
-3. Now, initialize TypeScript:
+3. Initialize TypeScript:
 
    <Tabs syncKey="package-manager">
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh title="Terminal"
+   ```sh
    npm tsc --init
    ```
 
@@ -73,7 +71,7 @@ Follow these steps to create a new Effect project for **Node.js**:
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh title="Terminal"
+   ```sh
    pnpm tsc --init
    ```
 
@@ -81,7 +79,7 @@ Follow these steps to create a new Effect project for **Node.js**:
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh title="Terminal"
+   ```sh
    yarn tsc --init
    ```
 
@@ -101,13 +99,13 @@ Follow these steps to create a new Effect project for **Node.js**:
    }
    ```
 
-4. Then, install the necessary package as dependency:
+4. Install the necessary package as dependency:
 
    <Tabs syncKey="package-manager">
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh title="Terminal"
+   ```sh
    npm install effect
    ```
 
@@ -115,7 +113,7 @@ Follow these steps to create a new Effect project for **Node.js**:
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh title="Terminal"
+   ```sh
    pnpm add effect
    ```
 
@@ -123,7 +121,7 @@ Follow these steps to create a new Effect project for **Node.js**:
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh title="Terminal"
+   ```sh
    yarn add effect
    ```
 
@@ -139,7 +137,7 @@ Let's write and run a simple program to ensure that everything is set up correct
 
 In your terminal, execute the following commands:
 
-```sh title="Terminal"
+```sh
 mkdir src
 touch src/index.ts
 ```
@@ -156,30 +154,28 @@ Effect.runSync(program)
 
 Run the `index.ts` file. Here we are using [tsx](https://github.com/privatenumber/tsx) to run the `index.ts` file in the terminal:
 
-```sh title="Terminal"
+```sh
 npx tsx src/index.ts
 ```
 
 You should see the message `"Hello, World!"` printed. This confirms that the program is working correctly.
 
-</TabItem>
+## Deno
 
-<TabItem label="Deno" icon="deno">
-
-Follow these steps to create a new Effect project for **Deno**:
+Follow these steps to create a new Effect project for [Deno](https://deno.com/):
 
 <Steps>
 
-1. As a first step, create a project directory and navigate into it:
+1. Create a project directory and navigate into it:
 
-   ```sh title="Terminal"
+   ```sh
    mkdir hello-effect
    cd hello-effect
    ```
 
-2. Next, initialize Deno:
+2. Initialize Deno:
 
-   ```sh title="Terminal"
+   ```sh
    deno init
    ```
 
@@ -199,30 +195,28 @@ Effect.runSync(program)
 
 Run the `main.ts` file:
 
-```sh title="Terminal"
+```sh
 deno run main.ts
 ```
 
 You should see the message `"Hello, World!"` printed. This confirms that the program is working correctly.
 
-</TabItem>
+## Bun
 
-<TabItem label="Bun" icon="bun">
-
-Follow these steps to create a new Effect project for **Bun**:
+Follow these steps to create a new Effect project for [Bun](https://bun.sh/):
 
 <Steps>
 
-1. As a first step, create a project directory and navigate into it:
+1. Create a project directory and navigate into it:
 
-   ```sh title="Terminal"
+   ```sh
    mkdir hello-effect
    cd hello-effect
    ```
 
-2. Next, initialize Bun:
+2. Initialize Bun:
 
-   ```sh title="Terminal"
+   ```sh
    bun init
    ```
 
@@ -238,9 +232,9 @@ Follow these steps to create a new Effect project for **Bun**:
    }
    ```
 
-3. Then, install the necessary package as dependency:
+3. Install the necessary package as dependency:
 
-   ```sh title="Terminal"
+   ```sh
    bun add effect
    ```
 
@@ -262,17 +256,15 @@ Effect.runSync(program)
 
 Run the `index.ts` file:
 
-```sh title="Terminal"
+```sh
 bun index.ts
 ```
 
 You should see the message `"Hello, World!"` printed. This confirms that the program is working correctly.
 
-</TabItem>
+## Vite + React
 
-<TabItem label="Vite + React" icon="seti:react">
-
-Follow these steps to create a new Effect project for **Vite + React**:
+Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/guide/) + [React](https://react.dev/):
 
 <Steps>
 
@@ -282,7 +274,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh title="Terminal"
+   ```sh
    # npm 6.x
    npm create vite@latest hello-effect --template react-ts
    # npm 7+, extra double-dash is needed
@@ -293,7 +285,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh title="Terminal"
+   ```sh
    pnpm create vite@latest hello-effect -- --template react-ts
    ```
 
@@ -301,7 +293,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh title="Terminal"
+   ```sh
    yarn create vite@latest hello-effect -- --template react-ts
    ```
 
@@ -309,7 +301,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="Bun" icon="bun">
 
-   ```sh title="Terminal"
+   ```sh
    bun create vite@latest hello-effect -- --template react-ts
    ```
 
@@ -325,7 +317,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh title="Terminal"
+   ```sh
    cd hello-effect
    npm install
    ```
@@ -334,7 +326,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh title="Terminal"
+   ```sh
    cd hello-effect
    pnpm install
    ```
@@ -343,7 +335,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh title="Terminal"
+   ```sh
    cd hello-effect
    yarn install
    ```
@@ -352,7 +344,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="Bun" icon="bun">
 
-   ```sh title="Terminal"
+   ```sh
    cd hello-effect
    bun install
    ```
@@ -371,24 +363,21 @@ Follow these steps to create a new Effect project for **Vite + React**:
    }
    ```
 
-3. Then, install the necessary `effect` package as a dependency:
+3. Install the necessary package as dependency:
 
    <Tabs syncKey="package-manager">
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh title="Terminal"
+   ```sh
    npm install effect
-   yarn add effect
-   pnpm add effect
-   bun add effect
    ```
 
    </TabItem>
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh title="Terminal"
+   ```sh
    pnpm add effect
    ```
 
@@ -396,7 +385,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh title="Terminal"
+   ```sh
    yarn add effect
    ```
 
@@ -404,7 +393,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    <TabItem label="Bun" icon="bun">
 
-   ```sh title="Terminal"
+   ```sh
    bun add effect
    ```
 
@@ -412,7 +401,7 @@ Follow these steps to create a new Effect project for **Vite + React**:
 
    </Tabs>
 
-   The `effect` package will provide the foundational functionality for your Effect project.
+   This package will provide the foundational functionality for your Effect project.
 
 </Steps>
 
@@ -420,23 +409,22 @@ Now, let's write and run a simple program to ensure that everything is set up co
 
 Open the `src/App.tsx` file and replace its content with the following code:
 
-```tsx {1,5,10-16,30} twoslash title="src/App.tsx"
-import { useState, useMemo, useCallback } from "react"
+```diff lang="tsx" title="src/App.tsx"
++import { useState, useMemo, useCallback } from "react"
 import reactLogo from "./assets/react.svg"
 import viteLogo from "/vite.svg"
 import "./App.css"
-import { Effect } from "effect"
++import { Effect } from "effect"
 
 function App() {
   const [count, setCount] = useState(0)
 
-  // Effect<void>
-  const task = useMemo(
-    () => Effect.sync(() => setCount((current) => current + 1)),
-    [setCount]
-  )
-
-  const increment = useCallback(() => Effect.runSync(task), [task])
++  const task = useMemo(
++    () => Effect.sync(() => setCount((current) => current + 1)),
++    [setCount]
++  )
++
++  const increment = useCallback(() => Effect.runSync(task), [task])
 
   return (
     <>
@@ -450,7 +438,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={increment}>count is {count}</button>
++        <button onClick={increment}>count is {count}</button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
@@ -471,7 +459,7 @@ After making these changes, start the development server by running the followin
 
 <TabItem label="npm" icon="seti:npm">
 
-```sh title="Terminal"
+```sh
 npm run dev
 ```
 
@@ -479,7 +467,7 @@ npm run dev
 
 <TabItem label="pnpm" icon="pnpm">
 
-```sh title="Terminal"
+```sh
 pnpm run dev
 ```
 
@@ -487,7 +475,7 @@ pnpm run dev
 
 <TabItem label="Yarn" icon="seti:yarn">
 
-```sh title="Terminal"
+```sh
 yarn run dev
 ```
 
@@ -495,7 +483,7 @@ yarn run dev
 
 <TabItem label="Bun" icon="bun">
 
-```sh title="Terminal"
+```sh
 bun run dev
 ```
 
@@ -506,7 +494,3 @@ bun run dev
 Then, press **o** to open the application in your browser.
 
 When you click the button, you should see the counter increment. This confirms that the program is working correctly.
-
-</TabItem>
-
-</Tabs>
