@@ -48,135 +48,110 @@ export default defineConfig({
       },
       plugins: [starlightLinksValidator()],
       sidebar: [
-        { label: "Introduction", slug: "introduction" },
-        { label: "Why Effect", slug: "why-effect" },
-        { label: "Quickstart", slug: "quickstart" },
         {
-          label: "Key Features",
+          label: "Getting Started",
+          autogenerate: { directory: "getting-started" },
+          collapsed: false
+        },
+        {
+          label: "Error Management",
+          autogenerate: { directory: "error-management" },
+          collapsed: false
+        },
+        {
+          label: "Requirements Management",
+          autogenerate: { directory: "requirements-management" },
+          collapsed: false
+        },
+        {
+          label: "Resource Management",
           items: [
+            { label: "Scope", slug: "resource-management/scope" },
+            { label: "Patterns", slug: "resource-management/patterns" }
+          ],
+          collapsed: false
+        },
+        {
+          label: "Observability",
+          items: [
+            { label: "Logging", slug: "observability/logging" },
             {
-              label: "Workflows",
-              autogenerate: { directory: "workflows" },
-              collapsed: true
+              label: "Supervisor",
+              slug: "observability/supervisor"
             },
             {
-              label: "Error Management",
-              autogenerate: { directory: "guides/error-management" },
-              collapsed: true
-            },
-            {
-              label: "Requirements Management",
-              autogenerate: { directory: "guides/context-management" },
-              collapsed: true
-            },
-            {
-              label: "Resource Management",
-              items: [
-                { label: "Scope", slug: "guides/resource-management/scope" },
-                {
-                  label: "Patterns",
-                  autogenerate: {
-                    directory: "guides/resource-management/patterns"
-                  },
-                  collapsed: true
-                }
-              ],
-              collapsed: true
-            },
-            {
-              label: "Observability",
-              items: [
-                { label: "Logging", slug: "guides/observability/logging" },
-                {
-                  label: "Supervisor",
-                  slug: "guides/observability/supervisor"
-                },
-                {
-                  label: "Telemetry",
-                  autogenerate: {
-                    directory: "guides/observability/telemetry"
-                  },
-                  collapsed: true
-                }
-              ],
-              collapsed: true
-            },
-            { label: "Configuration", slug: "guides/configuration" },
-            { label: "Runtime", slug: "guides/runtime" },
-            {
-              label: "Scheduling",
-              autogenerate: { directory: "guides/scheduling" },
-              collapsed: true
-            },
-            {
-              label: "State Management",
-              autogenerate: { directory: "guides/state-management" },
-              collapsed: true
-            },
-            { label: "Batching", slug: "guides/batching" },
-            {
-              label: "Caching",
-              autogenerate: { directory: "guides/caching" },
-              collapsed: true
-            },
-            {
-              label: "Concurrency",
-              autogenerate: { directory: "guides/concurrency" },
-              collapsed: true
-            },
-            {
-              label: "Streaming",
-              items: [
-                {
-                  label: "Stream",
-                  autogenerate: { directory: "guides/streaming/stream" },
-                  collapsed: true
-                },
-                {
-                  label: "Sink",
-                  autogenerate: { directory: "guides/streaming/sink" },
-                  collapsed: true
-                },
-                {
-                  label: "SubscriptionRef",
-                  slug: "guides/observability/logging"
-                }
-              ],
-              collapsed: true
-            },
-            {
-              label: "Testing",
-              autogenerate: { directory: "guides/testing" },
-              collapsed: true
-            },
-            { label: "Control Flow", slug: "guides/control-flow" },
-            {
-              label: "Code Style",
-              autogenerate: { directory: "guides/style" },
-              collapsed: true
-            },
-            {
-              label: "Data Types",
-              autogenerate: { directory: "data-types" },
-              collapsed: true
-            },
-            {
-              label: "Traits",
-              autogenerate: { directory: "trait" },
-              collapsed: true
-            },
-            {
-              label: "Behaviours",
-              autogenerate: { directory: "behaviour" },
-              collapsed: true
+              label: "Telemetry",
+              autogenerate: {
+                directory: "observability/telemetry"
+              },
+              collapsed: false
             }
-          ]
+          ],
+          collapsed: false
+        },
+        { label: "Configuration", slug: "configuration" },
+        { label: "Runtime", slug: "runtime" },
+        {
+          label: "Scheduling",
+          autogenerate: { directory: "scheduling" },
+          collapsed: false
+        },
+        {
+          label: "State Management",
+          autogenerate: { directory: "state-management" },
+          collapsed: false
+        },
+        { label: "Batching", slug: "batching" },
+        {
+          label: "Caching",
+          autogenerate: { directory: "caching" },
+          collapsed: false
+        },
+        {
+          label: "Concurrency",
+          autogenerate: { directory: "concurrency" },
+          collapsed: false
+        },
+        {
+          label: "Stream",
+          autogenerate: { directory: "stream" },
+          collapsed: false
+        },
+        {
+          label: "Sink",
+          autogenerate: { directory: "sink" },
+          collapsed: false
+        },
+        {
+          label: "Testing",
+          autogenerate: { directory: "testing" },
+          collapsed: false
+        },
+        {
+          label: "Code Style",
+          autogenerate: { directory: "code-style" },
+          collapsed: false
+        },
+        {
+          label: "Data Types",
+          autogenerate: { directory: "data-types" },
+          collapsed: false
+        },
+        {
+          label: "Traits",
+          autogenerate: { directory: "trait" },
+          collapsed: false
+        },
+        {
+          label: "Behaviours",
+          autogenerate: { directory: "behaviour" },
+          collapsed: false
         },
         {
           label: "Micro",
           badge: { text: "Unstable", variant: "caution" },
           autogenerate: { directory: "micro" },
-          collapsed: true
+          collapsed: false
         },
         {
           label: "Schema",
@@ -214,28 +189,21 @@ export default defineConfig({
             {
               label: "Schema to X",
               autogenerate: { directory: "schema/schema-to-x" },
-              collapsed: true
+              collapsed: false
             }
           ],
-          collapsed: true
+          collapsed: false
         },
         {
           label: "Platform",
           badge: { text: "Unstable", variant: "caution" },
           autogenerate: { directory: "platform" },
-          collapsed: true
+          collapsed: false
         },
         {
-          label: "Other",
-          items: [
-            { label: "FAQ", slug: "other/faq" },
-            { label: "Myths", slug: "other/myths" },
-            { label: "Glossary", slug: "other/glossary" },
-            { label: "API Reference", slug: "other/api-reference" },
-            { label: "Coming from ZIO", slug: "other/coming-from-zio" },
-            { label: "Effect vs fp-ts", slug: "other/fp-ts" },
-            { label: "Effect vs Promise", slug: "other/effect-vs-promise" }
-          ]
+          label: "Additional Resources",
+          autogenerate: { directory: "additional-resources" },
+          collapsed: false
         }
       ]
     })

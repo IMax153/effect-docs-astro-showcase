@@ -234,7 +234,7 @@ When working with unknown data types in TypeScript, decoding them into a known s
 - `decodeUnknownOption`: Decodes a value and returns an [Option](/data-types/option) type.
 - `decodeUnknownEither`: Decodes a value and returns an [Either](/data-types/either) type.
 - `decodeUnknownPromise`: Decodes a value and returns a `Promise`.
-- `decodeUnknown`: Decodes a value and returns an [Effect](/workflows/the-effect-type).
+- `decodeUnknown`: Decodes a value and returns an [Effect](/getting-started/the-effect-type).
 
 **Example** (Using `decodeUnknownSync`)
 
@@ -310,9 +310,9 @@ interface ParseError {
 }
 ```
 
-Here, `ParseIssue` represents an error that might occur during the parsing process. It is wrapped in a tagged error to make it easier to catch errors using [Effect.catchTag](/guides/error-management/expected-errors#catchtag). The result `Either<A, ParseError>` contains the inferred data type described by the schema. A successful parse yields a `Right` value with the parsed data `A`, while a failed parse results in a `Left` value containing a `ParseError`.
+Here, `ParseIssue` represents an error that might occur during the parsing process. It is wrapped in a tagged error to make it easier to catch errors using [Effect.catchTag](/error-management/expected-errors#catchtag). The result `Either<A, ParseError>` contains the inferred data type described by the schema. A successful parse yields a `Right` value with the parsed data `A`, while a failed parse results in a `Left` value containing a `ParseError`.
 
-When your schema involves asynchronous transformations, neither the `decodeUnknownSync` nor the `decodeUnknownEither` functions will work for you. In such cases, you must turn to the `decodeUnknown` function, which returns an [Effect](/workflows/the-effect-type).
+When your schema involves asynchronous transformations, neither the `decodeUnknownSync` nor the `decodeUnknownEither` functions will work for you. In such cases, you must turn to the `decodeUnknown` function, which returns an [Effect](/getting-started/the-effect-type).
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -678,7 +678,7 @@ The `@effect/schema/Schema` module provides several `encode*` functions to encod
 - `encodeOption`: Encodes data and returns an [Option](/data-types/option) type.
 - `encodeEither`: Encodes data and returns an [Either](/data-types/either) type representing success or failure.
 - `encodePromise`: Encodes data and returns a `Promise`.
-- `encode`: Encodes data and returns an [Effect](/workflows/the-effect-type).
+- `encode`: Encodes data and returns an [Effect](/getting-started/the-effect-type).
 
 Let's consider an example where we have a schema for a `Person` object with a `name` property of type `string` and an `age` property of type `number`.
 

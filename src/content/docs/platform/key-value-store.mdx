@@ -10,7 +10,7 @@ It supports asynchronous operations, ensuring data integrity and consistency, an
 
 ## Basic Usage
 
-The module provides a single `KeyValueStore` [tag](/guides/context-management/services), which acts as the gateway for interacting with the store.
+The module provides a single `KeyValueStore` [tag](/requirements-management/services), which acts as the gateway for interacting with the store.
 
 ```ts twoslash
 import { KeyValueStore } from "@effect/platform"
@@ -68,7 +68,7 @@ Effect.runPromise(program.pipe(Effect.provide(layerMemory)))
 
 ## Built-in Implementations
 
-The module provides several built-in implementations of the `KeyValueStore` interface, available as [layers](/guides/context-management/layers), to suit different needs:
+The module provides several built-in implementations of the `KeyValueStore` interface, available as [layers](/requirements-management/layers), to suit different needs:
 
 | **Implementation**    | **Description**                                                                                           |
 | --------------------- | --------------------------------------------------------------------------------------------------------- |
