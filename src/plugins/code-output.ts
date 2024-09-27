@@ -21,12 +21,12 @@ export default function pluginCodeOutput() {
   return definePlugin({
     name: "@plugins/code-output",
     baseStyles: `
-      .header {
+      .header.code-output {
         justify-content: flex-start !important;
         padding-inline-start: calc(var(--ecIndent, 0ch) + var(--ec-codePadInl) - var(--ec-gtrBrdWd));
       }
 
-      .header::before {
+      .header.code-output::before {
         display: none; 
       }
     `,
@@ -86,7 +86,7 @@ export default function pluginCodeOutput() {
           const code = select("figure > pre > code", group.renderedBlockAst)
           const children = code?.children.splice(range.start - 1, range.end) ?? []
           const outputFigure = h("figure.frame.is-terminal.not-content", { title: "output" }, [
-            h("figcaption.header", [
+            h("figcaption.header.code-output", [
               h("span.title", "Output"),
               h("span.sr-only", "Terminal Output Window")
             ]),
