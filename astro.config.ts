@@ -1,18 +1,23 @@
 import { defineConfig } from "astro/config"
 import starlight from "@astrojs/starlight"
 import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid"
+import remarkCodeImport from "remark-code-import"
 import starlightLinksValidator from "starlight-links-validator"
 import path from "node:path"
-import codeImportPlugin from "./src/plugins/code-import"
 
 const rehypeMermaidOptions: RehypeMermaidOptions = {
   strategy: "img-svg",
   dark: true
 }
 
+const remarkCodeImportOptions: Parameters<typeof remarkCodeImport>[0] = {
+  rootDir: path.resolve("src/snippets")
+}
+
 export default defineConfig({
   markdown: {
     rehypePlugins: [[rehypeMermaid, rehypeMermaidOptions]],
+    remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]],
     shikiConfig: {
       themes: {
         light: "github-light",
@@ -29,13 +34,6 @@ export default defineConfig({
       },
       components: {
         Head: "./src/components/Head.astro"
-      },
-      expressiveCode: {
-        plugins: [
-          codeImportPlugin({
-            rootDir: path.resolve("src/snippets")
-          })
-        ]
       },
       logo: {
         light: "./src/assets/logo-light.svg",
