@@ -159,7 +159,7 @@ In simpler terms, the short-circuiting behavior ensures that if something goes w
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash
+```ts twoslash output={19-26}
 import { Effect, Console } from "effect"
 
 // Define three effects representing different tasks.
@@ -171,13 +171,14 @@ const task3 = Console.log("Executing task3...")
 // If one of the tasks fails, the subsequent tasks won't be executed.
 const program = Effect.gen(function* () {
   yield* task1
-  yield* task2 // After task1, task2 is executed, but it fails with an error
-  yield* task3 // This computation won't be executed because the previous one fails
+  // After task1, task2 is executed, but it fails with an error
+  yield* task2
+  // This computation won't be executed because the previous one fails
+  yield* task3
 })
 
 Effect.runPromiseExit(program).then(console.log)
 /*
-Output:
 Executing task1...
 {
   _id: 'Exit',

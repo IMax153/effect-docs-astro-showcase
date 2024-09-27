@@ -4,6 +4,7 @@ import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid"
 import remarkCodeImport from "remark-code-import"
 import starlightLinksValidator from "starlight-links-validator"
 import path from "node:path"
+import codeOutputPlugin from "./src/plugins/code-output"
 
 const rehypeMermaidOptions: RehypeMermaidOptions = {
   strategy: "img-svg",
@@ -34,6 +35,11 @@ export default defineConfig({
       },
       components: {
         Head: "./src/components/Head.astro"
+      },
+      expressiveCode: {
+        plugins: [
+          codeOutputPlugin()
+        ]
       },
       logo: {
         light: "./src/assets/logo-light.svg",
