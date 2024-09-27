@@ -23,6 +23,7 @@
     "astro-vtbot": "^1.10.1",
     "effect": "^3.8.4",
     "rehype-mermaid": "^2.1.0",
+    "remark-code-import": "^1.2.0",
     "sharp": "^0.32.6",
     "starlight-links-validator": "^0.12.1",
     "typescript": "^5.6.2"
