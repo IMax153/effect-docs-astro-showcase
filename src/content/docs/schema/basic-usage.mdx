@@ -720,7 +720,7 @@ By defining `UserId` as a branded type, the `getUser` function can accept only v
 There are two ways to define a schema for a branded type, depending on whether you:
 
 - want to define the schema from scratch
-- have already defined a [branded type](/guides/style/branded-types) via `effect/Brand` and want to reuse it to define a schema
+- have already defined a [branded type](/code-style/branded-types) via `effect/Brand` and want to reuse it to define a schema
 
 ### Defining a brand schema from scratch
 
@@ -750,7 +750,7 @@ type UserId = Schema.Schema.Type<typeof UserId>
 
 ### Reusing an existing branded constructor
 
-If you have already defined a [branded type](/guides/style/branded-types) using the `effect/Brand` module, you can reuse it to define a schema using the `fromBrand` combinator exported by the `@effect/schema/Schema` module.
+If you have already defined a [branded type](/code-style/branded-types) using the `effect/Brand` module, you can reuse it to define a schema using the `fromBrand` combinator exported by the `@effect/schema/Schema` module.
 
 ```ts twoslash
 import { Schema } from "@effect/schema"

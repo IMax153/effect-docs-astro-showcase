@@ -72,7 +72,7 @@ type MicroCause<E> = Die | Fail<E> | Interrupt
 
 ### MicroSchedule
 
-The `MicroSchedule` type is a streamlined version of the [Schedule](/guides/scheduling/introduction) type.
+The `MicroSchedule` type is a streamlined version of the [Schedule](/scheduling/introduction) type.
 
 ```ts
 type MicroSchedule = (attempt: number, elapsed: number) => Option<number>
