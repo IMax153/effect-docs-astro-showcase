@@ -21,7 +21,7 @@ const fetchTransactionAmount = Effect.promise(() => Promise.resolve(100))
 const fetchDiscountRate = Effect.promise(() => Promise.resolve(5))
 
 // Assembling the program using a generator function
-const program = Effect.gen(function* () {
+const program = Effect.gen(function*() {
   // Retrieve the transaction amount
   const transactionAmount = yield* fetchTransactionAmount
 
@@ -43,4 +43,4 @@ const program = Effect.gen(function* () {
 
 // Execute the program and log the result
 Effect.runPromise(program).then(console.log)
-// Output: "Final amount to charge: 96"
+// Final amount to charge: 96
