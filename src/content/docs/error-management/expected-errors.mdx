@@ -159,7 +159,7 @@ In simpler terms, the short-circuiting behavior ensures that if something goes w
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash output={19-26}
+```ts twoslash
 import { Effect, Console } from "effect"
 
 // Define three effects representing different tasks.
@@ -179,6 +179,7 @@ const program = Effect.gen(function* () {
 
 Effect.runPromiseExit(program).then(console.log)
 /*
+Output:
 Executing task1...
 {
   _id: 'Exit',
