@@ -25,12 +25,6 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [[rehypeMermaid, rehypeMermaidOptions]],
     remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]],
-    shikiConfig: {
-      themes: {
-        light: "github-light",
-        dark: "github-dark"
-      }
-    }
   },
   integrations: [
     starlight({
@@ -43,9 +37,8 @@ export default defineConfig({
         Head: "./src/components/starlight-overrides/Head.astro"
       },
       expressiveCode: {
-        plugins: [
-          codeOutputPlugin()
-        ]
+        plugins: [codeOutputPlugin()],
+        themes: ["github-light", "github-dark"]
       },
       logo: {
         light: "./src/assets/logo-light.svg",
