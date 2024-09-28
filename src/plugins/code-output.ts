@@ -15,7 +15,7 @@ declare module "@expressive-code/core" {
 }
 
 const CODE_RANGE_REGEX = /^(?:(?:(?<start>\d+)(?<dash>-)?)?(?<end>\d+)?)$/
-const LINE_REPLACE_REGEX = /^\s*\/\/\s*$|^\/\*\s*$|^\*\/\s*$/
+const LINE_REPLACE_REGEX = /^\s*\/\/\s*|^\/\*\s*$|^\*\/\s*$/
 
 export default function pluginCodeOutput() {
   return definePlugin({
