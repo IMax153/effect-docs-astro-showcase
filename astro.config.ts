@@ -9,7 +9,7 @@ import codeOutputPlugin from "./src/plugins/code-output"
 /* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
 const NETLIFY_PREVIEW_SITE = process.env.CONTEXT !== "production" && process.env.DEPLOY_PRIME_URL;
 
-const site = NETLIFY_PREVIEW_SITE || undefined /* TODO: "https//effect.website" */
+const site = NETLIFY_PREVIEW_SITE || "https//effect.website"
 
 const rehypeMermaidOptions: RehypeMermaidOptions = {
   strategy: "img-svg",
@@ -21,7 +21,7 @@ const remarkCodeImportOptions: Parameters<typeof remarkCodeImport>[0] = {
 }
 
 export default defineConfig({
-  site: "http://localhost:4321",
+  site,
   markdown: {
     rehypePlugins: [[rehypeMermaid, rehypeMermaidOptions]],
     remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]],
