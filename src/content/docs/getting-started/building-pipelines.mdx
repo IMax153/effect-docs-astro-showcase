@@ -52,7 +52,7 @@ The `pipe` function is a utility that allows us to compose functions in a readab
 
 The basic syntax of `pipe` is as follows:
 
-```ts
+```ts showLineNumbers=false
 import { pipe } from "effect"
 
 const result = pipe(input, func1, func2, ..., funcN)
@@ -68,7 +68,7 @@ It's important to note that functions passed to `pipe` must have a **single argu
 
 Let's see an example to better understand how `pipe` works:
 
-```ts file=<rootDir>/using-pipelines/pipe.ts
+```ts file=<rootDir>/building-pipelines/pipe.ts
 
 ```
 
@@ -83,7 +83,7 @@ It takes a function and applies it to the value contained within the effect, cre
 
 The syntax for `Effect.map` is as follows:
 
-```ts
+```ts showLineNumbers=false
 import { pipe, Effect } from "effect"
 
 const mappedEffect = pipe(myEffect, Effect.map(transformation))
@@ -96,16 +96,17 @@ const mappedEffect = myEffect.pipe(Effect.map(transformation))
 In the code above, `transformation` is the function applied to the value, and `myEffect` is the effect being transformed.
 
 <Aside type="note">
-  It's important to note that effects are **immutable**, meaning that when you
-  use `Effect.map` on an effect, it doesn't modify the original data type.
-  Instead, it returns a new copy of the effect with the transformed value.
+  It's important to note that effects are **immutable**, meaning that when
+  you use `Effect.map` on an effect, it doesn't modify the original data
+  type. Instead, it returns a new copy of the effect with the transformed
+  value.
 </Aside>
 
 **Example**
 
 Consider a program that adds a small service charge to a transaction:
 
-```ts file=<rootDir>/using-pipelines/map.ts
+```ts file=<rootDir>/building-pipelines/map.ts
 
 ```
 
@@ -113,7 +114,7 @@ Consider a program that adds a small service charge to a transaction:
 
 To map an `Effect` to a constant value, replacing the original value, use `Effect.as`:
 
-```ts file=<rootDir>/using-pipelines/as.ts
+```ts file=<rootDir>/building-pipelines/as.ts
 
 ```
 
@@ -126,7 +127,7 @@ The `Effect.flatMap` function enables you to sequence computations that result i
 
 The syntax for `Effect.flatMap` is as follows:
 
-```ts
+```ts showLineNumbers=false
 import { pipe, Effect } from "effect"
 
 const flatMappedEffect = pipe(myEffect, Effect.flatMap(transformation))
@@ -139,14 +140,15 @@ const flatMappedEffect = myEffect.pipe(Effect.flatMap(transformation))
 In the code above, `transformation` is the function that takes a value and returns an `Effect`, and `myEffect` is the initial `Effect` being transformed.
 
 <Aside type="note">
-  It's important to note that effects are **immutable**, meaning that when you
-  use `Effect.flatMap` on an effect, it doesn't modify the original data type.
-  Instead, it returns a new copy of the effect with the transformed value.
+  It's important to note that effects are **immutable**, meaning that when
+  you use `Effect.flatMap` on an effect, it doesn't modify the original data
+  type. Instead, it returns a new copy of the effect with the transformed
+  value.
 </Aside>
 
 **Example**
 
-```ts file=<rootDir>/using-pipelines/flatMap.ts
+```ts file=<rootDir>/building-pipelines/flatMap.ts
 
 ```
 
@@ -155,7 +157,7 @@ In the code above, `transformation` is the function that takes a value and retur
 It's vital to ensure that all effects within `Effect.flatMap` contribute to the final computation.
 Neglecting any effect can lead to unexpected behaviors or incorrect outcomes:
 
-```ts {3}
+```ts {3} showLineNumbers=false
 Effect.flatMap((amount) => {
   // This effect will be ignored
   Effect.sync(() => console.log(`Apply a discount to: ${amount}`))
@@ -171,7 +173,7 @@ To include effects properly and avoid errors, explicitly chain them using functi
 Although many developers may recognize `flatMap` from its usage with arrays, in the Effect framework, it's utilized to manage and resolve nested `Effect` structures.
 If your goal is to flatten nested arrays within an Effect (`Effect<Array<Array<A>>>`), this can be done using:
 
-```ts file=<rootDir>/using-pipelines/array-flattening.ts
+```ts file=<rootDir>/building-pipelines/array-flattening.ts
 
 ```
 
@@ -187,7 +189,7 @@ However, since both scenarios involve transformations, the Effect module also ex
 
 The `Effect.andThen` function executes a sequence of two actions, typically two effects, where the second action can depend on the result of the first action.
 
-```ts
+```ts showLineNumbers=false
 import { pipe, Effect } from "effect"
 
 const transformedEffect = pipe(myEffect, Effect.andThen(anotherEffect))
@@ -210,7 +212,7 @@ The `anotherEffect` action can take various forms:
 
 Let's see an example where we can compare the use of `Effect.andThen` instead of `Effect.map` and `Effect.flatMap`:
 
-```ts file=<rootDir>/using-pipelines/andThen.ts
+```ts file=<rootDir>/building-pipelines/andThen.ts
 
 ```
 
@@ -219,7 +221,7 @@ However, it is important to understand that when these types are used, the opera
 
 **Example with Option**
 
-```ts file=<rootDir>/using-pipelines/andThen-with-option.ts
+```ts file=<rootDir>/building-pipelines/andThen-with-option.ts
 
 ```
 
@@ -229,7 +231,7 @@ A value of type `Option<A>` is interpreted as an effect of type `Effect<A, NoSuc
 
 **Example with Either**
 
-```ts file=<rootDir>/using-pipelines/andThen-with-either.ts
+```ts file=<rootDir>/building-pipelines/andThen-with-either.ts
 
 ```
 
@@ -244,7 +246,7 @@ This means that the value returned by the previous computation will still be ava
 
 **Example**
 
-```ts file=<rootDir>/using-pipelines/tap.ts
+```ts file=<rootDir>/building-pipelines/tap.ts
 
 ```
 
@@ -257,7 +259,7 @@ The `Effect.all` function is a powerful utility provided by Effect that allows y
 
 The syntax for `Effect.all` is as follows:
 
-```ts
+```ts showLineNumbers=false
 import { Effect } from "effect"
 
 const combinedEffect = Effect.all([effect1, effect2, ...])
@@ -273,14 +275,14 @@ Keep in mind that the order of the results corresponds to the order of the origi
 
 **Example**
 
-```ts file=<rootDir>/using-pipelines/all.ts
+```ts file=<rootDir>/building-pipelines/all.ts
 
 ```
 
 <Aside type="tip">
   The `Effect.all` function not only combines tuples but also works with
-  iterables, structs, and records. To explore the full potential of `all` head
-  over to the [Introduction to Effect's Control Flow
+  iterables, structs, and records. To explore the full potential of `all`
+  head over to the [Introduction to Effect's Control Flow
   Operators](/getting-started/control-flow#all) documentation.
 </Aside>
 
@@ -288,7 +290,7 @@ Keep in mind that the order of the results corresponds to the order of the origi
 
 Now, let's combine `pipe`, `Effect.all` and `Effect.andThen` to build a pipeline that performs a series of transformations:
 
-```ts file=<rootDir>/using-pipelines/pipeline.ts
+```ts file=<rootDir>/building-pipelines/pipeline.ts
 
 ```
 
@@ -298,13 +300,13 @@ Effect provides a `pipe` method that works similarly to the `pipe` method found 
 
 Here's how the `pipe` **method** works:
 
-```ts
+```ts showLineNumbers=false
 const result = effect.pipe(func1, func2, ..., funcN)
 ```
 
 This is equivalent to using the `pipe` **function** like this:
 
-```ts
+```ts showLineNumbers=false
 const result = pipe(effect, func1, func2, ..., funcN)
 ```
 
@@ -312,7 +314,7 @@ The `pipe` method is available on all effects and many other data types, elimina
 
 Let's rewrite the previous example using the `pipe` method:
 
-```ts file=<rootDir>/using-pipelines/pipe-method.ts#L17-
+```ts file=<rootDir>/building-pipelines/pipe-method.ts#L17-
 
 ```
 

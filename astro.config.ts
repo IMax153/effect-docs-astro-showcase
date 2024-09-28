@@ -4,10 +4,14 @@ import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid"
 import remarkCodeImport from "remark-code-import"
 import starlightLinksValidator from "starlight-links-validator"
 import path from "node:path"
-import codeOutputPlugin from "./src/plugins/code-output"
+// import codeOutputPlugin from "./src/plugins/code-output"
+import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
+import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
+import type { ExpressiveCodePlugin } from "@expressive-code/core"
 
 /* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
-const NETLIFY_PREVIEW_SITE = process.env.CONTEXT !== "production" && process.env.DEPLOY_PRIME_URL;
+const NETLIFY_PREVIEW_SITE =
+  process.env.CONTEXT !== "production" && process.env.DEPLOY_PRIME_URL
 
 const site = NETLIFY_PREVIEW_SITE || "https://effect.website"
 
@@ -24,7 +28,7 @@ export default defineConfig({
   site,
   markdown: {
     rehypePlugins: [[rehypeMermaid, rehypeMermaidOptions]],
-    remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]],
+    remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]]
   },
   integrations: [
     starlight({
@@ -37,7 +41,10 @@ export default defineConfig({
         Head: "./src/components/starlight-overrides/Head.astro"
       },
       expressiveCode: {
-        plugins: [codeOutputPlugin()],
+        plugins: [
+          pluginCollapsibleSections() as ExpressiveCodePlugin,
+          pluginLineNumbers() as ExpressiveCodePlugin
+        ],
         themes: ["github-light", "github-dark"]
       },
       logo: {

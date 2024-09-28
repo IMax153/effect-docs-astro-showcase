@@ -160,7 +160,7 @@ In this example:
 
 You can think of this as a similar pattern to the traditional try-catch block in JavaScript:
 
-```ts
+```ts showLineNumbers=false
 try {
   return JSON.parse(input)
 } catch (unknown) {
@@ -250,7 +250,7 @@ based on the return value inside the callback body. Annotating the types ensures
 It allows you to defer the evaluation of an effect until it is actually needed.
 The `Effect.suspend` function takes a thunk that represents the effect, and it wraps it in a suspended effect.
 
-```ts
+```ts showLineNumbers=false
 const suspendedEffect = Effect.suspend(() => effect)
 ```
 

@@ -37,7 +37,7 @@ Here we are using the [Option](/data-types/option) data type to represent the ab
 
 If the condition evaluates to `true`, the effect inside the `Effect.when` will be executed and the result will be wrapped in a `Some`, otherwise it returns `None`:
 
-```ts file=<rootDir>/control-flow/when.ts#L7-
+```ts collapse={1-6} file=<rootDir>/control-flow/when.ts
 
 ```
 
@@ -80,7 +80,7 @@ Note that `Effect.zip` processes effects sequentially: it first completes the ef
 
 If you want to run the effects concurrently, you can use the `concurrent` option:
 
-```ts file=<rootDir>/control-flow/zip-concurrent.ts#L12-
+```ts collapse={1-10} file=<rootDir>/control-flow/zip-concurrent.ts
 
 ```
 
@@ -99,7 +99,7 @@ However, instead of returning a tuple, it allows you to apply a function to the 
 
 The `Effect.loop` function allows you to repeatedly change the state based on an `step` function until a condition given by the `while` function is evaluated to `true`:
 
-```ts
+```ts showLineNumbers=false
 Effect.loop(initial, options: { while, step, body })
 ```
 
@@ -107,7 +107,7 @@ It collects all intermediate states in an array and returns it as the final resu
 
 We can think of `Effect.loop` as equivalent to a `while` loop in JavaScript:
 
-```ts
+```ts showLineNumbers=false
 let state = initial
 const result = []
 
@@ -141,13 +141,13 @@ In this example, the loop performs a side effect of logging the current index on
 
 The `Effect.iterate` function allows you to iterate with an effectful operation. It uses an effectful `body` operation to change the state during each iteration and continues the iteration as long as the `while` function evaluates to `true`:
 
-```ts
+```ts showLineNumbers=false
 Effect.iterate(initial, options: { while, body })
 ```
 
 We can think of `Effect.iterate` as equivalent to a `while` loop in JavaScript:
 
-```ts
+```ts showLineNumbers=false
 let result = initial
 
 while (options.while(result)) {
@@ -169,7 +169,7 @@ The `Effect.forEach` function allows you to iterate over an `Iterable` and perfo
 
 The syntax for `forEach` is as follows:
 
-```ts
+```ts showLineNumbers=false
 import { Effect } from "effect"
 
 const combinedEffect = Effect.forEach(iterable, operation, options)
@@ -207,7 +207,7 @@ The `Effect.all` function in the Effect library is a powerful tool that allows y
 
 The syntax for `all` is as follows:
 
-```ts
+```ts showLineNumbers=false
 import { Effect } from "effect"
 
 const combinedEffect = Effect.all(effects, options)

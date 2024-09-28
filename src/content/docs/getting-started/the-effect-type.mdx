@@ -13,7 +13,7 @@ This type encapsulates the logic of a program, defining whether it succeeds, pro
 
 Conceptually, you can think of `Effect<Success, Error, Requirements>` as an effectful version of the following function type:
 
-```ts
+```ts showLineNumbers=false
 type Effect<Success, Error, Requirements> = (
   context: Context<Requirements>
 ) => Error | Success

@@ -14,7 +14,10 @@ const fetchTransactionAmount = Effect.promise(() => Promise.resolve(100))
 
 const fetchDiscountRate = Effect.promise(() => Promise.resolve(5))
 
-const program = Effect.all([fetchTransactionAmount, fetchDiscountRate]).pipe(
+const program = Effect.all([
+  fetchTransactionAmount,
+  fetchDiscountRate
+]).pipe(
   Effect.flatMap(([transactionAmount, discountRate]) =>
     applyDiscount(transactionAmount, discountRate)
   ),
