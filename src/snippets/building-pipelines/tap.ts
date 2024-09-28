@@ -9,7 +9,7 @@ const applyDiscount = (
     ? Effect.fail(new Error("Discount rate cannot be zero"))
     : Effect.succeed(total - (total * discountRate) / 100)
 
-// Simulated asynchronous task to fetch a transaction amount from a database
+// Simulated asynchronous task to fetch a transaction amount from database
 const fetchTransactionAmount = Effect.promise(() => Promise.resolve(100))
 
 const finalAmount = pipe(

@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@expressive-code/plugin-line-numbers':
-        specifier: ^0.37.0
-        version: 0.37.0
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.3
@@ -22,6 +18,9 @@ importers:
         specifier: ^0.37.0
         version: 0.37.0
       '@expressive-code/plugin-collapsible-sections':
+        specifier: ^0.37.0
+        version: 0.37.0
+      '@expressive-code/plugin-line-numbers':
         specifier: ^0.37.0
         version: 0.37.0
       '@types/node':

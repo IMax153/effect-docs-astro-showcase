@@ -21,6 +21,7 @@ const program = Effect.gen(function* () {
 })
 
 const recovered = program.pipe(
-  //  ^? const recovered: Effect.Effect<string, never, never>
-  Effect.catchAll((error) => Effect.succeed(`Recovering from ${error._tag}`))
+  Effect.catchAll((error) =>
+    Effect.succeed(`Recovering from ${error._tag}`)
+  )
 )

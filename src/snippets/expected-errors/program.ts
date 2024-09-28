@@ -5,4 +5,3 @@ class HttpError {
 }
 
 const program = Effect.fail(new HttpError())
-//    ^? const program: Effect.Effect<never, HttpError, never>

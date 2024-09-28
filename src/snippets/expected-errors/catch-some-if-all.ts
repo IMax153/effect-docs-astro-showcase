@@ -26,8 +26,9 @@ const recovered = Effect.gen(function* () {
     const error = failureOrSuccess.left
     if (error._tag === "HttpError") {
       return "Recovering from HttpError"
+    } else {
+      return "Recovering from ValidationError"
     }
-    return yield* Effect.fail(error)
   } else {
     return failureOrSuccess.right
   }

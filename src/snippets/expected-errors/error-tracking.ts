@@ -9,8 +9,6 @@ class ValidationError {
 }
 
 const program = Effect.gen(function* () {
-  //  ^? const program: Effect.Effect<string, HttpError | ValidationError, never>
-
   // Generate two random numbers between 0 and 1
   const n1 = yield* Random.next
   const n2 = yield* Random.next

@@ -3,7 +3,7 @@ import { pipe, Effect } from "effect"
 // Function to add a small service charge to a transaction amount
 const addServiceCharge = (amount: number) => amount + 1
 
-// Simulated asynchronous task to fetch a transaction amount from a database
+// Simulated asynchronous task to fetch a transaction amount from database
 const fetchTransactionAmount = Effect.promise(() => Promise.resolve(100))
 
 // Apply service charge to the transaction amount
