@@ -17,7 +17,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
 1. Create a project directory and navigate into it:
 
-   ```sh
+   ```sh showLineNumbers=false
    mkdir hello-effect
    cd hello-effect
    ```
@@ -28,7 +28,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh
+   ```sh showLineNumbers=false
    npm init -y
    npm install --save-dev typescript
    ```
@@ -37,7 +37,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh
+   ```sh showLineNumbers=false
    pnpm init -y
    pnpm add --save-dev typescript
    ```
@@ -46,7 +46,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh
+   ```sh showLineNumbers=false
    yarn init -y
    yarn add --dev typescript
    ```
@@ -63,7 +63,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh
+   ```sh showLineNumbers=false
    npm tsc --init
    ```
 
@@ -71,7 +71,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh
+   ```sh showLineNumbers=false
    pnpm tsc --init
    ```
 
@@ -79,7 +79,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh
+   ```sh showLineNumbers=false
    yarn tsc --init
    ```
 
@@ -91,7 +91,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    Make sure to open the `tsconfig.json` file and verify that the value of the `strict` option is set to `true`.
 
-   ```json
+   ```json showLineNumbers=false
    {
      "compilerOptions": {
        "strict": true
@@ -105,7 +105,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh
+   ```sh showLineNumbers=false
    npm install effect
    ```
 
@@ -113,7 +113,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh
+   ```sh showLineNumbers=false
    pnpm add effect
    ```
 
@@ -121,7 +121,7 @@ Follow these steps to create a new Effect project for [Node.js](https://nodejs.o
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh
+   ```sh showLineNumbers=false
    yarn add effect
    ```
 
@@ -137,7 +137,7 @@ Let's write and run a simple program to ensure that everything is set up correct
 
 In your terminal, execute the following commands:
 
-```sh
+```sh showLineNumbers=false
 mkdir src
 touch src/index.ts
 ```
@@ -150,7 +150,7 @@ Open the `index.ts` file and add the following code:
 
 Run the `index.ts` file. Here we are using [tsx](https://github.com/privatenumber/tsx) to run the `index.ts` file in the terminal:
 
-```sh
+```sh showLineNumbers=false
 npx tsx src/index.ts
 ```
 
@@ -164,14 +164,14 @@ Follow these steps to create a new Effect project for [Deno](https://deno.com/):
 
 1. Create a project directory and navigate into it:
 
-   ```sh
+   ```sh showLineNumbers=false
    mkdir hello-effect
    cd hello-effect
    ```
 
 2. Initialize Deno:
 
-   ```sh
+   ```sh showLineNumbers=false
    deno init
    ```
 
@@ -187,7 +187,7 @@ Open the `main.ts` file and replace the content with the following code:
 
 Run the `main.ts` file:
 
-```sh
+```sh showLineNumbers=false
 deno run main.ts
 ```
 
@@ -201,14 +201,14 @@ Follow these steps to create a new Effect project for [Bun](https://bun.sh/):
 
 1. Create a project directory and navigate into it:
 
-   ```sh
+   ```sh showLineNumbers=false
    mkdir hello-effect
    cd hello-effect
    ```
 
 2. Initialize Bun:
 
-   ```sh
+   ```sh showLineNumbers=false
    bun init
    ```
 
@@ -216,7 +216,7 @@ Follow these steps to create a new Effect project for [Bun](https://bun.sh/):
 
    Make sure to open the `tsconfig.json` file and verify that the value of the `strict` option is set to `true`.
 
-   ```json
+   ```json showLineNumbers=false
    {
      "compilerOptions": {
        "strict": true
@@ -226,7 +226,7 @@ Follow these steps to create a new Effect project for [Bun](https://bun.sh/):
 
 3. Install the necessary package as dependency:
 
-   ```sh
+   ```sh showLineNumbers=false
    bun add effect
    ```
 
@@ -244,7 +244,7 @@ Open the `index.ts` file and replace the content with the following code:
 
 Run the `index.ts` file:
 
-```sh
+```sh showLineNumbers=false
 bun index.ts
 ```
 
@@ -262,7 +262,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh
+   ```sh showLineNumbers=false
    # npm 6.x
    npm create vite@latest hello-effect --template react-ts
    # npm 7+, extra double-dash is needed
@@ -273,7 +273,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh
+   ```sh showLineNumbers=false
    pnpm create vite@latest hello-effect -- --template react-ts
    ```
 
@@ -281,7 +281,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh
+   ```sh showLineNumbers=false
    yarn create vite@latest hello-effect -- --template react-ts
    ```
 
@@ -289,7 +289,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="Bun" icon="bun">
 
-   ```sh
+   ```sh showLineNumbers=false
    bun create vite@latest hello-effect -- --template react-ts
    ```
 
@@ -305,7 +305,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh
+   ```sh showLineNumbers=false
    cd hello-effect
    npm install
    ```
@@ -314,7 +314,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh
+   ```sh showLineNumbers=false
    cd hello-effect
    pnpm install
    ```
@@ -323,7 +323,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh
+   ```sh showLineNumbers=false
    cd hello-effect
    yarn install
    ```
@@ -332,7 +332,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="Bun" icon="bun">
 
-   ```sh
+   ```sh showLineNumbers=false
    cd hello-effect
    bun install
    ```
@@ -343,7 +343,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    Once the packages are installed, open the `tsconfig.json` file and ensure that the value of the `strict` option is set to true.
 
-   ```json
+   ```json showLineNumbers=false
    {
      "compilerOptions": {
        "strict": true
@@ -357,7 +357,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh
+   ```sh showLineNumbers=false
    npm install effect
    ```
 
@@ -365,7 +365,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh
+   ```sh showLineNumbers=false
    pnpm add effect
    ```
 
@@ -373,7 +373,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh
+   ```sh showLineNumbers=false
    yarn add effect
    ```
 
@@ -381,7 +381,7 @@ Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/
 
    <TabItem label="Bun" icon="bun">
 
-   ```sh
+   ```sh showLineNumbers=false
    bun add effect
    ```
 
@@ -447,7 +447,7 @@ After making these changes, start the development server by running the followin
 
 <TabItem label="npm" icon="seti:npm">
 
-```sh
+```sh showLineNumbers=false
 npm run dev
 ```
 
@@ -455,7 +455,7 @@ npm run dev
 
 <TabItem label="pnpm" icon="pnpm">
 
-```sh
+```sh showLineNumbers=false
 pnpm run dev
 ```
 
@@ -463,7 +463,7 @@ pnpm run dev
 
 <TabItem label="Yarn" icon="seti:yarn">
 
-```sh
+```sh showLineNumbers=false
 yarn run dev
 ```
 
@@ -471,7 +471,7 @@ yarn run dev
 
 <TabItem label="Bun" icon="bun">
 
-```sh
+```sh showLineNumbers=false
 bun run dev
 ```
 
