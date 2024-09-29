@@ -6,7 +6,7 @@ import starlightLinksValidator from "starlight-links-validator"
 import * as path from "node:path"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
-import pluginCodeOutput from "./src/plugins/code-output"
+// import pluginCodeOutput from "./src/plugins/code-output"
 
 /* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
 const NETLIFY_PREVIEW_SITE =
@@ -41,7 +41,7 @@ export default defineConfig({
       },
       expressiveCode: {
         plugins: [
-          pluginCodeOutput(),
+          // pluginCodeOutput(),
           pluginCollapsibleSections(),
           pluginLineNumbers()
         ],
