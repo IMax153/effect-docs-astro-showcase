@@ -23,9 +23,9 @@ We use a class to represent the `HttpError` type above simply to gain access
 to both the error type and a free constructor. However, you can use whatever
 you like to model your error types.
 
-It's worth noting that added a readonly `_tag` field to the `HttpError` class to serve as a discriminant for the error:
+It's worth noting that added a readonly `_tag` field to the class to serve as a discriminant for the error:
 
-```ts "readonly _tag" showLineNumbers=false
+```ts "_tag" showLineNumbers=false
 class HttpError {
   readonly _tag = "HttpError"
 }
@@ -43,10 +43,6 @@ This will be useful later when we discuss APIs like [Effect.catchTag](#catchtag)
 ## Error Tracking
 
 The following program serves as an illustration of how errors are automatically tracked for you:
-
-<div style="display: none;">
-
-</div>
 
 ```ts file=<rootDir>/expected-errors/error-tracking.ts
 
@@ -69,7 +65,9 @@ What does this mean for you as a developer? Well, let's say you have a chain of 
 
 In simpler terms, the short-circuiting behavior ensures that if something goes wrong at any step of your program, it won't waste time executing unnecessary computations. Instead, it will immediately stop and return the error to let you know that something went wrong.
 
-```ts file=<rootDir>/expected-errors/short-circuiting.ts
+**Example**
+
+```ts {14-15} file=<rootDir>/expected-errors/short-circuiting.ts
 
 ```
 
