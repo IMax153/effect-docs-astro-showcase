@@ -1,0 +1,5 @@
+import { Effect } from "effect"
+
+const simulatedTask = Effect.fail("Oh uh!").pipe(Effect.as(2))
+
+const flipped = Effect.flip(simulatedTask)
