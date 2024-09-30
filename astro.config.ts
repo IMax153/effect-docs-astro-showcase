@@ -6,6 +6,8 @@ import starlightLinksValidator from "starlight-links-validator"
 import * as path from "node:path"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
+import { rehypeHeadingIds } from "@astrojs/markdown-remark"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
 // import pluginCodeOutput from "./src/plugins/code-output"
 
 /* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
@@ -26,7 +28,11 @@ const remarkCodeImportOptions: Parameters<typeof remarkCodeImport>[0] = {
 export default defineConfig({
   site,
   markdown: {
-    rehypePlugins: [[rehypeMermaid, rehypeMermaidOptions]],
+    rehypePlugins: [
+      [rehypeMermaid, rehypeMermaidOptions],
+      rehypeHeadingIds,
+      [rehypeAutolinkHeadings, { behavior: "wrap" }]
+    ],
     remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]]
   },
   integrations: [
@@ -39,6 +45,7 @@ export default defineConfig({
       components: {
         Head: "./src/components/starlight-overrides/Head.astro"
       },
+      customCss: ["./src/styles/headings.css"],
       expressiveCode: {
         plugins: [
           // commented out to make sure it doesn't interfere with the other plugins
