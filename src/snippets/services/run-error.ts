@@ -11,6 +11,7 @@ const program = Effect.gen(function* () {
   console.log(`random number: ${randomNumber}`)
 })
 
+// @ts-expect-error
 Effect.runSync(program)
 /*
 Argument of type 'Effect<void, never, Random>' is not assignable to parameter of type 'Effect<void, never, never>'.
