@@ -56,11 +56,11 @@ The Effect library provides several operators to filter values on the success ch
 
 These operators offer different strategies for handling cases where the predicate fails:
 
-| **API**                          | **Description**                                                                                                                                                                                                                                   |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| filterOrFail                     | This operator filters the values on the success channel based on a predicate. If the predicate fails for any value, the original effect fails with an error.                                                                                      |
-| filterOrDie / filterOrDieMessage | These operators also filter the values on the success channel based on a predicate. If the predicate fails for any value, the original effect terminates abruptly. The `filterOrDieMessage` variant allows you to provide a custom error message. |
-| filterOrElse                     | This operator filters the values on the success channel based on a predicate. If the predicate fails for any value, an alternative effect is executed instead.                                                                                    |
+| **API**                              | **Description**                                                                                                                                                                                                                                   |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filterOrFail`                       | This operator filters the values on the success channel based on a predicate. If the predicate fails for any value, the original effect fails with an error.                                                                                      |
+| `filterOrDie` / `filterOrDieMessage` | These operators also filter the values on the success channel based on a predicate. If the predicate fails for any value, the original effect terminates abruptly. The `filterOrDieMessage` variant allows you to provide a custom error message. |
+| `filterOrElse`                       | This operator filters the values on the success channel based on a predicate. If the predicate fails for any value, an alternative effect is executed instead.                                                                                    |
 
 **Example**
 
@@ -88,13 +88,13 @@ If you prefer, you can utilize a pre-made guard like [Predicate.isNotNull](https
 Similar to [tapping](/getting-started/building-pipelines#tap) for success values, Effect provides several operators for inspecting error values.
 These operators allow developers to observe failures or underlying issues without modifying the outcome.
 
-| API           | Description                                                                                                                     |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| tapError      | Executes an effectful operation to inspect the failure of an effect without altering it.                                        |
-| tapErrorTag   | Specifically inspects a failure with a particular tag, allowing focused error handling.                                         |
-| tapErrorCause | Inspects the underlying cause of an effect's failure.                                                                           |
-| tapDefect     | Specifically inspects non-recoverable failures or defects in an effect (i.e., one or more [Die](/data-types/cause#die) causes). |
-| tapBoth       | Inspects both success and failure outcomes of an effect, performing different actions based on the result.                      |
+| API             | Description                                                                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `tapError`      | Executes an effectful operation to inspect the failure of an effect without altering it.                                        |
+| `tapErrorTag`   | Specifically inspects a failure with a particular tag, allowing focused error handling.                                         |
+| `tapErrorCause` | Inspects the underlying cause of an effect's failure.                                                                           |
+| `tapDefect`     | Specifically inspects non-recoverable failures or defects in an effect (i.e., one or more [Die](/data-types/cause#die) causes). |
+| `tapBoth`       | Inspects both success and failure outcomes of an effect, performing different actions based on the result.                      |
 
 <Aside type="note">
   Utilizing these error inspection tools does not alter the outcome or type
