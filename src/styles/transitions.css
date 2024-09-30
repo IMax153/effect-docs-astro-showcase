@@ -1,0 +1,4 @@
+/* Simulate view transitions */
+@view-transition {
+  navigation: auto;
+}
