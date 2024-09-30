@@ -41,6 +41,7 @@ export default defineConfig({
       },
       expressiveCode: {
         plugins: [
+          // commented out to make sure it doesn't interfere with the other plugins
           // pluginCodeOutput(),
           pluginCollapsibleSections(),
           pluginLineNumbers()
