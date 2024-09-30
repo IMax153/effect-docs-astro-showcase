@@ -48,7 +48,7 @@ In addition to `Effect.match`, we have the `Effect.matchEffect` function, which 
 Effect also provides `Effect.matchCause` and `Effect.matchCauseEffect` functions, which are useful for accessing the full cause of the underlying fiber in case of failure.
 This allows us to handle different failure causes separately and take appropriate actions.
 
-**Example**
+**Example: `matchCauseEffect`**
 
 ```ts file=<rootDir>/matching/matchCauseEffect.ts
 
