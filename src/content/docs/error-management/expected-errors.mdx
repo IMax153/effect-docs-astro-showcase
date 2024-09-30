@@ -58,7 +58,7 @@ indicating that it can potentially fail with either a `HttpError` or a `Validati
 
 ## Short-Circuiting
 
-When working with APIs like [Effect.gen](/getting-started/using-generators/#understanding-effectgen), [Effect.map](/getting-started/building-pipelines/#map), [Effect.flatMap](/getting-started/building-pipelines/#flatmap), [Effect.andThen](/getting-started/building-pipelines/#andthen) and [Effect.all](/getting-started/building-pipelines/#all), it's important to understand how they handle errors.
+When working with APIs like [Effect.gen](/getting-started/using-generators#understanding-effectgen), [Effect.map](/getting-started/building-pipelines#map), [Effect.flatMap](/getting-started/building-pipelines#flatmap), [Effect.andThen](/getting-started/building-pipelines#andthen) and [Effect.all](/getting-started/building-pipelines#all), it's important to understand how they handle errors.
 These APIs are designed to **short-circuit the execution** upon encountering the **first error**.
 
 What does this mean for you as a developer? Well, let's say you have a chain of operations or a collection of effects to be executed in sequence. If any error occurs during the execution of one of these effects, the remaining computations will be skipped, and the error will be propagated to the final result.

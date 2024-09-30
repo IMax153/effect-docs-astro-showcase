@@ -11,7 +11,7 @@ There are situations where you may encounter unexpected errors, and you need to 
 
 ## Creating Unrecoverable Errors
 
-In the same way it is possible to leverage combinators such as [Effect.fail](/getting-started/creating-effects/#fail) to create values of type `Effect<never, E, never>` the Effect library provides tools to create defects.
+In the same way it is possible to leverage combinators such as [Effect.fail](/getting-started/creating-effects#fail) to create values of type `Effect<never, E, never>` the Effect library provides tools to create defects.
 
 Creating defects is a common necessity when dealing with errors from which it is not possible to recover from a business logic perspective, such as attempting to establish a connection that is refused after multiple retries.
 
