@@ -1,7 +1,6 @@
 ---
 import type * as Starlight from "@astrojs/starlight/props";
 import StarlightHead from "@astrojs/starlight/components/Head.astro";
-import VtbotStarlight from "astro-vtbot/components/starlight/Base.astro";
 
 interface Props extends Starlight.Props {
   title: string;
@@ -9,13 +8,10 @@ interface Props extends Starlight.Props {
   ogImage: string;
 }
 
-const { id } = Astro.props 
+const { id } = Astro.props
 const ogImageUrl = "/open-graph/" + id.replace(/\.\w+$/, ".png")
 const canonicalImageSrc = new URL(ogImageUrl, Astro.site)
 ---
-<VtbotStarlight {...Astro.props} transition:animate="none">
-  <StarlightHead {...Astro.props}><slot /></StarlightHead>
-
-  <meta property="og:image" content={canonicalImageSrc} />
-  <meta name="twitter:image" content={canonicalImageSrc} />
-</VtbotStarlight>
+<StarlightHead {...Astro.props}><slot /></StarlightHead>
+<meta property="og:image" content={canonicalImageSrc} />
+<meta name="twitter:image" content={canonicalImageSrc} />
