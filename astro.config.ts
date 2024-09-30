@@ -45,7 +45,7 @@ export default defineConfig({
       components: {
         Head: "./src/components/starlight-overrides/Head.astro"
       },
-      customCss: ["./src/styles/headings.css"],
+      customCss: ["./src/styles/headings.css", "./src/styles/tables.css"],
       expressiveCode: {
         plugins: [
           // commented out to make sure it doesn't interfere with the other plugins
