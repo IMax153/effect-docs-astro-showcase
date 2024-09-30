@@ -14,7 +14,7 @@ In this guide, we will cover some of the common methods that you can use to crea
 
 In traditional programming, when an error occurs, it is often handled by throwing an exception:
 
-```ts twoslash file=<rootDir>/why-effect/divide.ts
+```ts file=<rootDir>/why-effect/divide.ts
 
 ```
 
@@ -26,7 +26,7 @@ To address this issue, Effect introduces dedicated constructors for creating eff
 
 The `Effect.succeed` constructor in the Effect library is used to explicitly create an effect that is guaranteed to succeed. Here's how you can use it:
 
-```ts twoslash file=<rootDir>/creating-effects/succeed.ts
+```ts file=<rootDir>/creating-effects/succeed.ts
 
 ```
 
@@ -43,7 +43,7 @@ The `Effect.fail` constructor allows you to encapsulate an error within your pro
 This method is useful for representing known error states in a predictable and type-safe way.
 Here's a practical example to illustrate:
 
-```ts twoslash file=<rootDir>/creating-effects/fail.ts
+```ts file=<rootDir>/creating-effects/fail.ts
 
 ```
 
@@ -57,7 +57,7 @@ While you can use `Error` objects with `Effect.fail`, it also supports strings, 
 
 However, using "tagged" errors, which are objects with a `_tag` field, helps identify error types and integrates well with standard Effect functions like [Effect.catchTag](/error-management/expected-errors#catchtag).
 
-```ts twoslash file=<rootDir>/creating-effects/fail-with-custom-error.ts
+```ts file=<rootDir>/creating-effects/fail-with-custom-error.ts
 
 ```
 
@@ -67,7 +67,7 @@ With `Effect.succeed` and `Effect.fail`, you can explicitly handle success and f
 
 Let's see an example of rewriting the `divide` function using Effect to make the error handling explicit:
 
-```ts twoslash file=<rootDir>/creating-effects/fail-divide.ts
+```ts file=<rootDir>/creating-effects/fail-divide.ts
 
 ```
 
@@ -79,7 +79,7 @@ The type signature makes it clear how errors are handled and ensures that caller
 
 Let's imagine another scenario where we use `Effect.succeed` and `Effect.fail` to model a simple user retrieval operation where the user data is hardcoded, which could be useful in testing scenarios or when mocking data:
 
-```ts twoslash file=<rootDir>/creating-effects/fail-user-retrival.ts
+```ts file=<rootDir>/creating-effects/fail-user-retrival.ts
 
 ```
 
@@ -106,7 +106,7 @@ This function is ideal when you are certain these operations **won't produce any
 
 **Example: Logging a Message**
 
-```ts twoslash file=<rootDir>/creating-effects/sync.ts
+```ts file=<rootDir>/creating-effects/sync.ts
 
 ```
 
@@ -141,7 +141,7 @@ This constructor is designed to handle operations that could throw exceptions by
 
 Suppose you have a function that attempts to parse a JSON string. This operation can fail and throw an error if the input string is not properly formatted as JSON:
 
-```ts twoslash file=<rootDir>/creating-effects/try.ts
+```ts file=<rootDir>/creating-effects/try.ts
 
 ```
 
@@ -154,13 +154,13 @@ In this example:
 
 **Example: Custom Error Handling**
 
-```ts {6} twoslash file=<rootDir>/creating-effects/try-custom-error-handling.ts
+```ts {6} file=<rootDir>/creating-effects/try-custom-error-handling.ts
 
 ```
 
 You can think of this as a similar pattern to the traditional try-catch block in JavaScript:
 
-```ts
+```ts showLineNumbers=false
 try {
   return JSON.parse(input)
 } catch (unknown) {
@@ -181,7 +181,7 @@ It allows you to create an `Effect` that represents successful completion withou
 
 **Example: Delayed Message**
 
-```ts twoslash file=<rootDir>/creating-effects/promise.ts
+```ts file=<rootDir>/creating-effects/promise.ts
 
 ```
 
@@ -206,7 +206,7 @@ By default if an error occurs, it will be caught and propagated to the error cha
 
 **Example: Fetching a TODO Item**
 
-```ts twoslash file=<rootDir>/creating-effects/tryPromise.ts
+```ts file=<rootDir>/creating-effects/tryPromise.ts
 
 ```
 
@@ -218,7 +218,7 @@ The `program` value has the type `Effect<Response, UnknownException, never>` and
 
 **Customizing Error Handling**. If you want more control over what gets propagated to the error channel, you can use an overload of `Effect.tryPromise` that takes a remapping function:
 
-```ts {7} twoslash file=<rootDir>/creating-effects/tryPromise-custom-error-handling.ts
+```ts {7} file=<rootDir>/creating-effects/tryPromise-custom-error-handling.ts
 
 ```
 
@@ -231,7 +231,7 @@ To handle callback-based APIs, Effect provides the `Effect.async` constructor.
 
 For example, let's wrap the `readFile` async API from the Node.js `fs` module with Effect (ensure you have `@types/node` installed):
 
-```ts twoslash file=<rootDir>/creating-effects/async.ts
+```ts file=<rootDir>/creating-effects/async.ts
 
 ```
 
@@ -250,7 +250,7 @@ based on the return value inside the callback body. Annotating the types ensures
 It allows you to defer the evaluation of an effect until it is actually needed.
 The `Effect.suspend` function takes a thunk that represents the effect, and it wraps it in a suspended effect.
 
-```ts
+```ts showLineNumbers=false
 const suspendedEffect = Effect.suspend(() => effect)
 ```
 
@@ -262,7 +262,7 @@ When you want to defer the evaluation of an effect until it is required. This ca
 
 Also, when effects with side effects or scoped captures are created, use `Effect.suspend` to re-execute on each invocation.
 
-```ts twoslash file=<rootDir>/creating-effects/suspend-lazy-evaluation.ts
+```ts file=<rootDir>/creating-effects/suspend-lazy-evaluation.ts
 
 ```
 
@@ -279,7 +279,7 @@ In this example, `bad` is the result of calling `Effect.succeed(i++)` a single t
 `Effect.suspend` is helpful in managing circular dependencies between effects, where one effect depends on another, and vice versa.
 For example it's fairly common for `Effect.suspend` to be used in recursive functions to escape an eager call. For instance:
 
-```ts twoslash file=<rootDir>/creating-effects/suspend-circular-dependencies.ts
+```ts file=<rootDir>/creating-effects/suspend-circular-dependencies.ts
 
 ```
 
@@ -297,7 +297,7 @@ Conversely, `allGood` avoids stack overflow by using `Effect.suspend` to defer t
 
 In situations where TypeScript struggles to unify the returned effect type, `Effect.suspend` can be employed to resolve this issue. For example:
 
-```ts twoslash file=<rootDir>/creating-effects/suspend-unifying-return-type.ts
+```ts file=<rootDir>/creating-effects/suspend-unifying-return-type.ts
 
 ```
 

@@ -7,59 +7,63 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-To execute an `Effect`, we can utilize a variety of "run" functions provided by the `Effect` module.
+To execute an effect, we can utilize a variety of "run" functions provided by the `Effect` module.
 
 <Aside type="tip">
-  The recommended approach is to design your program with the majority of its
-  logic as Effects. It's advisable to use the `run*` functions closer to the
-  "edge" of your program. This approach allows for greater flexibility in
-  executing your program and building sophisticated Effects.
+  The recommended approach is to design your program with the majority of
+  its logic as Effects. It's advisable to use the `run*` functions closer to
+  the "edge" of your program. This approach allows for greater flexibility
+  in executing your program and building sophisticated Effects.
 </Aside>
 
 ## runSync
 
-The `Effect.runSync` function is used to execute an Effect synchronously, which means it runs immediately and returns the result.
+The `Effect.runSync` function is used to execute an effect synchronously, which means it runs immediately and returns the result.
 
-```ts twoslash file=<rootDir>/running-effects/runSync.ts
+**Example**
+
+```ts file=<rootDir>/running-effects/runSync.ts
 
 ```
 
-`Effect.runSync` will throw an error if your Effect fails or performs any
+The `Effect.runSync` function will throw an error if your effect fails or performs any
 asynchronous tasks. In the latter case, the execution will not proceed
-beyond that asynchronous task.
+beyond that asynchronous task:
 
-```ts twoslash file=<rootDir>/running-effects/runSync-caution.ts output={9}
+```ts file=<rootDir>/running-effects/runSync-caution.ts
 
 ```
 
 ## runSyncExit
 
-The `Effect.runSyncExit` function is used to execute an Effect synchronously, which means it runs immediately and returns the result as an [Exit](/data-types/exit)
-(a data type used to describe the result of executing an `Effect` workflow).
+The `Effect.runSyncExit` function is used to execute an effect synchronously, which means it runs immediately and returns the result as an [Exit](/data-types/exit)
+(a data type used to describe the result of executing an effect workflow).
 
-```ts twoslash file=<rootDir>/running-effects/runSyncExit.ts
+**Example**
+
+```ts file=<rootDir>/running-effects/runSyncExit.ts
 
 ```
 
-`Effect.runSyncExit` will throw an error if your Effect performs any
+The `Effect.runSyncExit` function will throw an error if your effect performs any
 asynchronous tasks and the execution will not proceed beyond that
-asynchronous task.
+asynchronous task:
 
-```ts twoslash file=<rootDir>/running-effects/runSyncExit-caution.ts
+```ts file=<rootDir>/running-effects/runSyncExit-caution.ts
 
 ```
 
 ## runPromise
 
-The `Effect.runPromise` function is used to execute an Effect and obtain the result as a `Promise`.
+The `Effect.runPromise` function is used to execute an effect and obtain the result as a `Promise`.
 
-```ts twoslash file=<rootDir>/running-effects/runPromise.ts
+```ts file=<rootDir>/running-effects/runPromise.ts
 
 ```
 
-`Effect.runPromise` will reject with an error if your Effect fails
+The `Effect.runPromise` function will reject with an error if your Effect fails:
 
-```ts twoslash file=<rootDir>/running-effects/runPromise-caution.ts
+```ts file=<rootDir>/running-effects/runPromise-caution.ts
 
 ```
 
@@ -68,7 +72,7 @@ The `Effect.runPromise` function is used to execute an Effect and obtain the res
 The `Effect.runPromiseExit` function is used to execute an Effect and obtain the result as a `Promise` that resolves to an [Exit](/data-types/exit)
 (a data type used to describe the result of executing an `Effect` workflow).
 
-```ts twoslash file=<rootDir>/running-effects/runPromiseExit.ts
+```ts file=<rootDir>/running-effects/runPromiseExit.ts
 
 ```
 
@@ -76,7 +80,7 @@ The `Effect.runPromiseExit` function is used to execute an Effect and obtain the
 
 The `Effect.runFork` function serves as a foundational building block for running effects. In fact, all other run functions are built upon it. Unless you have a specific need for a Promise or a synchronous operation, `Effect.runFork` is the recommended choice. It returns a fiber that you can observe or interrupt as needed.
 
-```ts twoslash file=<rootDir>/running-effects/runFork.ts
+```ts file=<rootDir>/running-effects/runFork.ts
 
 ```
 

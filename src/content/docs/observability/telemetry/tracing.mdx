@@ -62,65 +62,65 @@ Now, let's print our Span to the console. To achieve this, we need to install so
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh
-   npm install @effect/opentelemetry
-   npm install @opentelemetry/exporter-trace-otlp-http
-   npm install @opentelemetry/sdk-trace-base
-   # If your application is running on NodeJS
-   npm install @opentelemetry/sdk-trace-node
-   # If your application is running on the browser
-   npm install @opentelemetry/sdk-trace-web
-   # If your application will also be exporting metrics
-   npm install @opentelemetry/sdk-metrics
-   ```
+```sh showLineNumbers=false
+npm install @effect/opentelemetry
+npm install @opentelemetry/exporter-trace-otlp-http
+npm install @opentelemetry/sdk-trace-base
+# If your application is running on NodeJS
+npm install @opentelemetry/sdk-trace-node
+# If your application is running on the browser
+npm install @opentelemetry/sdk-trace-web
+# If your application will also be exporting metrics
+npm install @opentelemetry/sdk-metrics
+```
 
    </TabItem>
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh
-   pnpm add @effect/opentelemetry
-   pnpm add @opentelemetry/exporter-trace-otlp-http
-   pnpm add @opentelemetry/sdk-trace-base
-   # If your application is running on NodeJS
-   pnpm add @opentelemetry/sdk-trace-node
-   # If your application is running on the browser
-   pnpm add @opentelemetry/sdk-trace-web
-   # If your application will also be exporting metrics
-   pnpm add @opentelemetry/sdk-metrics
-   ```
+```sh showLineNumbers=false
+pnpm add @effect/opentelemetry
+pnpm add @opentelemetry/exporter-trace-otlp-http
+pnpm add @opentelemetry/sdk-trace-base
+# If your application is running on NodeJS
+pnpm add @opentelemetry/sdk-trace-node
+# If your application is running on the browser
+pnpm add @opentelemetry/sdk-trace-web
+# If your application will also be exporting metrics
+pnpm add @opentelemetry/sdk-metrics
+```
 
    </TabItem>
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh
-   yarn add @effect/opentelemetry
-   yarn add @opentelemetry/exporter-trace-otlp-http
-   yarn add @opentelemetry/sdk-trace-base
-   # If your application is running on NodeJS
-   yarn add @opentelemetry/sdk-trace-node
-   # If your application is running on the browser
-   yarn add @opentelemetry/sdk-trace-web
-   # If your application will also be exporting metrics
-   yarn add @opentelemetry/sdk-metrics
-   ```
+```sh showLineNumbers=false
+yarn add @effect/opentelemetry
+yarn add @opentelemetry/exporter-trace-otlp-http
+yarn add @opentelemetry/sdk-trace-base
+# If your application is running on NodeJS
+yarn add @opentelemetry/sdk-trace-node
+# If your application is running on the browser
+yarn add @opentelemetry/sdk-trace-web
+# If your application will also be exporting metrics
+yarn add @opentelemetry/sdk-metrics
+```
 
    </TabItem>
 
    <TabItem label="Bun" icon="bun">
 
-   ```sh
-   bun add @effect/opentelemetry
-   bun add @opentelemetry/exporter-trace-otlp-http
-   bun add @opentelemetry/sdk-trace-base
-   # If your application is running on NodeJS
-   bun add @opentelemetry/sdk-trace-node
-   # If your application is running on the browser
-   bun add @opentelemetry/sdk-trace-web
-   # If your application will also be exporting metrics
-   bun add @opentelemetry/sdk-metrics
-   ```
+```sh showLineNumbers=false
+bun add @effect/opentelemetry
+bun add @opentelemetry/exporter-trace-otlp-http
+bun add @opentelemetry/sdk-trace-base
+# If your application is running on NodeJS
+bun add @opentelemetry/sdk-trace-node
+# If your application is running on the browser
+bun add @opentelemetry/sdk-trace-web
+# If your application will also be exporting metrics
+bun add @opentelemetry/sdk-metrics
+```
 
    </TabItem>
 
@@ -435,7 +435,7 @@ Now, let's simulate traces using a sample Node.js application. We'll provide you
 
    <TabItem label="npm" icon="seti:npm">
 
-   ```sh
+   ```sh showLineNumbers=false
    npm install @effect/opentelemetry
    npm install @opentelemetry/exporter-trace-otlp-http
    npm install @opentelemetry/sdk-trace-base
@@ -451,7 +451,7 @@ Now, let's simulate traces using a sample Node.js application. We'll provide you
 
    <TabItem label="pnpm" icon="pnpm">
 
-   ```sh
+   ```sh showLineNumbers=false
    pnpm add @effect/opentelemetry
    pnpm add @opentelemetry/exporter-trace-otlp-http
    pnpm add @opentelemetry/sdk-trace-base
@@ -467,7 +467,7 @@ Now, let's simulate traces using a sample Node.js application. We'll provide you
 
    <TabItem label="Yarn" icon="seti:yarn">
 
-   ```sh
+   ```sh showLineNumbers=false
    yarn add @effect/opentelemetry
    yarn add @opentelemetry/exporter-trace-otlp-http
    yarn add @opentelemetry/sdk-trace-base
@@ -483,7 +483,7 @@ Now, let's simulate traces using a sample Node.js application. We'll provide you
 
    <TabItem label="Bun" icon="bun">
 
-   ```sh
+   ```sh showLineNumbers=false
    bun add @effect/opentelemetry
    bun add @opentelemetry/exporter-trace-otlp-http
    bun add @opentelemetry/sdk-trace-base
@@ -525,9 +525,7 @@ Now, let's simulate traces using a sample Node.js application. We'll provide you
    // Create a program with tasks and subtasks
    const program = task("client", 2, [
      task("/api", 3, [
-       task("/authN", 4, [
-         task("/authZ", 5)
-       ]),
+       task("/authN", 4, [task("/authZ", 5)]),
        task("/payment Gateway", 6, [
          task("DB", 7),
          task("Ext. Merchant", 8)

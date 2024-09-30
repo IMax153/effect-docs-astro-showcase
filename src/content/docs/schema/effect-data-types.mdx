@@ -72,7 +72,10 @@ The `Schema.Config` function operates through the following steps:
 import { Schema } from "@effect/schema"
 import { Effect } from "effect"
 
-const myconfig = Schema.Config("Foo", Schema.String.pipe(Schema.minLength(4)))
+const myconfig = Schema.Config(
+  "Foo",
+  Schema.String.pipe(Schema.minLength(4))
+)
 
 const program = Effect.gen(function* () {
   const foo = yield* myconfig
@@ -85,13 +88,13 @@ Effect.runSync(program)
 To test the configuration, execute the following commands:
 
 - **Test with Missing Configuration Data**:
-  ```sh
+  ```sh showLineNumbers=false
   npx tsx config.ts
   # Output:
   # [(Missing data at Foo: "Expected Foo to exist in the process context")]
   ```
 - **Test with Invalid Data**:
-  ```sh
+  ```sh showLineNumbers=false
   Foo=bar npx tsx config.ts
   # Output:
   # [(Invalid data at Foo: "a string at least 4 character(s) long
@@ -99,7 +102,7 @@ To test the configuration, execute the following commands:
   #    └─ Expected a string at least 4 character(s) long, actual "bar"")]
   ```
 - **Test with Valid Data**:
-  ```sh
+  ```sh showLineNumbers=false
   Foo=foobar npx tsx config.ts
   # Output:
   # ok: foobar
@@ -231,7 +234,10 @@ console.log(encode(Option.some(1))) // "1"
 import { Schema } from "@effect/schema"
 import { Option } from "effect"
 
-const schema = Schema.OptionFromNullishOr(Schema.NumberFromString, undefined)
+const schema = Schema.OptionFromNullishOr(
+  Schema.NumberFromString,
+  undefined
+)
 
 const decode = Schema.decodeUnknownSync(schema)
 const encode = Schema.encodeSync(schema)
@@ -259,7 +265,9 @@ console.log(encode(Option.some(1))) // "1"
 import { Schema } from "@effect/schema"
 
 console.log(Schema.decodeSync(Schema.OptionFromNonEmptyTrimmedString)("")) // Option.none()
-console.log(Schema.decodeSync(Schema.OptionFromNonEmptyTrimmedString)(" a ")) // Option.some("a")
+console.log(
+  Schema.decodeSync(Schema.OptionFromNonEmptyTrimmedString)(" a ")
+) // Option.some("a")
 console.log(Schema.decodeSync(Schema.OptionFromNonEmptyTrimmedString)("a")) // Option.some("a")
 ```
 
@@ -806,8 +814,8 @@ console.log(decode("keep it secret, keep it safe")) // {}
 It's important to note that when successfully decoding a `Redacted`, the output is intentionally obscured (`{}`) to prevent the actual secret from being revealed in logs or console outputs.
 
 <Aside type="caution">
-  When composing the `Redacted` schema with other schemas, care must be taken
-  as decoding or encoding errors could potentially expose sensitive
+  When composing the `Redacted` schema with other schemas, care must be
+  taken as decoding or encoding errors could potentially expose sensitive
   information.
 </Aside>
 

@@ -11,7 +11,7 @@ Effect is an ecosystem of tools that help you build better applications and libr
 
 In "typical" TypeScript, without Effect, we write code that assumes that a function is either successful or throws an exception. Take this trivial example of division:
 
-```ts twoslash file=<rootDir>/why-effect/divide.ts
+```ts file=<rootDir>/why-effect/divide.ts
 
 ```
 
@@ -29,19 +29,15 @@ Effect's major unique insight is that we can use the type system to track _error
 
 Here's the same divide function from above, but with the Effect pattern:
 
-```ts twoslash file=<rootDir>/why-effect/divide-effect.ts
+```ts file=<rootDir>/why-effect/divide-effect.ts
 
 ```
 
-Notice how looking at the type signature tells you exactly what success value(s) it returns (`number`), what error(s) it can throw (`Error`) and what context the function needs (`never`, as in, no context required here). This function no longer throws an exception, and you can cleanly pass on the error to the caller of this function.
+Notice how looking at the type signature tells you exactly what success value(s) it returns (`number`), what error(s) it can return (`Error`) and what context the function needs (`never`, as in, no context required here). This function no longer throws an exception, and you can cleanly pass on the error to the caller of this function.
 
 Errors now become values, just like your success values. Effect gives us many functions to make managing errors and success values ergonomic.
 
-Additionally, tracking context allows you to provide additional information to your functions without having to pass in everything as an argument. For example, you can swap out implementations of live external services with mocks during your tests without changing any core business logic. There are many other use cases for context as well.
-
-## Effect's Ecosystem
-
-It turns out that this unique insight, along with a lot of other tooling, has led to a rich ecosystem of libraries that make building complex applications in TypeScript a breeze. Things that used to seem impossible are now ordinary. Effect's ecosystem is growing rapidly, and you can find the growing list on Effect's [GitHub](https://github.com/Effect-TS).
+Additionally, tracking context allows you to provide additional information to your functions without having to pass in everything as an argument. For example, you can swap out implementations of live external services with mocks during your tests without changing any core business logic.
 
 ## Don't Re-Invent the Wheel
 

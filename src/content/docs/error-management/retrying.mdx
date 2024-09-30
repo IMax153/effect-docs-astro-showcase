@@ -17,88 +17,30 @@ whether you're working on network requests, database interactions, or any other 
 
 To demonstrate the functionality of different retry functions, we will be working with the following helper that simulates an effect with possible failures:
 
-<div style="display: none;">
+```ts title="simulation.ts" file=<rootDir>/retrying/simulation.ts
 
-```ts twoslash include fake
-import { Effect } from "effect"
-
-let count = 0
-
-// Simulates an effect with possible failures
-export const effect = Effect.async<string, Error>((resume) => {
-  if (count <= 2) {
-    count++
-    console.log("failure")
-    resume(Effect.fail(new Error()))
-  } else {
-    console.log("success")
-    resume(Effect.succeed("yay!"))
-  }
-})
-```
-
-</div>
-
-```ts twoslash
-// @include: fake
 ```
 
 ## retry
 
-The basic syntax of `retry` is as follows:
+The basic syntax of `Effect.retry` is as follows:
 
-```ts
+```ts showLineNumbers=false
 Effect.retry(effect, policy)
 ```
 
 **Example**
 
-```ts twoslash
-// @filename: fake.ts
-// @include: fake
+```ts file=<rootDir>/retrying/retry.ts
 
-// @filename: index.ts
-// ---cut---
-import { Effect, Schedule } from "effect"
-import { effect } from "./fake"
-
-// Define a repetition policy using a fixed delay between retries
-const policy = Schedule.fixed("100 millis")
-
-const repeated = Effect.retry(effect, policy)
-
-Effect.runPromise(repeated).then(console.log)
-/*
-Output:
-failure
-failure
-failure
-success
-yay!
-*/
 ```
 
 ## retry n times
 
 There is a shortcut when the policy is trivial and the failed effect is immediately retried:
 
-```ts twoslash
-// @filename: fake.ts
-// @include: fake
+```ts file=<rootDir>/retrying/retry-times.ts
 
-// @filename: index.ts
-// ---cut---
-import { Effect } from "effect"
-import { effect } from "./fake"
-
-Effect.runPromise(Effect.retry(effect, { times: 5 }))
-/*
-Output:
-failure
-failure
-failure
-success
-*/
 ```
 
 ## retryOrElse
@@ -109,73 +51,24 @@ It lets us add an `orElse` callback that will run when the repetition fails.
 
 The basic syntax of `retryOrElse` is as follows:
 
-```ts
+```ts showLineNumbers=false
 Effect.retryOrElse(effect, policy, fallback)
 ```
 
 **Example**
 
-```ts twoslash
-// @filename: fake.ts
-// @include: fake
+```ts file=<rootDir>/retrying/retryOrElse.ts
 
-// @filename: index.ts
-// ---cut---
-import { Effect, Schedule, Console } from "effect"
-import { effect } from "./fake"
-
-const policy = Schedule.addDelay(
-  Schedule.recurs(2), // Retry for a maximum of 2 times
-  () => "100 millis" // Add a delay of 100 milliseconds between retries
-)
-
-// Create a new effect that retries the effect with the specified policy,
-// and provides a fallback effect if all retries fail
-const repeated = Effect.retryOrElse(effect, policy, () =>
-  Console.log("orElse").pipe(Effect.as("default value"))
-)
-
-Effect.runPromise(repeated).then(console.log)
-/*
-Output:
-failure
-failure
-failure
-orElse
-default value
-*/
 ```
 
 ## Retrying Based on a Condition
 
 You can manage how an effect is retried by specifying conditions using either the `while` or `until` options.
 
-```ts twoslash
-import { Effect } from "effect"
+**Example**
 
-let count = 0
+```ts file=<rootDir>/retrying/retry-until.ts
 
-// Define an effect that simulates varying error on each invocation
-const action = Effect.failSync(() => {
-  console.log(`Action called ${++count} time(s)`)
-  return `Error ${count}`
-})
-
-// Retry the action until a specific condition is met
-const program = Effect.retry(action, { until: (err) => err === "Error 3" })
-
-Effect.runPromiseExit(program).then(console.log)
-/*
-Output:
-Action called 1 time(s)
-Action called 2 time(s)
-Action called 3 time(s)
-{
-  _id: 'Exit',
-  _tag: 'Failure',
-  cause: { _id: 'Cause', _tag: 'Fail', failure: 'Error 3' }
-}
-*/
 ```
 
 <Aside type="tip">

@@ -96,9 +96,7 @@ const program = Effect.gen(function* () {
   return a + b
 })
 
-const showMetric = Metric.value(taskCount).pipe(
-  Effect.andThen(Console.log)
-)
+const showMetric = Metric.value(taskCount).pipe(Effect.andThen(Console.log))
 
 Effect.runPromise(program.pipe(Effect.tap(() => showMetric))).then(
   console.log
@@ -211,7 +209,7 @@ In a histogram, each incoming sample is assigned to a predefined bucket. When a 
 
 - **Overall Count:** A histogram also keeps track of the total count of observed values and the sum of all observed values.
 
-- **Inspired by Prometheus:** The concept of histograms is inspired by [Prometheus](https://prometheus.io/docs/concepts/metric_types/#histogram), a popular monitoring and alerting toolkit.
+- **Inspired by Prometheus:** The concept of histograms is inspired by [Prometheus](https://prometheus.io/docs/concepts/metric_types#histogram), a popular monitoring and alerting toolkit.
 
 ### When to Use Histograms
 
@@ -435,6 +433,7 @@ FrequencyState {
 ```
 
 ## Tagging Metrics
+
 When creating metrics, you can add tags to them. Tags are key-value pairs that provide additional context, helping in categorizing and filtering metrics. This makes it easier to analyze and monitor specific aspects of your application.
 
 ### Tagging multiple Metrics
@@ -449,9 +448,7 @@ const task1 = Effect.succeed(1).pipe(Effect.delay("100 millis"))
 
 Effect.gen(function* () {
   yield* taskCount(task1)
-}).pipe(
-  Effect.tagMetrics("environment", "production")
-)
+}).pipe(Effect.tagMetrics("environment", "production"))
 ```
 
 Alternatively, use `Effect.tagMetricsScoped` to apply tags within a specific scope.
@@ -463,7 +460,7 @@ For individual metrics, use `Metric.tagged`. This method allows you to apply tag
 ```ts twoslash
 import { Metric } from "effect"
 
-const counter = Metric.counter('request_count').pipe(
-  Metric.tagged('environment', 'production'),
-);
+const counter = Metric.counter("request_count").pipe(
+  Metric.tagged("environment", "production")
+)
 ```

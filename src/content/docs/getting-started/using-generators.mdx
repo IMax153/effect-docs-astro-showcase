@@ -13,7 +13,7 @@ Effect offers a convenient syntax, similar to `async`/`await`, to write effectfu
   The use of generators is an optional feature in Effect. If you find
   generators unfamiliar or prefer a different coding style, you can explore
   the documentation about [Building
-  Pipelines](/getting-started/using-pipelines) in Effect.
+  Pipelines](/getting-started/building-pipelines) in Effect.
 </Aside>
 
 ## Understanding Effect.gen
@@ -22,7 +22,7 @@ The `Effect.gen` utility simplifies the task of writing effectful code by utiliz
 
 Let's explore a practical program that performs a series of data transformations commonly found in application logic:
 
-```ts twoslash file=<rootDir>/using-generators/program.ts output={46}
+```ts file=<rootDir>/using-generators/program.ts
 
 ```
 
@@ -47,7 +47,7 @@ Let's compare the two approaches:
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash file=<rootDir>/using-generators/gen.ts#L3-
+```ts file=<rootDir>/using-generators/gen.ts#L3-
 
 ```
 
@@ -55,7 +55,7 @@ Let's compare the two approaches:
 
 <TabItem label="Using Async / Await">
 
-```ts twoslash file=<rootDir>/using-generators/async-await.ts
+```ts file=<rootDir>/using-generators/async-await.ts
 
 ```
 
@@ -69,7 +69,7 @@ It's important to note that although the code appears similar, the two programs 
 
 One significant advantage of using `Effect.gen` in conjunction with generators is its capability to employ standard control flow constructs within the generator function. These constructs include `if`/`else`, `for`, `while`, and other branching and looping mechanisms, enhancing your ability to express complex control flow logic in your code.
 
-```ts twoslash file=<rootDir>/using-generators/control-flow.ts
+```ts file=<rootDir>/using-generators/control-flow.ts
 
 ```
 
@@ -78,7 +78,7 @@ One significant advantage of using `Effect.gen` in conjunction with generators i
 The `Effect.gen` API allows you to incorporate error handling directly into your program flow by yielding failed effects.
 This mechanism, achieved through `Effect.fail`, is demonstrated in the example below:
 
-```ts twoslash file=<rootDir>/using-generators/raising-errors.ts
+```ts file=<rootDir>/using-generators/raising-errors.ts
 
 ```
 
@@ -91,7 +91,7 @@ What does this mean for you as a developer? Well, let's say you have a chain of 
 
 In simpler terms, the short-circuiting behavior ensures that if something goes wrong at any step of your program it will immediately stop and return the error to let you know that something went wrong.
 
-```ts twoslash file=<rootDir>/using-generators/short-circuiting.ts
+```ts file=<rootDir>/using-generators/short-circuiting.ts
 
 ```
 
@@ -105,7 +105,7 @@ In simpler terms, the short-circuiting behavior ensures that if something goes w
 In some cases, you might need to pass a reference to the current object (`this`) into the body of your generator function.
 You can achieve this by utilizing an overload that accepts the reference as the first argument:
 
-```ts twoslash file=<rootDir>/using-generators/passing-this.ts
+```ts file=<rootDir>/using-generators/passing-this.ts
 
 ```
 
@@ -115,7 +115,7 @@ You may still come across some code snippets that use an adapter, typically indi
 
 In earlier versions of TypeScript, the generator "adapter" function was necessary to ensure correct type inference within generators. This adapter was used to facilitate the interaction between TypeScript's type system and generator functions.
 
-```ts twoslash file=<rootDir>/using-generators/adapter.ts
+```ts file=<rootDir>/using-generators/adapter.ts
 
 ```
 

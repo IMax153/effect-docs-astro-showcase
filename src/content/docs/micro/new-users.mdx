@@ -18,7 +18,7 @@ Install the `effect` library in your project. If it is not already installed, yo
 
 <TabItem label="npm" icon="seti:npm">
 
-```sh
+```sh showLineNumbers=false
 npm install effect
 ```
 
@@ -26,7 +26,7 @@ npm install effect
 
 <TabItem label="pnpm" icon="pnpm">
 
-```sh
+```sh showLineNumbers=false
 pnpm add effect
 ```
 
@@ -34,7 +34,7 @@ pnpm add effect
 
 <TabItem label="Yarn" icon="seti:yarn">
 
-```sh
+```sh showLineNumbers=false
 yarn add effect
 ```
 
@@ -42,7 +42,7 @@ yarn add effect
 
 <TabItem label="Bun" icon="bun">
 
-```sh
+```sh showLineNumbers=false
 bun add effect
 ```
 
@@ -428,7 +428,8 @@ Micro.runSync(program) // throws Error: Cannot divide by zero
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 const program = Micro.catchAllDefect(
   Micro.die("Boom!"), // Simulating a runtime error
@@ -508,7 +509,8 @@ Micro.runPromise(program2).then(console.log) // Output: "failure: Uh oh!"
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 const success: Micro.Micro<number, Error> = Micro.succeed(42)
 const failure: Micro.Micro<number, Error> = Micro.fail(new Error("Uh oh!"))
@@ -547,7 +549,8 @@ import * as Micro from "effect/Micro"
 
 declare const exceptionalEffect: Micro.Micro<void, Error>
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 const program = Micro.matchCauseEffect(exceptionalEffect, {
   onFailure: (cause) => {
@@ -629,7 +632,8 @@ It exposes the full `MicroCause` of an effect, whether it's due to a failure, fi
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 const effect = Micro.fail("Oh uh!").pipe(Micro.as("primary result"))
 
@@ -670,7 +674,8 @@ Executes an effectful operation to inspect the failure of an effect without alte
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 // Create an effect that is designed to fail, simulating an occurrence of a network error
 const task: Micro.Micro<number, string> = Micro.fail("NetworkError")
@@ -695,7 +700,8 @@ Inspects the underlying cause of an effect's failure.
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 // Create an effect that is designed to fail, simulating an occurrence of a network error
 const task1: Micro.Micro<number, string> = Micro.fail("NetworkError")
@@ -732,7 +738,8 @@ Specifically inspects non-recoverable failures or defects in an effect.
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 // Create an effect that is designed to fail, simulating an occurrence of a network error
 const task1: Micro.Micro<number, string> = Micro.fail("NetworkError")
@@ -933,15 +940,20 @@ With the `MicroScope` data type, you can:
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 const program =
   // create a new scope
   Micro.scopeMake.pipe(
     // add finalizer 1
-    Micro.tap((scope) => scope.addFinalizer(() => consoleLog("finalizer 1"))),
+    Micro.tap((scope) =>
+      scope.addFinalizer(() => consoleLog("finalizer 1"))
+    ),
     // add finalizer 2
-    Micro.tap((scope) => scope.addFinalizer(() => consoleLog("finalizer 2"))),
+    Micro.tap((scope) =>
+      scope.addFinalizer(() => consoleLog("finalizer 2"))
+    ),
     // close the scope
     Micro.andThen((scope) =>
       scope.close(Micro.exitSucceed("scope closed successfully"))
@@ -970,7 +982,8 @@ Let's observe how things behave in the event of success:
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 const program = Micro.gen(function* () {
   yield* Micro.addFinalizer((exit) =>
@@ -1533,7 +1546,10 @@ const myEffect = Micro.gen(function* () {
   return "Result"
 })
 
-const timedEffect = myEffect.pipe(Micro.uninterruptible, Micro.timeout(1_000))
+const timedEffect = myEffect.pipe(
+  Micro.uninterruptible,
+  Micro.timeout(1_000)
+)
 
 // Outputs a TimeoutException after the task completes, because the task is uninterruptible
 Micro.runPromiseExit(timedEffect).then(console.log)
