@@ -45,8 +45,8 @@ export default defineConfig({
           // pluginCodeOutput(),
           pluginCollapsibleSections(),
           pluginLineNumbers()
-        ]
-        // themes: ["github-light", "github-dark"]
+        ],
+        themes: ["github-light", "github-dark"]
       },
       logo: {
         light: "./src/assets/logo-light.svg",
