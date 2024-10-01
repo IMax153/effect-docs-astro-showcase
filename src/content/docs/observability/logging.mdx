@@ -5,7 +5,7 @@ sidebar:
   order: 0
 ---
 
-import { Aside, Tabs, TabItem } from "@astrojs/starlight/components"
+import { Aside } from "@astrojs/starlight/components"
 
 Logging is a crucial aspect of software development, especially when it comes to debugging and monitoring the behavior of your applications. In this section, we'll delve into Effect's logging utilities and explore their advantages over traditional methods like `console.log`.
 
@@ -100,10 +100,6 @@ However, you can configure the default logger to enable them using `Logger.withM
 
 Here's an example that demonstrates how to enable `DEBUG` messages for a specific task (`task1`):
 
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
-
 ```ts twoslash
 import { Effect, Logger, LogLevel } from "effect"
 
@@ -133,41 +129,6 @@ timestamp=... level=INFO message=done <-- 1 second later
 */
 ```
 
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect, Logger, LogLevel } from "effect"
-
-const task1 = Effect.sleep("2 seconds").pipe(
-  Effect.andThen(Effect.logDebug("task1 done")),
-  Logger.withMinimumLogLevel(LogLevel.Debug)
-)
-
-const task2 = Effect.sleep("1 second").pipe(
-  Effect.andThen(Effect.logDebug("task2 done"))
-)
-
-const program = Effect.log("start").pipe(
-  Effect.andThen(task1),
-  Effect.andThen(task2),
-  Effect.andThen(Effect.log("done"))
-)
-
-Effect.runFork(program)
-/*
-Output:
-timestamp=... level=INFO message=start
-timestamp=... level=DEBUG message="task1 done" <-- 2 seconds later
-timestamp=... level=INFO message=done <-- 1 second later
-*/
-```
-
-</TabItem>
-
-</Tabs>
-
 In the above example, we enable `DEBUG` messages specifically for `task1` by using the `Logger.withMinimumLogLevel` function.
 
 By using `Logger.withMinimumLogLevel(effect, level)`, you have the flexibility to selectively enable different log levels for specific effects in your program. This allows you to control the level of detail in your logs and focus on the information that is most relevant to your debugging and troubleshooting needs.
@@ -175,10 +136,6 @@ By using `Logger.withMinimumLogLevel(effect, level)`, you have the flexibility t
 ### logInfo
 
 By default, `INFO` messages are printed.
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -198,40 +155,11 @@ timestamp=... level=INFO message=done <-- 3 seconds later
 */
 ```
 
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect } from "effect"
-
-const program = Effect.logInfo("start").pipe(
-  Effect.andThen(Effect.sleep("2 seconds")),
-  Effect.andThen(Effect.sleep("1 second")),
-  Effect.andThen(Effect.logInfo("done"))
-)
-
-Effect.runFork(program)
-/*
-Output:
-timestamp=... level=INFO message=start
-timestamp=... level=INFO message=done <-- 3 seconds later
-*/
-```
-
-</TabItem>
-
-</Tabs>
-
 In the above example, the `Effect.log` function is used to log an `INFO` message with the content `"start"` and `"done"`. These messages will be printed during the execution of the program.
 
 ### logWarning
 
 By default, `WARN` messages are printed.
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
 
 ```ts twoslash
 import { Effect, Either } from "effect"
@@ -255,37 +183,9 @@ timestamp=... level=WARN fiber=#0 message="Oh uh!"
 */
 ```
 
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect } from "effect"
-
-const task = Effect.fail("Oh uh!").pipe(Effect.as(2))
-
-const program = task.pipe(
-  Effect.catchAll((error) => Effect.logWarning(error).pipe(Effect.as(0)))
-)
-
-Effect.runFork(program)
-/*
-Output:
-timestamp=... level=WARN fiber=#0 message="Oh uh!"
-*/
-```
-
-</TabItem>
-
-</Tabs>
-
 ### logError
 
 By default, `ERROR` messages are printed.
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
 
 ```ts twoslash
 import { Effect, Either } from "effect"
@@ -309,37 +209,9 @@ timestamp=... level=ERROR fiber=#0 message="Oh uh!"
 */
 ```
 
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect } from "effect"
-
-const task = Effect.fail("Oh uh!").pipe(Effect.as(2))
-
-const program = task.pipe(
-  Effect.catchAll((error) => Effect.logError(error).pipe(Effect.as(0)))
-)
-
-Effect.runFork(program)
-/*
-Output:
-timestamp=... level=ERROR fiber=#0 message="Oh uh!"
-*/
-```
-
-</TabItem>
-
-</Tabs>
-
 ### logFatal
 
 By default, `FATAL` messages are printed.
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
 
 ```ts twoslash
 import { Effect, Either } from "effect"
@@ -362,30 +234,6 @@ Output:
 timestamp=... level=FATAL fiber=#0 message="Oh uh!"
 */
 ```
-
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect } from "effect"
-
-const task = Effect.fail("Oh uh!").pipe(Effect.as(2))
-
-const program = task.pipe(
-  Effect.catchAll((error) => Effect.logFatal(error).pipe(Effect.as(0)))
-)
-
-Effect.runFork(program)
-/*
-Output:
-timestamp=... level=FATAL fiber=#0 message="Oh uh!"
-*/
-```
-
-</TabItem>
-
-</Tabs>
 
 ## Custom Annotations
 
@@ -455,10 +303,6 @@ timestamp=... level=INFO fiber=#0 message="no annotations again"
 
 Effect also provides support for log spans, allowing you to measure the duration of specific operations or tasks within your program.
 
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
-
 ```ts twoslash
 import { Effect } from "effect"
 
@@ -473,29 +317,6 @@ Output:
 timestamp=... level=INFO fiber=#0 message="The job is finished!" myspan=1011ms
 */
 ```
-
-</TabItem>
-
-<TabItem label="Using Effect.gen">
-
-```ts twoslash
-import { Effect } from "effect"
-
-const program = Effect.sleep("1 second").pipe(
-  Effect.andThen(Effect.log("The job is finished!")),
-  Effect.withLogSpan("myspan")
-)
-
-Effect.runFork(program)
-/*
-Output:
-timestamp=... level=INFO fiber=#0 message="The job is finished!" myspan=1011ms
-*/
-```
-
-</TabItem>
-
-</Tabs>
 
 In the above example, a log span is created using the `Effect.withLogSpan(label)` function.
 It measures the duration of the code block within the span.
@@ -640,28 +461,22 @@ In this section, we will learn how to define a custom logger and set it as the d
 
 First, let's define our custom logger using `Logger.make`:
 
-<div style="display: none;">
-
-```ts twoslash include CustomLogger
+```ts twoslash
 import { Logger } from "effect"
 
-export const logger = Logger.make(({ logLevel, message }) => {
+const logger = Logger.make(({ logLevel, message }) => {
   globalThis.console.log(`[${logLevel.label}] ${message}`)
 })
 ```
 
-</div>
-
-```ts twoslash
-// @include: CustomLogger
-```
-
 Assuming we have defined the following program:
 
-<div style="display: none;">
+```ts twoslash collapse={3-5}
+import { Effect, Logger } from "effect"
 
-```ts twoslash include program
-import { Effect } from "effect"
+const logger = Logger.make(({ logLevel, message }) => {
+  globalThis.console.log(`[${logLevel.label}] ${message}`)
+})
 
 const task1 = Effect.gen(function* () {
   yield* Effect.sleep("2 seconds")
@@ -673,7 +488,7 @@ const task2 = Effect.gen(function* () {
   yield* Effect.logDebug("task2 done")
 })
 
-export const program = Effect.gen(function* () {
+const program = Effect.gen(function* () {
   yield* Effect.log("start")
   yield* task1
   yield* task2
@@ -681,59 +496,34 @@ export const program = Effect.gen(function* () {
 })
 ```
 
-</div>
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
-
-```ts twoslash
-// @include: program
-```
-
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect } from "effect"
-
-const task1 = Effect.sleep("2 seconds").pipe(
-  Effect.andThen(Effect.logDebug("task1 done"))
-)
-
-const task2 = Effect.sleep("1 second").pipe(
-  Effect.andThen(Effect.logDebug("task2 done"))
-)
-
-export const program = Effect.log("start").pipe(
-  Effect.andThen(task1),
-  Effect.andThen(task2),
-  Effect.andThen(Effect.log("done"))
-)
-```
-
-</TabItem>
-
-</Tabs>
-
 To replace the default logger, we simply need to create a specific layer using `Logger.replace` and provide it to our program using `Effect.provide` before executing it:
 
-```ts twoslash
-// @filename: CustomLogger.ts
-// @include: CustomLogger
-
-// @filename: program.ts
-// @include: program
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={3-22}
 import { Effect, Logger, LogLevel } from "effect"
-import * as CustomLogger from "./CustomLogger"
-import { program } from "./program"
+
+const logger = Logger.make(({ logLevel, message }) => {
+  globalThis.console.log(`[${logLevel.label}] ${message}`)
+})
+
+const task1 = Effect.gen(function* () {
+  yield* Effect.sleep("2 seconds")
+  yield* Effect.logDebug("task1 done")
+})
+
+const task2 = Effect.gen(function* () {
+  yield* Effect.sleep("1 second")
+  yield* Effect.logDebug("task2 done")
+})
+
+const program = Effect.gen(function* () {
+  yield* Effect.log("start")
+  yield* task1
+  yield* task2
+  yield* Effect.log("done")
+})
 
 // Replace the default logger with the custom logger
-const layer = Logger.replace(Logger.defaultLogger, CustomLogger.logger)
+const layer = Logger.replace(Logger.defaultLogger, logger)
 
 Effect.runFork(
   program.pipe(
@@ -745,7 +535,7 @@ Effect.runFork(
 
 This is what we see printed on the console after executing the program:
 
-```text
+```ansi showLineNumbers=false
 [INFO] start
 [DEBUG] task1 done
 [DEBUG] task2 done
@@ -756,7 +546,7 @@ This is what we see printed on the console after executing the program:
 
 ### json
 
-The `json` logger formats log entries as JSON objects, making them easy to integrate with logging systems that consume JSON data.
+The json logger formats log entries as JSON objects, making them easy to integrate with logging systems that consume JSON data.
 
 ```ts twoslash
 import { Effect, Logger } from "effect"
@@ -767,7 +557,12 @@ const program = Effect.log("message1", "message2").pipe(
 )
 
 Effect.runFork(program.pipe(Effect.provide(Logger.json)))
-// {"message":["message1","message2"],"logLevel":"INFO","timestamp":"...","annotations":{"key2":"value2","key1":"value1"},"spans":{"myspan":0},"fiberId":"#0"}
+```
+
+Output:
+
+```ansi showLineNumbers=false
+{"message":["message1","message2"],"logLevel":"INFO","timestamp":"...","annotations":{"key2":"value2","key1":"value1"},"spans":{"myspan":0},"fiberId":"#0"}
 ```
 
 ### logFmt
@@ -783,7 +578,12 @@ const program = Effect.log("message1", "message2").pipe(
 )
 
 Effect.runFork(program.pipe(Effect.provide(Logger.logFmt)))
-// timestamp=... level=INFO fiber=#0 message=message1 message=message2 myspan=0ms key2=value2 key1=value1
+```
+
+Output:
+
+```ansi showLineNumbers=false
+timestamp=... level=INFO fiber=#0 message=message1 message=message2 myspan=0ms key2=value2 key1=value1
 ```
 
 ### structured
@@ -799,7 +599,11 @@ const program = Effect.log("message1", "message2").pipe(
 )
 
 Effect.runFork(program.pipe(Effect.provide(Logger.structured)))
-/*
+```
+
+Output:
+
+```ansi showLineNumbers=false
 {
   message: [ 'message1', 'message2' ],
   logLevel: 'INFO',
@@ -809,12 +613,11 @@ Effect.runFork(program.pipe(Effect.provide(Logger.structured)))
   spans: { myspan: 0 },
   fiberId: '#0'
 }
-*/
 ```
 
 ### pretty
 
-The `pretty` logger utilizes the capabilities of the `console` API to generate visually engaging and color-enhanced log outputs.
+The pretty logger utilizes the capabilities of the `console` API to generate visually engaging and color-enhanced log outputs.
 This feature is particularly useful for improving the readability of log messages during development and debugging processes.
 
 ```ts twoslash
@@ -826,23 +629,13 @@ const program = Effect.log("message1", "message2").pipe(
 )
 
 Effect.runFork(program.pipe(Effect.provide(Logger.pretty)))
-/*
-        green --v                      v-- bold and cyan
-[07:51:54.434] INFO (#0) myspan=1ms: message1
-  message2
-   v-- bold
-  key2: value2
-  key1: value1
-*/
 ```
 
-Log levels are colored as follows:
+Output:
 
-| Log Level | Color        |
-| --------- | ------------ |
-| Trace     | Gray         |
-| Debug     | Blue         |
-| Info      | Green        |
-| Warning   | Yellow       |
-| Error     | Red          |
-| Fatal     | White on Red |
+```ansi showLineNumbers=false
+[19:50:04.994] INFO (#0) myspan=1ms: message1
+  message2
+  key2: value2
+  key1: value1
+```
