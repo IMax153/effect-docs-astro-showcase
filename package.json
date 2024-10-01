@@ -19,6 +19,7 @@
     "@expressive-code/plugin-collapsible-sections": "^0.35.6",
     "@expressive-code/plugin-line-numbers": "^0.35.6",
     "@types/node": "^22.7.2",
+    "@typescript/vfs": "^1.6.0",
     "astro": "^4.15.9",
     "astro-og-canvas": "^0.5.3",
     "canvaskit-wasm": "^0.39.1",
