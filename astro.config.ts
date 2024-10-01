@@ -30,6 +30,8 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [
       [rehypeMermaid, rehypeMermaidOptions],
+      // the following two plugins are required for the autolink headings to work
+      // the headings are styled in the headings.css file
       rehypeHeadingIds,
       [rehypeAutolinkHeadings, { behavior: "wrap" }]
     ],
@@ -45,7 +47,12 @@ export default defineConfig({
       components: {
         Head: "./src/components/starlight-overrides/Head.astro"
       },
-      customCss: ["./src/styles/headings.css", "./src/styles/tables.css"],
+      customCss: [
+        // the styles for the autolink headings
+        "./src/styles/headings.css",
+        // fixes overflow-wrap when the columns contains code blocks
+        "./src/styles/tables.css"
+      ],
       expressiveCode: {
         plugins: [
           // commented out to make sure it doesn't interfere with the other plugins
