@@ -31,7 +31,7 @@ Effect.retry(effect, policy)
 
 **Example**
 
-```ts file=<rootDir>/retrying/retry.ts
+```ts twoslash file=<rootDir>/retrying/retry.ts
 
 ```
 
@@ -39,7 +39,7 @@ Effect.retry(effect, policy)
 
 There is a shortcut when the policy is trivial and the failed effect is immediately retried:
 
-```ts file=<rootDir>/retrying/retry-times.ts
+```ts twoslash file=<rootDir>/retrying/retry-times.ts
 
 ```
 
@@ -57,7 +57,7 @@ Effect.retryOrElse(effect, policy, fallback)
 
 **Example**
 
-```ts file=<rootDir>/retrying/retryOrElse.ts
+```ts twoslash file=<rootDir>/retrying/retryOrElse.ts
 
 ```
 
@@ -67,7 +67,7 @@ You can manage how an effect is retried by specifying conditions using either th
 
 **Example**
 
-```ts file=<rootDir>/retrying/retry-until.ts
+```ts twoslash file=<rootDir>/retrying/retry-until.ts
 
 ```
 

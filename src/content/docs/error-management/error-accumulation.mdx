@@ -11,13 +11,13 @@ Sequential combinators such as [Effect.zip](/getting-started/control-flow#zip) a
 
 Let's take a look at an example using the `Effect.zip` operator. In this example, we can see that `Effect.zip` will fail as soon as it encounters the first failure. As a result, only the first error is displayed:
 
-```ts file=<rootDir>/error-accumulation/zip.ts
+```ts twoslash file=<rootDir>/error-accumulation/zip.ts
 
 ```
 
 The `Effect.forEach` function behaves similarly. It takes a collection and an effectful operation, and tries to apply the operation to all elements of the collection. However, it also follows the "fail fast" policy and fails when it encounters the first error:
 
-```ts file=<rootDir>/error-accumulation/forEach.ts
+```ts twoslash file=<rootDir>/error-accumulation/forEach.ts
 
 ```
 
@@ -29,7 +29,7 @@ The `Effect.validate` function is similar to `Effect.zip`, but if it encounters 
 
 **Example**
 
-```ts file=<rootDir>/error-accumulation/validate.ts
+```ts twoslash file=<rootDir>/error-accumulation/validate.ts
 
 ```
 
@@ -39,7 +39,7 @@ With `Effect.validate`, we can collect all the errors encountered during the com
 
 The `Effect.validateAll` function is similar to the `Effect.forEach` function. It transforms all elements of a collection using the provided effectful operation, but it collects all errors in the error channel, as well as the success values in the success channel.
 
-```ts file=<rootDir>/error-accumulation/validateAll.ts
+```ts twoslash file=<rootDir>/error-accumulation/validateAll.ts
 
 ```
 
@@ -54,7 +54,7 @@ The `Effect.validateAll` function is similar to the `Effect.forEach` function. I
 
 The `Effect.validateFirst` function is similar to `Effect.validateAll` but it will return the first success (or all the failures):
 
-```ts file=<rootDir>/error-accumulation/validateFirst.ts
+```ts twoslash file=<rootDir>/error-accumulation/validateFirst.ts
 
 ```
 
@@ -64,7 +64,7 @@ Please note that the return type is `number` instead of `number[]`, as in the ca
 
 The `Effect.partition` function takes an iterable and an effectful function that transforms each value of the iterable. It then creates a tuple of both failures and successes in the success channel:
 
-```ts file=<rootDir>/error-accumulation/partition.ts
+```ts twoslash file=<rootDir>/error-accumulation/partition.ts
 
 ```
 

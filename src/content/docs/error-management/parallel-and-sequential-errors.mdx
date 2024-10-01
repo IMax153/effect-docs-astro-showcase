@@ -9,7 +9,7 @@ import { Aside } from "@astrojs/starlight/components"
 
 In a typical Effect application, when an error occurs, it usually fails with the first error encountered by the Effect runtime:
 
-```ts file=<rootDir>/parallel-and-sequential-errors/first-error.ts
+```ts twoslash file=<rootDir>/parallel-and-sequential-errors/first-error.ts
 
 ```
 
@@ -19,7 +19,7 @@ In this case, the program will fail with the first error, which is "Oh uh!":
 
 However, in some situations, you may encounter multiple errors, especially when performing parallel computations. When parallel computations are involved, the application may fail due to multiple errors:
 
-```ts file=<rootDir>/parallel-and-sequential-errors/parallel-errors.ts
+```ts twoslash file=<rootDir>/parallel-and-sequential-errors/parallel-errors.ts
 
 ```
 
@@ -31,7 +31,7 @@ Effect provides a useful function called `Effect.parallelErrors` that exposes al
 
 **Example**
 
-```ts file=<rootDir>/parallel-and-sequential-errors/parallelErrors.ts
+```ts twoslash file=<rootDir>/parallel-and-sequential-errors/parallelErrors.ts
 
 ```
 
@@ -47,7 +47,7 @@ In this example, `Effect.parallelErrors` combines the errors from `fail1` and `f
 When working with resource-safety operators like `Effect.ensuring`, you may encounter multiple sequential errors.
 This happens because regardless of whether the original effect has any errors or not, the finalizer is uninterruptible and will run:
 
-```ts file=<rootDir>/parallel-and-sequential-errors/sequential-errors.ts
+```ts twoslash file=<rootDir>/parallel-and-sequential-errors/sequential-errors.ts
 
 ```
 

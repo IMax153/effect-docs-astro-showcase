@@ -81,7 +81,7 @@ Let's define our first service:
 - We'll use the string `"MyRandomService"` as the unique identifier.
 - The service type will have a single operation called `next` that returns a random number.
 
-```ts file=<rootDir>/services/Random.ts
+```ts twoslash file=<rootDir>/services/Random.ts
 
 ```
 
@@ -114,7 +114,7 @@ Now that we have our service tag defined, let's see how we can use it by buildin
 
 <TabItem label="Using Effect.gen">
 
-```ts file=<rootDir>/services/using-Random-gen.ts
+```ts twoslash file=<rootDir>/services/using-Random-gen.ts
 
 ```
 
@@ -125,7 +125,7 @@ This allows us to access the `next` operation of the service.
 
 <TabItem label="Using pipe">
 
-```ts file=<rootDir>/services/using-Random-pipe.ts
+```ts twoslash file=<rootDir>/services/using-Random-pipe.ts
 
 ```
 
@@ -147,7 +147,7 @@ This indicates that our program requires the `Random` service to be provided in 
 
 If we attempt to execute the effect without providing the necessary service we will encounter a type-checking error:
 
-```ts file=<rootDir>/services/run-error.ts
+```ts twoslash file=<rootDir>/services/run-error.ts
 
 ```
 

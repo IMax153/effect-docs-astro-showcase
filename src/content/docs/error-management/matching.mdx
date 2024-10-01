@@ -13,7 +13,7 @@ The `Effect.match` function allows us to handle both success and failure cases i
 
 **Example**
 
-```ts file=<rootDir>/matching/match.ts
+```ts twoslash file=<rootDir>/matching/match.ts
 
 ```
 
@@ -21,7 +21,7 @@ The `Effect.match` function allows us to handle both success and failure cases i
 
 We can choose to ignore the success and failure values if we're not interested in them:
 
-```ts file=<rootDir>/matching/match-ignore.ts
+```ts twoslash file=<rootDir>/matching/match-ignore.ts
 
 ```
 
@@ -29,7 +29,7 @@ In this case, we use the `constVoid` function from the `Function` module, which 
 
 Alternatively, we can achieve the same result using the `Effect.ignore` function:
 
-```ts file=<rootDir>/matching/ignore.ts
+```ts twoslash file=<rootDir>/matching/ignore.ts
 
 ```
 
@@ -39,7 +39,7 @@ In addition to `Effect.match`, we have the `Effect.matchEffect` function, which 
 
 **Example**
 
-```ts file=<rootDir>/matching/matchEffect.ts
+```ts twoslash file=<rootDir>/matching/matchEffect.ts
 
 ```
 
@@ -50,6 +50,6 @@ This allows us to handle different failure causes separately and take appropriat
 
 **Example: `matchCauseEffect`**
 
-```ts file=<rootDir>/matching/matchCauseEffect.ts
+```ts twoslash file=<rootDir>/matching/matchCauseEffect.ts
 
 ```
