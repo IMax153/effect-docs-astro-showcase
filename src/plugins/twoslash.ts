@@ -45,22 +45,22 @@ const defaultCompilerOptions: CompilerOptions = {
   noEmit: true
 }
 
-const vfs = new Map<string, string>()
-const system = createFSBackedSystem(
-  vfs,
-  process.cwd().split(path.sep).join(path.posix.sep),
-  ts
-)
-const env = createVirtualTypeScriptEnvironment(
-  system,
-  [],
-  ts,
-  defaultCompilerOptions
-)
-const ls = env.languageService
-let filenameCounter = 0
-
 export default function pluginCodeOutput() {
+  const vfs = new Map<string, string>()
+  const system = createFSBackedSystem(
+    vfs,
+    process.cwd().split(path.sep).join(path.posix.sep),
+    ts
+  )
+  const env = createVirtualTypeScriptEnvironment(
+    system,
+    [],
+    ts,
+    defaultCompilerOptions
+  )
+  const ls = env.languageService
+  let filenameCounter = 0
+
   return definePlugin({
     name: "@plugins/twoslash",
     baseStyles: `
