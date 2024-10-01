@@ -17,7 +17,7 @@ whether you're working on network requests, database interactions, or any other 
 
 To demonstrate the functionality of different retry functions, we will be working with the following helper that simulates an effect with possible failures:
 
-```ts title="simulation.ts" file=<rootDir>/retrying/simulation.ts
+```ts file=<rootDir>/retrying/simulation.ts
 
 ```
 
@@ -31,7 +31,7 @@ Effect.retry(effect, policy)
 
 **Example**
 
-```ts twoslash file=<rootDir>/retrying/retry.ts
+```ts twoslash collapse={3-15} file=<rootDir>/retrying/retry.ts
 
 ```
 
@@ -39,7 +39,7 @@ Effect.retry(effect, policy)
 
 There is a shortcut when the policy is trivial and the failed effect is immediately retried:
 
-```ts twoslash file=<rootDir>/retrying/retry-times.ts
+```ts twoslash collapse={3-15} file=<rootDir>/retrying/retry-times.ts
 
 ```
 
@@ -57,7 +57,7 @@ Effect.retryOrElse(effect, policy, fallback)
 
 **Example**
 
-```ts twoslash file=<rootDir>/retrying/retryOrElse.ts
+```ts twoslash collapse={3-15} file=<rootDir>/retrying/retryOrElse.ts
 
 ```
 

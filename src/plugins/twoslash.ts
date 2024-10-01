@@ -45,6 +45,9 @@ const defaultCompilerOptions: CompilerOptions = {
   noEmit: true
 }
 
+// let ok = 0
+// let ko = 0
+
 export default function pluginCodeOutput() {
   const vfs = new Map<string, string>()
   const system = createFSBackedSystem(
@@ -59,7 +62,6 @@ export default function pluginCodeOutput() {
     defaultCompilerOptions
   )
   const ls = env.languageService
-  let filenameCounter = 0
 
   return definePlugin({
     name: "@plugins/twoslash",
@@ -73,27 +75,28 @@ export default function pluginCodeOutput() {
         if (!context.codeBlock.metaOptions.getBoolean("twoslash")) {
           return
         }
-        const filename =
-          context.codeBlock.metaOptions.getString("file") ??
-          `twoslash-${filenameCounter++}.ts`
+        const filename = "_.ts"
         const file = context.codeBlock.code
         env.createFile(filename, file)
         const errs = ls
           .getSemanticDiagnostics(filename)
           .concat(ls.getSyntacticDiagnostics(filename))
-        if (errs.length) {
-          return
-        }
         // if (errs.length) {
-        //   const diagnostics = errs.map((err) => {
-        //     const message = ts.flattenDiagnosticMessageText(
-        //       err.messageText,
-        //       "\n"
-        //     )
-        //     return `${message} at ${err.file!.fileName}:${err.start}`
-        //   })
-        //   throw new Error(diagnostics.join("\n") + "\n\n" + file)
+        //   console.log(`ko: ${++ko}`)
+        //   return
+        // } else {
+        //   console.log(`ok: ${++ok}`)
         // }
+        if (errs.length) {
+          const diagnostics = errs.map((err) => {
+            const message = ts.flattenDiagnosticMessageText(
+              err.messageText,
+              "\n"
+            )
+            return `${message} at ${err.file!.fileName}:${err.start}`
+          })
+          throw new Error(diagnostics.join("\n") + "\n\n" + file)
+        }
         const sourceFile = env.getSourceFile(filename)!
         const identifiers = getIdentifierTextSpans(sourceFile)
         for (const identifier of identifiers) {
@@ -106,14 +109,8 @@ export default function pluginCodeOutput() {
             const docs = quickInfo.documentation
               ? quickInfo.documentation.map((d) => d.text).join("\n")
               : undefined
-            // Use TypeScript to pull out line/char from the original code at the position
-            const burnerSourceFile = ts.createSourceFile(
-              "_.ts",
-              file,
-              ts.ScriptTarget.ES2022
-            )
             const { line, character } = ts.getLineAndCharacterOfPosition(
-              burnerSourceFile,
+              sourceFile,
               span.start
             )
             const ecLine = context.codeBlock.getLine(line)
