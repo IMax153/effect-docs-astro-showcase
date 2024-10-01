@@ -159,7 +159,7 @@ In the next section, we will explore how to implement and provide the `Random` s
 
 In order to provide an actual implementation of the `Random` service, we can utilize the `Effect.provideService` function.
 
-```ts twoslash
+```ts twoslash collapse={3-12}
 import { Effect, Context } from "effect"
 
 class Random extends Context.Tag("MyRandomService")<
@@ -173,7 +173,6 @@ const program = Effect.gen(function* () {
   console.log(`random number: ${randomNumber}`)
 })
 
-// ---cut---
 const runnable = Effect.provideService(program, Random, {
   next: Effect.sync(() => Math.random())
 })
@@ -297,7 +296,7 @@ The `program` effect now has a `Requirements` type parameter of `Random | Logger
 
 To execute the `program`, we need to provide implementations for both services:
 
-```ts twoslash
+```ts twoslash collapse={3-22}
 import { Effect, Context } from "effect"
 
 class Random extends Context.Tag("MyRandomService")<
@@ -321,7 +320,6 @@ const program = Effect.gen(function* () {
   return yield* logger.log(String(randomNumber))
 })
 
-// ---cut---
 // Provide service implementations for 'Random' and 'Logger'
 const runnable1 = program.pipe(
   Effect.provideService(Random, {
@@ -335,7 +333,7 @@ const runnable1 = program.pipe(
 
 Alternatively, instead of calling `provideService` multiple times, we can combine the service implementations into a single `Context` and then provide the entire context using the `Effect.provide` function:
 
-```ts twoslash
+```ts twoslash collapse={3-22}
 import { Effect, Context } from "effect"
 
 class Random extends Context.Tag("MyRandomService")<
@@ -359,7 +357,6 @@ const program = Effect.gen(function* () {
   return yield* logger.log(String(randomNumber))
 })
 
-// ---cut---
 // Combine service implementations into a single 'Context'
 const context = Context.empty().pipe(
   Context.add(Random, { next: Effect.sync(() => Math.random()) }),
@@ -444,7 +441,7 @@ In the code above, we can observe that the `Requirements` type parameter of the 
 
 When we run the `program` effect without providing the `Random` service:
 
-```ts
+```ts showLineNumbers=false
 Effect.runPromise(program).then(console.log)
 // Output: -1
 ```
@@ -453,7 +450,7 @@ We see that the log message contains `-1`, which is the default value we provide
 
 However, if we provide the `Random` service implementation:
 
-```ts
+```ts showLineNumbers=false
 Effect.runPromise(
   Effect.provideService(program, Random, {
     next: Effect.sync(() => Math.random())
