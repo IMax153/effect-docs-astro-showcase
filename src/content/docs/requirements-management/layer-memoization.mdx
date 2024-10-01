@@ -9,14 +9,17 @@ import { Aside } from "@astrojs/starlight/components"
 
 Layer memoization allows a layer to be created once and used multiple times in the dependency graph. If we use the same layer twice, for example
 
-```ts
+```ts showLineNumbers=false
 Layer.merge(Layer.provide(b, a), Layer.provide(c, a))
 ```
 
 then the `a` layer will be allocated only once.
 
 <Aside type="caution">
-  Layers are memoized using **reference equality**. Therefore, if you have a layer that is created by calling a function like `f()`, you should _only_ call that `f` once and re-use the resulting layer so that you are always using the same instance.
+  Layers are memoized using **reference equality**. Therefore, if you have a
+  layer that is created by calling a function like `f()`, you should _only_
+  call that `f` once and re-use the resulting layer so that you are always
+  using the same instance.
 </Aside>
 
 ## Memoization When Providing Globally
@@ -78,7 +81,7 @@ Although both `b` and `c` layers require the `a` layer, the `a` layer is instant
 
 If we don't want to share a module, we should create a fresh, non-shared version of it through `Layer.fresh`.
 
-```ts twoslash
+```ts twoslash collapse={3-33}
 import { Effect, Context, Layer } from "effect"
 
 class A extends Context.Tag("A")<A, { readonly a: number }>() {}
@@ -113,7 +116,6 @@ const program = Effect.gen(function* () {
   yield* C
 })
 
-// ---cut---
 const runnable = Effect.provide(
   program,
   Layer.merge(
