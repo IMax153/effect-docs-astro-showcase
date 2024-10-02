@@ -26,7 +26,7 @@ Let's start by comparing the types of `Promise` and `Effect`. The type parameter
 
 <TabItem label="Promise">
 
-```ts
+```ts showLineNumbers=false
 Promise<A>
 ```
 
@@ -34,7 +34,7 @@ Promise<A>
 
 <TabItem label="Effect">
 
-```ts
+```ts showLineNumbers=false
 Effect<A, Error, Context>
 ```
 
@@ -58,7 +58,7 @@ Let's compare creating a successful operation using `Promise` and `Effect`:
 <TabItem label="Promise">
 
 ```ts twoslash
-export const success = Promise.resolve(2)
+const success = Promise.resolve(2)
 ```
 
 </TabItem>
@@ -68,7 +68,7 @@ export const success = Promise.resolve(2)
 ```ts twoslash
 import { Effect } from "effect"
 
-export const success = Effect.succeed(2)
+const success = Effect.succeed(2)
 ```
 
 </TabItem>
@@ -84,17 +84,17 @@ Now, let's see how to handle failures with `Promise` and `Effect`:
 <TabItem label="Promise">
 
 ```ts twoslash
-export const failure = Promise.reject("Uh oh!")
+const failure = Promise.reject("Uh oh!")
 ```
 
 </TabItem>
 
-<TabItem label="Promise">
+<TabItem label="Effect">
 
 ```ts twoslash
 import { Effect } from "effect"
 
-export const failure = Effect.fail("Uh oh!")
+const failure = Effect.fail("Uh oh!")
 ```
 
 </TabItem>
@@ -110,7 +110,7 @@ Creating operations with custom logic:
 <TabItem label="Promise">
 
 ```ts twoslash
-export const task = new Promise<number>((resolve, reject) => {
+const task = new Promise<number>((resolve, reject) => {
   setTimeout(() => {
     Math.random() > 0.5 ? resolve(2) : reject("Uh oh!")
   }, 300)
@@ -124,7 +124,7 @@ export const task = new Promise<number>((resolve, reject) => {
 ```ts twoslash
 import { Effect } from "effect"
 
-export const task = Effect.gen(function* () {
+const task = Effect.gen(function* () {
   yield* Effect.sleep("300 millis")
   return Math.random() > 0.5 ? 2 : yield* Effect.fail("Uh oh!")
 })
@@ -145,7 +145,7 @@ Mapping the result of an operation:
 <TabItem label="Promise">
 
 ```ts twoslash
-export const mapped = Promise.resolve("Hello").then((s) => s.length)
+const mapped = Promise.resolve("Hello").then((s) => s.length)
 ```
 
 </TabItem>
@@ -155,7 +155,7 @@ export const mapped = Promise.resolve("Hello").then((s) => s.length)
 ```ts twoslash
 import { Effect } from "effect"
 
-export const mapped = Effect.succeed("Hello").pipe(
+const mapped = Effect.succeed("Hello").pipe(
   Effect.map((s) => s.length)
   // or Effect.andThen((s) => s.length)
 )
@@ -174,7 +174,7 @@ Chaining multiple operations:
 <TabItem label="Promise">
 
 ```ts twoslash
-export const flatMapped = Promise.resolve("Hello").then((s) =>
+const flatMapped = Promise.resolve("Hello").then((s) =>
   Promise.resolve(s.length)
 )
 ```
@@ -186,7 +186,7 @@ export const flatMapped = Promise.resolve("Hello").then((s) =>
 ```ts twoslash
 import { Effect } from "effect"
 
-export const flatMapped = Effect.succeed("Hello").pipe(
+const flatMapped = Effect.succeed("Hello").pipe(
   Effect.flatMap((s) => Effect.succeed(s.length))
   // or Effect.andThen((s) => Effect.succeed(s.length))
 )
@@ -231,11 +231,11 @@ program().then(console.log) // Output: "Result is: 6"
 
 </TabItem>
 
-<TabItem label="Promise">
+<TabItem label="Effect">
 
 ```ts twoslash
 import { Effect } from "effect"
-// ---cut---
+
 const increment = (x: number) => x + 1
 
 const divide = (a: number, b: number): Effect.Effect<number, Error> =>
@@ -247,7 +247,7 @@ const task1 = Effect.promise(() => Promise.resolve(10))
 
 const task2 = Effect.promise(() => Promise.resolve(2))
 
-export const program = Effect.gen(function* () {
+const program = Effect.gen(function* () {
   const a = yield* task1
   const b = yield* task2
   const n1 = yield* divide(a, b)
@@ -255,7 +255,8 @@ export const program = Effect.gen(function* () {
   return `Result is: ${n2}`
 })
 
-Effect.runPromise(program).then(console.log) // Output: "Result is: 6"
+Effect.runPromise(program).then(console.log)
+// Output: "Result is: 6"
 ```
 
 </TabItem>
@@ -297,7 +298,7 @@ const task3 = new Promise<number>((resolve, reject) => {
   }, 300)
 })
 
-export const program = Promise.all([task1, task2, task3])
+const program = Promise.all([task1, task2, task3])
 
 program.then(console.log, console.error)
 /*
@@ -314,7 +315,7 @@ task3 done
 
 </TabItem>
 
-<TabItem label="Promise">
+<TabItem label="Effect">
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -340,7 +341,7 @@ const task3 = Effect.gen(function* () {
   return 3
 })
 
-export const program = Effect.all([task1, task2, task3], {
+const program = Effect.all([task1, task2, task3], {
   concurrency: "unbounded"
 })
 
@@ -391,7 +392,7 @@ const task3 = new Promise<number>((resolve, reject) => {
   }, 300)
 })
 
-export const program = Promise.allSettled([task1, task2, task3])
+const program = Promise.allSettled([task1, task2, task3])
 
 program.then(console.log, console.error)
 /*
@@ -412,7 +413,7 @@ task3 done
 
 </TabItem>
 
-<TabItem label="Promise">
+<TabItem label="Effect">
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -438,7 +439,7 @@ const task3 = Effect.gen(function* () {
   return 3
 })
 
-export const program = Effect.forEach(
+const program = Effect.forEach(
   [task1, task2, task3],
   (task) => Effect.either(task), // or Effect.exit
   {
@@ -508,7 +509,7 @@ const task3 = new Promise<number>((resolve, reject) => {
   }, 300)
 })
 
-export const program = Promise.any([task1, task2, task3])
+const program = Promise.any([task1, task2, task3])
 
 program.then(console.log, console.error)
 /*
@@ -525,7 +526,7 @@ task3 done
 
 </TabItem>
 
-<TabItem label="Promise">
+<TabItem label="Effect">
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -551,7 +552,7 @@ const task3 = Effect.gen(function* () {
   return yield* Effect.fail("Uh oh!")
 })
 
-export const program = Effect.raceAll([task1, task2, task3])
+const program = Effect.raceAll([task1, task2, task3])
 
 Effect.runPromise(program).then(console.log, console.error)
 /*
@@ -600,7 +601,7 @@ const task3 = new Promise<number>((resolve, reject) => {
   }, 300)
 })
 
-export const program = Promise.race([task1, task2, task3])
+const program = Promise.race([task1, task2, task3])
 
 program.then(console.log, console.error)
 /*
@@ -643,9 +644,7 @@ const task3 = Effect.gen(function* () {
   return 3
 })
 
-export const program = Effect.raceAll(
-  [task1, task2, task3].map(Effect.either)
-) // or Effect.exit
+const program = Effect.raceAll([task1, task2, task3].map(Effect.either)) // or Effect.exit
 
 Effect.runPromise(program).then(console.log, console.error)
 /*
