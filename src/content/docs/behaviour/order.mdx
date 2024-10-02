@@ -11,7 +11,7 @@ The function returns `-1`, `0`, or `1`, indicating whether the first value is le
 
 Here's the basic structure of an `Order`:
 
-```ts
+```ts showLineNumbers=false
 interface Order<A> {
   (first: A, second: A): -1 | 0 | 1
 }
@@ -29,13 +29,14 @@ The Order module comes with several built-in comparators for common data types:
 Here's how you can use these comparators:
 
 ```ts twoslash
-// @target: ES2020
 import { Order } from "effect"
 
 console.log(Order.string("apple", "banana"))
 // Output: -1, as "apple" < "banana"
+
 console.log(Order.number(1, 1))
 // Output: 0, as 1 = 1
+
 console.log(Order.bigint(2n, 1n))
 // Output: 1, as 2n > 1n
 ```
@@ -86,7 +87,7 @@ To achieve this, you can create a custom `Order`.
 Here's how you can do it:
 
 ```ts twoslash
-import { Order, Array } from "effect"
+import { Order } from "effect"
 
 // Define the Person interface
 interface Person {
@@ -94,8 +95,12 @@ interface Person {
   readonly age: number
 }
 
-// Create a custom sorting rule to sort Persons by their names in ascending order
-const byName = Order.mapInput(Order.string, (person: Person) => person.name)
+// Create a custom sorting rule to sort Persons
+// by their names in ascending order
+const byName = Order.mapInput(
+  Order.string,
+  (person: Person) => person.name
+)
 ```
 
 In this example, we first import the necessary modules and define the `Person` interface, representing our data structure.
@@ -116,9 +121,11 @@ interface Person {
   readonly age: number
 }
 
-const byName = Order.mapInput(Order.string, (person: Person) => person.name)
+const byName = Order.mapInput(
+  Order.string,
+  (person: Person) => person.name
+)
 
-// ---cut---
 const persons: ReadonlyArray<Person> = [
   { name: "Charlie", age: 22 },
   { name: "Alice", age: 25 },
@@ -159,7 +166,10 @@ interface Person {
 }
 
 // Create an Order to sort people by their names
-const byName = Order.mapInput(Order.string, (person: Person) => person.name)
+const byName = Order.mapInput(
+  Order.string,
+  (person: Person) => person.name
+)
 
 // Create an Order to sort people by their ages
 const byAge = Order.mapInput(Order.number, (person: Person) => person.age)
@@ -227,10 +237,13 @@ import { Order } from "effect"
 
 console.log(Order.lessThan(Order.number)(1, 2))
 // Output: true (1 < 2)
+
 console.log(Order.greaterThan(Order.number)(5, 3))
 // Output: true (5 > 3)
+
 console.log(Order.lessThanOrEqualTo(Order.number)(2, 2))
 // Output: true (2 <= 2)
+
 console.log(Order.greaterThanOrEqualTo(Order.number)(4, 4))
 // Output: true (4 >= 4)
 ```
@@ -244,6 +257,7 @@ import { Order } from "effect"
 
 console.log(Order.min(Order.number)(3, 1))
 // Output: 1 (1 is the minimum)
+
 console.log(Order.max(Order.number)(5, 8))
 // Output: 8 (8 is the maximum)
 ```
@@ -273,6 +287,7 @@ import { Order } from "effect"
 
 console.log(Order.between(Order.number)(15, { minimum: 10, maximum: 20 }))
 // Output: true (15 is within the range [10, 20])
+
 console.log(Order.between(Order.number)(5, { minimum: 10, maximum: 20 }))
 // Output: false (5 is outside the range [10, 20])
 ```
