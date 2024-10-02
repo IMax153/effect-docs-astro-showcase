@@ -7,8 +7,8 @@ sidebar:
 
 A `SubscriptionRef<A>` is a specialized form of a [SynchronizedRef](/state-management/synchronizedref). It allows us to subscribe and receive updates on the current value and any changes made to that value.
 
-```ts
-export interface SubscriptionRef<A> extends SynchronizedRef<A> {
+```ts showLineNumbers=false
+interface SubscriptionRef<A> extends SynchronizedRef<A> {
   /**
    * A stream containing the current value of the `Ref` as well as all changes
    * to that value.

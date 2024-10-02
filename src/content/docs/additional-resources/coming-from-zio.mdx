@@ -2,22 +2,17 @@
 title: Coming From ZIO
 description: Key differences between Effect and ZIO explained, covering the representation of the environment, removal of `Has`, and the absence of predefined type aliases like `UIO`, `URIO`, `RIO`, `Task`, or `IO` in Effect.
 sidebar:
-  order: 6
+  order: 3
 ---
 
 If you are coming to Effect from ZIO, there are a few differences to be aware of.
 
 ## Environment
 
-In Effect, we represent the environment required to run an `Effect` workflow as a union of services:
+In Effect, we represent the environment required to run an effect workflow as a **union** of services:
 
-```ts twoslash
+```ts twoslash "Console | Logger"
 import { Effect } from "effect"
-
-//                                                          v---------v---- `R` is a union of Console | Logger
-type Http = Effect.Effect<Response, IOError | HttpError, Console | Logger>
-
-type Response = Record<string, string>
 
 interface IOError {
   readonly _tag: "IOError"
@@ -34,11 +29,16 @@ interface Console {
 interface Logger {
   readonly log: (msg: string) => void
 }
+
+type Response = Record<string, string>
+
+// `R` is a union of `Console` and `Logger`
+type Http = Effect.Effect<Response, IOError | HttpError, Console | Logger>
 ```
 
 This may be confusing to folks coming from ZIO, where the environment is represented as an intersection of services:
 
-```scala
+```scala showLineNumbers=false
 type Http = ZIO[Console with Logger, IOError, Response]
 ```
 
@@ -49,18 +49,21 @@ The rationale for using a union to represent the environment required by an `Eff
 To be able to remove `Has` from Effect, we had to think a bit more structurally given that TypeScript is a structural type system. In TypeScript, if you have a type `A & B` where there is a structural conflict between `A` and `B`, the type `A & B` will reduce to `never`.
 
 ```ts twoslash
-// @errors: 2322
-export interface A {
+interface A {
   readonly prop: string
 }
 
-export interface B {
+interface B {
   readonly prop: number
 }
 
 const ab: A & B = {
+  // @ts-expect-error
   prop: ""
 }
+/*
+Type 'string' is not assignable to type 'never'.ts(2322)
+*/
 ```
 
 In previous versions of Effect, intersections were used for representing an environment with multiple services. The problem with using intersections (i.e. `A & B`) is that there could be multiple services in the environment that have functions and properties named in the same way. To remedy this, we wrapped services in the `Has` type (similar to ZIO 1.0), so you would have `Has<A> & Has<B>` in your environment.
@@ -72,14 +75,15 @@ To facilitate removal of `Has` in Effect, we had to consider how types in the en
 From our example above:
 
 ```ts twoslash
-export interface A {
+interface A {
   readonly prop: string
 }
 
-export interface B {
+interface B {
   readonly prop: number
 }
 
+// ok
 const ab: A | B = {
   prop: ""
 }

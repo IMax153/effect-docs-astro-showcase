@@ -9,7 +9,7 @@ import { Aside } from "@astrojs/starlight/components"
 
 Effect offers various options to manage how effects are executed and control the overall operation's result. These options help determine how many effects can run at the same time concurrently.
 
-```ts
+```ts showLineNumbers=false
 type Options = {
   readonly concurrency?: Concurrency
   /* ... other options ... */
@@ -18,13 +18,13 @@ type Options = {
 
 In this section, we'll focus on the option that handles concurrency, which is the `concurrency` option with a type of `Concurrency`:
 
-```ts
+```ts showLineNumbers=false
 type Concurrency = number | "unbounded" | "inherit"
 ```
 
 Let's understand the meaning of each configuration value.
 
-<Aside type="note">
+<Aside type="tip">
   The following examples use the `Effect.all` function, but the concept
   applies to many other Effect APIs that accept concurrency options, such as
   `Effect.forEach`.

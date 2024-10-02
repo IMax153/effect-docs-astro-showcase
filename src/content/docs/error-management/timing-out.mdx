@@ -20,7 +20,7 @@ The `Effect.timeout` function employs a [Duration](/data-types/duration) paramet
 
 **Example**
 
-```ts file=<rootDir>/timeout/timeout.ts
+```ts twoslash file=<rootDir>/timeout/timeout.ts
 
 ```
 
@@ -38,7 +38,7 @@ If you want to handle the timeout as a regular result, you can use `Effect.timeo
 
 **Example**
 
-```ts file=<rootDir>/timeout/timeoutOption.ts
+```ts twoslash file=<rootDir>/timeout/timeoutOption.ts
 
 ```
 
@@ -58,13 +58,13 @@ When an operation does not finish within the specified duration, the behavior of
 
 1. **Interruptible Operation**: If the operation can be interrupted, it is terminated immediately once the timeout threshold is reached, resulting in a `TimeoutException`.
 
-   ```ts file=<rootDir>/timeout/interruptible.ts
+   ```ts twoslash file=<rootDir>/timeout/interruptible.ts
 
    ```
 
 2. **Uninterruptible Operation**: If the operation is uninterruptible, it continues until completion before the `TimeoutException` is assessed.
 
-   ```ts file=<rootDir>/timeout/uninterruptible.ts
+   ```ts twoslash file=<rootDir>/timeout/uninterruptible.ts
 
    ```
 
@@ -91,7 +91,7 @@ Here's the distinction:
 
 Consider a scenario where a long-running data processing task is initiated, and you want to ensure the system remains responsive, even if the data processing takes too long:
 
-```ts file=<rootDir>/timeout/disconnect.ts
+```ts twoslash file=<rootDir>/timeout/disconnect.ts
 
 ```
 
@@ -103,7 +103,7 @@ In addition to the basic `Effect.timeout` function, there are variations availab
 
 The `Effect.timeoutFail` function allows you to produce a specific error when a timeout happens:
 
-```ts file=<rootDir>/timeout/timeoutFail.ts
+```ts twoslash file=<rootDir>/timeout/timeoutFail.ts
 
 ```
 
@@ -112,7 +112,7 @@ The `Effect.timeoutFail` function allows you to produce a specific error when a 
 The `Effect.timeoutFailCause` function allows you to produce a specific defect when a timeout occurs.
 This is useful when you need to handle timeouts as exceptional cases in your code:
 
-```ts file=<rootDir>/timeout/timeoutFailCause.ts
+```ts twoslash file=<rootDir>/timeout/timeoutFailCause.ts
 
 ```
 
@@ -121,6 +121,6 @@ This is useful when you need to handle timeouts as exceptional cases in your cod
 The `Effect.timeoutTo` function is similar to `Effect.timeout`, but it provides more control over the final result type.
 It allows you to define alternative outcomes for both successful and timed-out operations:
 
-```ts file=<rootDir>/timeout/timeoutTo.ts
+```ts twoslash file=<rootDir>/timeout/timeoutTo.ts
 
 ```

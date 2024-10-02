@@ -145,7 +145,7 @@ const result = Option.match(foo, {
 console.log(result) // Output: "Option has a value: 1"
 ```
 
-<Aside type="tip" title="Matching">
+<Aside type="tip">
   Using `match` instead of `isSome` or `isNone` can be more expressive and
   provide a clear way to handle both cases of an `Option`.
 </Aside>
@@ -179,12 +179,6 @@ The `Option.flatMap` function works similarly to `Option.map`, but with an addit
 Let's explore an example that involves a **nested** optional property. We have a `User` model with an optional `address` field of type `Option<Address>`:
 
 ```ts {7} twoslash
-interface Address {
-  readonly city: string
-  readonly street: Option.Option<string>
-}
-
-// ---cut---
 import { Option } from "effect"
 
 interface User {
@@ -193,14 +187,25 @@ interface User {
   readonly email: Option.Option<string>
   readonly address: Option.Option<Address>
 }
+
+interface Address {
+  readonly city: string
+  readonly street: Option.Option<string>
+}
 ```
 
 The `address` field itself contains a nested optional property called `street` of type `Option<string>`:
 
-```ts {3} twoslash
+```ts {12} twoslash
 import { Option } from "effect"
 
-// ---cut---
+interface User {
+  readonly id: number
+  readonly username: string
+  readonly email: Option.Option<string>
+  readonly address: Option.Option<Address>
+}
+
 interface Address {
   readonly city: string
   readonly street: Option.Option<string>
@@ -224,7 +229,6 @@ interface User {
   readonly address: Option.Option<Address>
 }
 
-// ---cut---
 const user: User = {
   id: 1,
   username: "john_doe",
@@ -235,7 +239,9 @@ const user: User = {
   })
 }
 
-const street = user.address.pipe(Option.flatMap((address) => address.street))
+const street = user.address.pipe(
+  Option.flatMap((address) => address.street)
+)
 ```
 
 Here's how it works: if the `address` is `Some`, meaning it has a value, the mapping function `(addr) => addr.street` is applied to retrieve the `street` value. On the other hand, if the `address` is `None`, indicating the absence of a value, the mapping function is not executed, and the result is also `None`.

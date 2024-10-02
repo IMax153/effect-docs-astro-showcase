@@ -68,13 +68,13 @@ Here's how the do simulation works:
 
 1. Start the do simulation using the `Effect.Do` value:
 
-   ```ts
+   ```ts showLineNumbers=false
    const program = Effect.Do.pipe(/* ... rest of the code */)
    ```
 
 2. Within the do simulation scope, you can use the `Effect.bind` function to define variables and bind them to `Effect` values:
 
-   ```ts
+   ```ts showLineNumbers=false
    Effect.bind("variableName", (scope) => effectValue)
    ```
 
@@ -83,7 +83,7 @@ Here's how the do simulation works:
 
 3. You can accumulate multiple `Effect.bind` statements to define multiple variables within the scope:
 
-   ```ts
+   ```ts showLineNumbers=false
    Effect.bind("variable1", () => effectValue1),
    Effect.bind("variable2", ({ variable1 }) => effectValue2),
    // ... additional bind statements
@@ -91,7 +91,7 @@ Here's how the do simulation works:
 
 4. Inside the do simulation scope, you can also use the `Effect.let` function to define variables and bind them to simple values:
 
-   ```ts
+   ```ts showLineNumbers=false
    Effect.let("variableName", (scope) => simpleValue)
    ```
 
@@ -100,7 +100,7 @@ Here's how the do simulation works:
 
 5. Regular Effect functions like `Effect.andThen`, `Effect.flatMap`, `Effect.tap`, and `Effect.map` can still be used within the do simulation. These functions will receive the accumulated variables as arguments within the scope:
 
-   ```ts
+   ```ts showLineNumbers=false
    Effect.andThen(({ variable1, variable2 }) => {
      // Perform operations using variable1 and variable2
      // Return an `Effect` value as the result

@@ -19,8 +19,8 @@ Later, during the assembly of the final application, you can provide specific la
 
 <Aside type="caution">
   Some modules in `@effect/platform` are still in development or marked as
-  experimental. These features are subject to change. For the most up-to-date
-  documentation and details, please refer to the official
+  experimental. These features are subject to change. For the most
+  up-to-date documentation and details, please refer to the official
   [README](https://github.com/Effect-TS/effect/blob/main/packages/platform/README.md)
   of the package.
 </Aside>
@@ -33,7 +33,7 @@ To install the **beta** version:
 
 <TabItem label="npm" icon="seti:npm">
 
-```bash
+```sh showLineNumbers=false
 npm install @effect/platform
 ```
 
@@ -41,7 +41,7 @@ npm install @effect/platform
 
 <TabItem label="pnpm" icon="pnpm">
 
-```bash
+```sh showLineNumbers=false
 pnpm add @effect/platform
 ```
 
@@ -49,7 +49,7 @@ pnpm add @effect/platform
 
 <TabItem label="Yarn" icon="yarn">
 
-```bash
+```sh showLineNumbers=false
 yarn add @effect/platform
 ```
 
@@ -57,7 +57,7 @@ yarn add @effect/platform
 
 <TabItem label="Bun" icon="bun">
 
-```bash
+```sh showLineNumbers=false
 bun add @effect/platform
 ```
 
@@ -89,7 +89,7 @@ First, install the Node.js-specific package:
 
 <TabItem label="npm" icon="seti:npm">
 
-```bash
+```sh showLineNumbers=false
 npm install @effect/platform-node
 ```
 
@@ -97,7 +97,7 @@ npm install @effect/platform-node
 
 <TabItem label="pnpm" icon="pnpm">
 
-```bash
+```sh showLineNumbers=false
 pnpm add @effect/platform-node
 ```
 
@@ -105,7 +105,7 @@ pnpm add @effect/platform-node
 
 <TabItem label="Yarn" icon="yarn">
 
-```bash
+```sh showLineNumbers=false
 yarn add @effect/platform-node
 ```
 
@@ -136,7 +136,7 @@ Finally, run the program in Node.js using `tsx`:
 
 <TabItem label="npm" icon="seti:npm">
 
-```bash
+```sh showLineNumbers=false
 npx tsx index.ts
 # Output: tmp/file.txt
 ```
@@ -145,7 +145,7 @@ npx tsx index.ts
 
 <TabItem label="pnpm" icon="pnpm">
 
-```bash
+```sh showLineNumbers=false
 pnpm dlx tsx index.ts
 # Output: tmp/file.txt
 ```
@@ -154,7 +154,7 @@ pnpm dlx tsx index.ts
 
 <TabItem label="Yarn" icon="seti:yarn">
 
-```bash
+```sh showLineNumbers=false
 yarn dlx tsx index.ts
 # Output: tmp/file.txt
 ```
@@ -167,7 +167,7 @@ yarn dlx tsx index.ts
 
 To run the same program in Bun, first install the Bun-specific package:
 
-```bash
+```sh showLineNumbers=false
 bun add @effect/platform-bun
 ```
 
@@ -190,7 +190,7 @@ BunRuntime.runMain(program.pipe(Effect.provide(BunContext.layer)))
 
 Run the program in Bun:
 
-```bash
+```sh showLineNumbers=false
 bun index.ts
-# Output: tmp/file.txt
+tmp/file.txt
 ```

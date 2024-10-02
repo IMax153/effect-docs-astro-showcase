@@ -52,7 +52,7 @@ bun add effect
 
 Micro is a component of the Effect library and can be imported similarly to any other module in your TypeScript project:
 
-```ts twoslash
+```ts showLineNumbers=false
 import * as Micro from "effect/Micro"
 ```
 
@@ -62,7 +62,7 @@ This import statement allows you to access all functionalities of Micro, enablin
 
 The `Micro` type uses three type parameters:
 
-```ts
+```ts showLineNumbers=false
 Micro<Success, Error, Requirements>
 ```
 
@@ -80,7 +80,7 @@ which mirror those of the `Effect` type:
 
 The `MicroExit` type is designed to capture the outcome of a `Micro` computation. It uses the [Either](/data-types/either) data type to distinguish between successful outcomes and failures:
 
-```ts
+```ts showLineNumbers=false
 type MicroExit<A, E = never> = Either<A, MicroCause<E>>
 ```
 
@@ -90,7 +90,7 @@ The `MicroCause` type represents the possible causes of an effect's failure.
 
 `MicroCause` consists of three specific types:
 
-```ts
+```ts showLineNumbers=false
 type MicroCause<E> = Die | Fail<E> | Interrupt
 ```
 
@@ -140,7 +140,7 @@ function fetchWeather(city: string): Promise<string> {
     }, 1_000)
   })
 }
-// ---cut---
+
 function getWeather(city: string) {
   return Micro.promise(() => fetchWeather(city))
 }
@@ -170,7 +170,7 @@ function fetchWeather(city: string): Promise<string> {
 function getWeather(city: string) {
   return Micro.promise(() => fetchWeather(city))
 }
-// ---cut---
+
 const weatherEffect = getWeather("London")
 
 Micro.runPromise(weatherEffect)
@@ -209,7 +209,7 @@ function getWeather(city: string) {
 }
 
 const weatherEffect = getWeather("London")
-// ---cut---
+
 Micro.runPromiseExit(weatherEffect).then((exit) => console.log(exit))
 /*
 Output:
@@ -236,7 +236,7 @@ function fetchWeather(city: string): Promise<string> {
     }, 1_000)
   })
 }
-// ---cut---
+
 class WeatherError {
   readonly _tag = "WeatherError"
   constructor(readonly message: string) {}
@@ -254,7 +254,9 @@ const weatherEffect = getWeather("Paris")
 
 Micro.runPromise(weatherEffect)
   .then((result) => console.log(`The weather in London is: ${result}`))
-  .catch((error) => console.error(`Failed to fetch weather data: ${error}`))
+  .catch((error) =>
+    console.error(`Failed to fetch weather data: ${error}`)
+  )
 /*
 Output:
 Failed to fetch weather data: MicroCause.Fail: {"_tag":"WeatherError","message":"Error: Weather data not found for this location"}
@@ -285,6 +287,7 @@ import * as Micro from "effect/Micro"
 class NetworkError {
   readonly _tag = "NetworkError"
 }
+
 class ValidationError {
   readonly _tag = "ValidationError"
 }
@@ -325,6 +328,7 @@ import * as Micro from "effect/Micro"
 class NetworkError {
   readonly _tag = "NetworkError"
 }
+
 class ValidationError {
   readonly _tag = "ValidationError"
 }
@@ -337,7 +341,9 @@ const task = Micro.gen(function* () {
 })
 
 const recovered = task.pipe(
-  Micro.catchAll((error) => Micro.succeed(`Recovering from ${error._tag}`))
+  Micro.catchAll((error) =>
+    Micro.succeed(`Recovering from ${error._tag}`)
+  )
 )
 
 Micro.runPromiseExit(recovered).then(console.log)
@@ -357,6 +363,7 @@ import * as Micro from "effect/Micro"
 class NetworkError {
   readonly _tag = "NetworkError"
 }
+
 class ValidationError {
   readonly _tag = "ValidationError"
 }
@@ -487,7 +494,9 @@ const program = Micro.orElseSucceed(validate(3), () => 0)
 import * as Micro from "effect/Micro"
 
 const success: Micro.Micro<number, Error> = Micro.succeed(42)
-const failure: Micro.Micro<number, Error> = Micro.fail(new Error("Uh oh!"))
+const failure: Micro.Micro<number, Error> = Micro.fail(
+  new Error("Uh oh!")
+)
 
 const program1 = Micro.match(success, {
   onFailure: (error) => `failure: ${error.message}`,
@@ -513,11 +522,15 @@ const consoleLog = (message: string) =>
   Micro.sync(() => console.log(message))
 
 const success: Micro.Micro<number, Error> = Micro.succeed(42)
-const failure: Micro.Micro<number, Error> = Micro.fail(new Error("Uh oh!"))
+const failure: Micro.Micro<number, Error> = Micro.fail(
+  new Error("Uh oh!")
+)
 
 const program1 = Micro.matchEffect(success, {
   onFailure: (error) =>
-    Micro.succeed(`failure: ${error.message}`).pipe(Micro.tap(consoleLog)),
+    Micro.succeed(`failure: ${error.message}`).pipe(
+      Micro.tap(consoleLog)
+    ),
   onSuccess: (value) =>
     Micro.succeed(`success: ${value}`).pipe(Micro.tap(consoleLog))
 })
@@ -530,7 +543,9 @@ success: 42
 
 const program2 = Micro.matchEffect(failure, {
   onFailure: (error) =>
-    Micro.succeed(`failure: ${error.message}`).pipe(Micro.tap(consoleLog)),
+    Micro.succeed(`failure: ${error.message}`).pipe(
+      Micro.tap(consoleLog)
+    ),
   onSuccess: (value) =>
     Micro.succeed(`success: ${value}`).pipe(Micro.tap(consoleLog))
 })
@@ -571,15 +586,13 @@ const program = Micro.matchCauseEffect(exceptionalEffect, {
 
 To demonstrate the functionality of the `Micro.retry` function, we will be working with the following helper that simulates an effect with possible failures:
 
-<div style="display: none;">
-
-```ts twoslash include simulated-effect
+```ts twoslash
 import * as Micro from "effect/Micro"
 
 let count = 0
 
 // Simulates an effect with possible failures
-export const effect = Micro.async<string, Error>((resume) => {
+const effect = Micro.async<string, Error>((resume) => {
   if (count <= 2) {
     count++
     console.log("failure")
@@ -591,22 +604,24 @@ export const effect = Micro.async<string, Error>((resume) => {
 })
 ```
 
-</div>
-
-```ts twoslash
-// @include: simulated-effect
-```
-
 ### retry
 
 ```ts twoslash
-// @filename: simulated-effect.ts
-// @include: simulated-effect
-
-// @filename: index.ts
-// ---cut---
 import * as Micro from "effect/Micro"
-import { effect } from "./simulated-effect"
+
+let count = 0
+
+// Simulates an effect with possible failures
+const effect = Micro.async<string, Error>((resume) => {
+  if (count <= 2) {
+    count++
+    console.log("failure")
+    resume(Micro.fail(new Error()))
+  } else {
+    console.log("success")
+    resume(Micro.succeed("yay!"))
+  }
+})
 
 // Define a repetition policy using a spaced delay between retries
 const policy = Micro.scheduleSpaced(100)
@@ -717,7 +732,9 @@ error cause: MicroCause.Fail: NetworkError
 */
 
 // Simulate a severe failure in the system by causing a defect with a specific message.
-const task2: Micro.Micro<number, string> = Micro.die("Something went wrong")
+const task2: Micro.Micro<number, string> = Micro.die(
+  "Something went wrong"
+)
 
 // This will log the cause of any expected error or defect
 const tapping2 = Micro.tapErrorCause(task2, (cause) =>
@@ -755,7 +772,9 @@ No Output
 */
 
 // Simulate a severe failure in the system by causing a defect with a specific message.
-const task2: Micro.Micro<number, string> = Micro.die("Something went wrong")
+const task2: Micro.Micro<number, string> = Micro.die(
+  "Something went wrong"
+)
 
 // This will only log defects, not errors
 const tapping2 = Micro.tapDefect(task2, (cause) =>
@@ -1219,13 +1238,11 @@ failure
 
 To demonstrate the functionality of different schedules, we will be working with the following helper:
 
-<div style="display: none;">
-
-```ts twoslash include dryRun
+```ts twoslash
 import type * as Micro from "effect/Micro"
 import * as Option from "effect/Option"
 
-export const dryRun = (
+const dryRun = (
   schedule: Micro.MicroSchedule,
   maxAttempt: number = 7
 ): Array<number> => {
@@ -1244,24 +1261,31 @@ export const dryRun = (
 }
 ```
 
-</div>
-
-```ts [dryRun.ts] twoslash
-// @include: dryRun
-```
-
 ### scheduleSpaced
 
 A schedule that recurs continuously, each repetition spaced the specified duration from the last run.
 
-```ts twoslash
-// @filename: dryRun.ts
-// @include: dryRun
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={4-20}
 import * as Micro from "effect/Micro"
-import { dryRun } from "./dryRun"
+import * as Option from "effect/Option"
+
+const dryRun = (
+  schedule: Micro.MicroSchedule,
+  maxAttempt: number = 7
+): Array<number> => {
+  let attempt = 1
+  let elapsed = 0
+  let duration = schedule(attempt, elapsed)
+  const out: Array<number> = []
+  while (Option.isSome(duration) && attempt <= maxAttempt) {
+    const value = duration.value
+    attempt++
+    elapsed += value
+    out.push(value)
+    duration = schedule(attempt, elapsed)
+  }
+  return out
+}
 
 const policy = Micro.scheduleSpaced(10)
 
@@ -1279,14 +1303,27 @@ Output:
 
 A schedule that recurs using exponential backoff.
 
-```ts twoslash
-// @filename: dryRun.ts
-// @include: dryRun
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={4-20}
 import * as Micro from "effect/Micro"
-import { dryRun } from "./dryRun"
+import * as Option from "effect/Option"
+
+const dryRun = (
+  schedule: Micro.MicroSchedule,
+  maxAttempt: number = 7
+): Array<number> => {
+  let attempt = 1
+  let elapsed = 0
+  let duration = schedule(attempt, elapsed)
+  const out: Array<number> = []
+  while (Option.isSome(duration) && attempt <= maxAttempt) {
+    const value = duration.value
+    attempt++
+    elapsed += value
+    out.push(value)
+    duration = schedule(attempt, elapsed)
+  }
+  return out
+}
 
 const policy = Micro.scheduleExponential(10)
 
@@ -1305,14 +1342,27 @@ Output:
 
 Combines two schedules through union, by recurring if either schedule wants to recur, using the minimum of the two delays between recurrences.
 
-```ts twoslash
-// @filename: dryRun.ts
-// @include: dryRun
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={4-20}
 import * as Micro from "effect/Micro"
-import { dryRun } from "./dryRun"
+import * as Option from "effect/Option"
+
+const dryRun = (
+  schedule: Micro.MicroSchedule,
+  maxAttempt: number = 7
+): Array<number> => {
+  let attempt = 1
+  let elapsed = 0
+  let duration = schedule(attempt, elapsed)
+  const out: Array<number> = []
+  while (Option.isSome(duration) && attempt <= maxAttempt) {
+    const value = duration.value
+    attempt++
+    elapsed += value
+    out.push(value)
+    duration = schedule(attempt, elapsed)
+  }
+  return out
+}
 
 const policy = Micro.scheduleUnion(
   Micro.scheduleExponential(10),
@@ -1338,14 +1388,27 @@ Output:
 
 Combines two schedules through the intersection, by recurring only if both schedules want to recur, using the maximum of the two delays between recurrences.
 
-```ts twoslash
-// @filename: dryRun.ts
-// @include: dryRun
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={4-20}
 import * as Micro from "effect/Micro"
-import { dryRun } from "./dryRun"
+import * as Option from "effect/Option"
+
+const dryRun = (
+  schedule: Micro.MicroSchedule,
+  maxAttempt: number = 7
+): Array<number> => {
+  let attempt = 1
+  let elapsed = 0
+  let duration = schedule(attempt, elapsed)
+  const out: Array<number> = []
+  while (Option.isSome(duration) && attempt <= maxAttempt) {
+    const value = duration.value
+    attempt++
+    elapsed += value
+    out.push(value)
+    duration = schedule(attempt, elapsed)
+  }
+  return out
+}
 
 const policy = Micro.scheduleIntersect(
   Micro.scheduleExponential(10),

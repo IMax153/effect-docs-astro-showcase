@@ -57,13 +57,13 @@ finalizer 1
 */
 ```
 
-By default, when a `Scope` is closed, all finalizers added to that `Scope` are executed in the reverse order in which they were added. This approach makes sense because releasing resources in the reverse order of acquisition ensures that resources are properly closed.
+By default, when a scope is closed, all finalizers added to that scope are **executed in the reverse order** in which they were added. This approach makes sense because releasing resources in the reverse order of acquisition ensures that resources are properly closed.
 
 For instance, if you open a network connection and then access a file on a remote server, you must close the file before closing the network connection. This sequence is critical to maintaining the ability to interact with the remote server.
 
 ## addFinalizer
 
-Now, let's dive into the `Effect.addFinalizer` function, which provides a higher-level API for adding finalizers to the scope of an `Effect` value. These finalizers are guaranteed to execute when the associated scope is closed, and their behavior may depend on the `Exit` value with which the scope is closed.
+Now, let's dive into the `Effect.addFinalizer` function, which provides a higher-level API for adding finalizers to the scope of an effect value. These finalizers are guaranteed to execute when the associated scope is closed, and their behavior may depend on the `Exit` value with which the scope is closed.
 
 Let's explore some examples to understand this better.
 
@@ -120,7 +120,7 @@ finalizer after Success
 
 Here, the `Effect.addFinalizer` operator adds a `Scope` to the context required by the workflow, as indicated by:
 
-```ts
+```ts showLineNumbers=false
 Effect<void, never, Scope>
 ```
 
@@ -435,11 +435,11 @@ finalizer after task 2
 
 In this example, we create two separate scopes, `scope1` and `scope2`, and extend the scope of each task into its respective scope. When you run the program, it outputs the tasks and their finalizers in a different order.
 
-<Aside type="tip" title="Extending a Scope">
-  The `Scope.extend` function allows you to extend the scope of an `Effect`
-  workflow that requires a scope into another scope without closing the scope
-  when the workflow finishes executing. This allows you to extend a scoped
-  value into a larger scope.
+<Aside type="note" title="Extending a Scope">
+  The `Scope.extend` function allows you to extend the scope of an effect
+  workflow that requires a scope into another scope without closing the
+  scope when the workflow finishes executing. This allows you to extend a
+  scoped value into a larger scope.
 </Aside>
 
 You might wonder what happens when a scope is closed, but a task within that scope hasn't completed yet. The key point to note is that the scope closing doesn't force the task to be interrupted. It will continue running, and the finalizer will execute immediately when registered. The call to `close` will only wait for the finalizers that have already been registered.
@@ -463,13 +463,11 @@ The guarantee of the `Effect.acquireRelease` operator is that if the `acquire` w
 
 For example, let's define a simple resource:
 
-<div style="display: none;">
-
-```ts twoslash include resource
+```ts twoslash
 import { Effect } from "effect"
 
 // Define the interface for the resource
-export interface MyResource {
+interface MyResource {
   readonly contents: string
   readonly close: () => Promise<void>
 }
@@ -486,7 +484,7 @@ const getMyResource = (): Promise<MyResource> =>
   })
 
 // Define the acquisition of the resource with error handling
-export const acquire = Effect.tryPromise({
+const acquire = Effect.tryPromise({
   try: () =>
     getMyResource().then((res) => {
       console.log("Resource acquired")
@@ -496,21 +494,15 @@ export const acquire = Effect.tryPromise({
 })
 
 // Define the release of the resource
-export const release = (res: MyResource) => Effect.promise(() => res.close())
+const release = (res: MyResource) => Effect.promise(() => res.close())
 
-export const resource = Effect.acquireRelease(acquire, release)
-```
-
-</div>
-
-```ts [resource.ts] twoslash
-// @include: resource
+const resource = Effect.acquireRelease(acquire, release)
 ```
 
 Notice that the `Effect.acquireRelease` operator added a `Scope` to the context required by the workflow:
 
-```ts
-Effect<MyResource, Error, Scope>
+```ts showLineNumbers=false
+const resource: Effect<MyResource, Error, Scope>
 ```
 
 This indicates that the workflow needs a `Scope` to run and adds a finalizer that will close the resource when the scope is closed.
@@ -521,14 +513,40 @@ We can continue working with the resource for as long as we want by using `Effec
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash
-// @filename: resource.ts
-// @include: resource
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={3-33}
 import { Effect } from "effect"
-import { resource } from "./resource"
+
+// Define the interface for the resource
+interface MyResource {
+  readonly contents: string
+  readonly close: () => Promise<void>
+}
+
+// Simulate getting the resource
+const getMyResource = (): Promise<MyResource> =>
+  Promise.resolve({
+    contents: "lorem ipsum",
+    close: () =>
+      new Promise((resolve) => {
+        console.log("Resource released")
+        resolve()
+      })
+  })
+
+// Define the acquisition of the resource with error handling
+const acquire = Effect.tryPromise({
+  try: () =>
+    getMyResource().then((res) => {
+      console.log("Resource acquired")
+      return res
+    }),
+  catch: () => new Error("getMyResourceError")
+})
+
+// Define the release of the resource
+const release = (res: MyResource) => Effect.promise(() => res.close())
+
+const resource = Effect.acquireRelease(acquire, release)
 
 const program = Effect.gen(function* () {
   const res = yield* resource
@@ -540,14 +558,40 @@ const program = Effect.gen(function* () {
 
 <TabItem label="Using pipe">
 
-```ts twoslash
-// @filename: resource.ts
-// @include: resource
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={3-33}
 import { Effect, Console } from "effect"
-import { resource } from "./resource"
+
+// Define the interface for the resource
+interface MyResource {
+  readonly contents: string
+  readonly close: () => Promise<void>
+}
+
+// Simulate getting the resource
+const getMyResource = (): Promise<MyResource> =>
+  Promise.resolve({
+    contents: "lorem ipsum",
+    close: () =>
+      new Promise((resolve) => {
+        console.log("Resource released")
+        resolve()
+      })
+  })
+
+// Define the acquisition of the resource with error handling
+const acquire = Effect.tryPromise({
+  try: () =>
+    getMyResource().then((res) => {
+      console.log("Resource acquired")
+      return res
+    }),
+  catch: () => new Error("getMyResourceError")
+})
+
+// Define the release of the resource
+const release = (res: MyResource) => Effect.promise(() => res.close())
+
+const resource = Effect.acquireRelease(acquire, release)
 
 const program = resource.pipe(
   Effect.andThen((res) => Console.log(`content is ${res.contents}`))
@@ -564,14 +608,40 @@ Once we are done working with the resource, we can close the scope using the `Ef
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash
-// @filename: resource.ts
-// @include: resource
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={3-33}
 import { Effect } from "effect"
-import { resource } from "./resource"
+
+// Define the interface for the resource
+interface MyResource {
+  readonly contents: string
+  readonly close: () => Promise<void>
+}
+
+// Simulate getting the resource
+const getMyResource = (): Promise<MyResource> =>
+  Promise.resolve({
+    contents: "lorem ipsum",
+    close: () =>
+      new Promise((resolve) => {
+        console.log("Resource released")
+        resolve()
+      })
+  })
+
+// Define the acquisition of the resource with error handling
+const acquire = Effect.tryPromise({
+  try: () =>
+    getMyResource().then((res) => {
+      console.log("Resource acquired")
+      return res
+    }),
+  catch: () => new Error("getMyResourceError")
+})
+
+// Define the release of the resource
+const release = (res: MyResource) => Effect.promise(() => res.close())
+
+const resource = Effect.acquireRelease(acquire, release)
 
 const program = Effect.scoped(
   Effect.gen(function* () {
@@ -585,14 +655,40 @@ const program = Effect.scoped(
 
 <TabItem label="Using pipe">
 
-```ts twoslash
-// @filename: resource.ts
-// @include: resource
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={3-33}
 import { Effect, Console } from "effect"
-import { resource } from "./resource"
+
+// Define the interface for the resource
+interface MyResource {
+  readonly contents: string
+  readonly close: () => Promise<void>
+}
+
+// Simulate getting the resource
+const getMyResource = (): Promise<MyResource> =>
+  Promise.resolve({
+    contents: "lorem ipsum",
+    close: () =>
+      new Promise((resolve) => {
+        console.log("Resource released")
+        resolve()
+      })
+  })
+
+// Define the acquisition of the resource with error handling
+const acquire = Effect.tryPromise({
+  try: () =>
+    getMyResource().then((res) => {
+      console.log("Resource acquired")
+      return res
+    }),
+  catch: () => new Error("getMyResourceError")
+})
+
+// Define the release of the resource
+const release = (res: MyResource) => Effect.promise(() => res.close())
+
+const resource = Effect.acquireRelease(acquire, release)
 
 const program = Effect.scoped(
   resource.pipe(
@@ -605,11 +701,11 @@ const program = Effect.scoped(
 
 </Tabs>
 
-The `Effect.scoped` operator removes the `Scope` from the context, indicating that there are no longer any resources used by this workflow which require a scope.
+The `Effect.scoped` function removes the `Scope` from the context, indicating that there are no longer any resources used by this workflow which require a scope.
 
 We now have a workflow that is ready to run:
 
-```ts
+```ts showLineNumbers=false
 Effect.runPromise(program)
 /*
 Resource acquired
@@ -620,20 +716,48 @@ Resource released
 
 ## acquireUseRelease
 
-The `Effect.acquireUseRelease(acquire, use, release)` function is a specialized version of the `Effect.acquireRelease` function that simplifies resource management by automatically handling the scoping of resources.
+The `Effect.acquireUseRelease` function is a specialized version of the `Effect.acquireRelease` function that simplifies resource management by automatically handling the scoping of resources.
 
-The main difference is that `acquireUseRelease` eliminates the need to manually call `Effect.scoped` to manage the resource's scope. It has additional knowledge about when you are done using the resource created with the `acquire` step. This is achieved by providing a `use` argument, which represents the function that operates on the acquired resource. As a result, `acquireUseRelease` can automatically determine when it should execute the release step.
+```ts showLineNumbers=false
+Effect.acquireUseRelease(acquire, use, release)
+```
 
-Here's an example that demonstrates the usage of `acquireUseRelease`:
+The main difference is that `Effect.acquireUseRelease` eliminates the need to manually call `Effect.scoped` to manage the resource's scope. It has additional knowledge about when you are done using the resource created with the `acquire` step. This is achieved by providing a `use` argument, which represents the function that operates on the acquired resource. As a result, `Effect.acquireUseRelease` can automatically determine when it should execute the release step.
 
-```ts twoslash
-// @filename: resource.ts
-// @include: resource
+**Example**
 
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={3-31}
 import { Effect, Console } from "effect"
-import { MyResource, acquire, release } from "./resource"
+
+// Define the interface for the resource
+interface MyResource {
+  readonly contents: string
+  readonly close: () => Promise<void>
+}
+
+// Simulate getting the resource
+const getMyResource = (): Promise<MyResource> =>
+  Promise.resolve({
+    contents: "lorem ipsum",
+    close: () =>
+      new Promise((resolve) => {
+        console.log("Resource released")
+        resolve()
+      })
+  })
+
+// Define the acquisition of the resource with error handling
+const acquire = Effect.tryPromise({
+  try: () =>
+    getMyResource().then((res) => {
+      console.log("Resource acquired")
+      return res
+    }),
+  catch: () => new Error("getMyResourceError")
+})
+
+// Define the release of the resource
+const release = (res: MyResource) => Effect.promise(() => res.close())
 
 const use = (res: MyResource) => Console.log(`content is ${res.contents}`)
 

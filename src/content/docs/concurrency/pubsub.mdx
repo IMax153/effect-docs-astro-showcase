@@ -142,7 +142,9 @@ You can determine the capacity and current size of the pubsub using `PubSub.capa
 import { Effect, PubSub, Console } from "effect"
 
 const program = PubSub.bounded<number>(2).pipe(
-  Effect.tap((pubsub) => Console.log(`capacity: ${PubSub.capacity(pubsub)}`)),
+  Effect.tap((pubsub) =>
+    Console.log(`capacity: ${PubSub.capacity(pubsub)}`)
+  ),
   Effect.tap((pubsub) =>
     PubSub.size(pubsub).pipe(
       Effect.andThen((size) => Console.log(`size: ${size}`))
@@ -170,7 +172,7 @@ As you can see, the operators on `PubSub` are identical to the ones on [Queue](/
 
 In fact, a `PubSub` can be viewed as a `Queue` that can only be written to:
 
-```ts
+```ts showLineNumbers=false
 interface PubSub<A> extends Queue.Enqueue<A> {}
 ```
 

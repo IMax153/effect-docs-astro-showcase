@@ -166,9 +166,11 @@ import { Schema } from "@effect/schema"
 const EmailLocaleIDs = Schema.Literal("welcome_email", "email_heading")
 const FooterLocaleIDs = Schema.Literal("footer_title", "footer_sendoff")
 
-// ---cut---
 // This creates a TemplateLiteral of type "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
-Schema.TemplateLiteral(Schema.Union(EmailLocaleIDs, FooterLocaleIDs), "_id")
+Schema.TemplateLiteral(
+  Schema.Union(EmailLocaleIDs, FooterLocaleIDs),
+  "_id"
+)
 ```
 
 The `Schema.TemplateLiteral` constructor supports the following types of spans:
@@ -249,9 +251,10 @@ ParseError: { string | filter }
 ```
 
 <Aside type="note">
-  Please note that the use of filters do not alter the `Type` of the schema.
-  They only serve to add additional constraints to the parsing process. If you
-  intend to modify the `Type`, consider using [Branded types](#branded-types).
+  Please note that the use of filters do not alter the `Type` of the
+  schema. They only serve to add additional constraints to the parsing
+  process. If you intend to modify the `Type`, consider using [Branded
+  types](#branded-types).
 </Aside>
 
 ### Predicate Function Structure
@@ -356,7 +359,9 @@ console.log(
     Schema.decodeUnknownEither(MyForm)({
       password: "abc",
       confirm_password: "d"
-    }).pipe(Either.mapLeft((error) => ArrayFormatter.formatErrorSync(error))),
+    }).pipe(
+      Either.mapLeft((error) => ArrayFormatter.formatErrorSync(error))
+    ),
     null,
     2
   )
@@ -429,7 +434,9 @@ console.log(
     Schema.decodeUnknownEither(MyForm)({
       password: "abc",
       confirm_password: "d"
-    }).pipe(Either.mapLeft((error) => ArrayFormatter.formatErrorSync(error))),
+    }).pipe(
+      Either.mapLeft((error) => ArrayFormatter.formatErrorSync(error))
+    ),
     null,
     2
   )
@@ -471,7 +478,9 @@ You can access the base schema for which the filter has been defined:
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
-const LongString = Schema.String.pipe(Schema.filter((s) => s.length >= 10))
+const LongString = Schema.String.pipe(
+  Schema.filter((s) => s.length >= 10)
+)
 
 // const From: typeof Schema.String
 const From = LongString.from
@@ -520,8 +529,8 @@ Schema.String.pipe(Schema.lowercased())
 
 <Aside type="note">
   The `trimmed` combinator does not make any transformations, it only
-  validates. If what you were looking for was a combinator to trim strings,
-  then check out the `trim` combinator or the `Trim` schema.
+  validates. If what you were looking for was a combinator to trim
+  strings, then check out the `trim` combinator or the `Trim` schema.
 </Aside>
 
 ### Number Filters
@@ -610,14 +619,18 @@ import { Schema } from "@effect/schema"
 import { BigDecimal } from "effect"
 
 // Specifies a BigDecimal greater than 5
-Schema.BigDecimal.pipe(Schema.greaterThanBigDecimal(BigDecimal.fromNumber(5)))
+Schema.BigDecimal.pipe(
+  Schema.greaterThanBigDecimal(BigDecimal.fromNumber(5))
+)
 
 // Specifies a BigDecimal greater than or equal to 5
 Schema.BigDecimal.pipe(
   Schema.greaterThanOrEqualToBigDecimal(BigDecimal.fromNumber(5))
 )
 // Specifies a BigDecimal less than 5
-Schema.BigDecimal.pipe(Schema.lessThanBigDecimal(BigDecimal.fromNumber(5)))
+Schema.BigDecimal.pipe(
+  Schema.lessThanBigDecimal(BigDecimal.fromNumber(5))
+)
 
 // Specifies a BigDecimal less than or equal to 5
 Schema.BigDecimal.pipe(
@@ -702,7 +715,6 @@ In the above example, `UserId` and `Username` are both aliases for the same type
 To avoid these kinds of issues, the Effect ecosystem provides a way to create custom types with a unique identifier attached to them. These are known as **branded types**.
 
 ```ts twoslash
-// @errors: 2345
 import { Brand } from "effect"
 
 type UserId = string & Brand.Brand<"UserId">
@@ -712,7 +724,12 @@ declare const getUser: (id: UserId) => object
 
 const myUsername: Username = "gcanti"
 
+// @ts-expect-error
 getUser(myUsername)
+/*
+Argument of type 'string' is not assignable to parameter of type 'UserId'.
+  Type 'string' is not assignable to type 'Brand<"UserId">'.ts(2345)
+*/
 ```
 
 By defining `UserId` as a branded type, the `getUser` function can accept only values of type `UserId`, and not plain strings or other types that are compatible with strings. This helps to prevent bugs caused by accidentally passing the wrong type of value to the function.
@@ -805,7 +822,6 @@ enum Fruits {
 
 const schema = Schema.Enums(Fruits)
 
-// ---cut---
 // Access the enum members
 schema.enums // Returns all enum members
 schema.enums.Apple // Access the Apple member
@@ -967,7 +983,9 @@ const DiscriminatedShape = Schema.Union(
 console.log(Schema.decodeUnknownSync(DiscriminatedShape)({ radius: 10 }))
 // Output: { kind: 'circle', radius: 10 }
 
-console.log(Schema.decodeUnknownSync(DiscriminatedShape)({ sideLength: 10 }))
+console.log(
+  Schema.decodeUnknownSync(DiscriminatedShape)({ sideLength: 10 })
+)
 // Output: { kind: 'square', sideLength: 10 }
 ```
 
@@ -999,8 +1017,8 @@ console.log(
 ```
 
 <Aside type="caution">
-  Please note that with `Schema.attachPropertySignature`, you can only add a
-  property, it cannot override an existing one.
+  Please note that with `Schema.attachPropertySignature`, you can only add
+  a property, it cannot override an existing one.
 </Aside>
 
 ### Exposed Values
@@ -1314,7 +1332,6 @@ const MyStruct = Schema.Struct({
   age: Schema.Number
 })
 
-// ---cut---
 /*
 const schema: Schema.Schema<{
     readonly name: string;
@@ -1329,8 +1346,8 @@ const schema = Schema.asSchema(MyStruct)
 
 <Aside type="caution">
   Note that `Schema.Struct({})` models the TypeScript type `{}`, which is
-  similar to `unknown`. This means that the schema will allow any type of data
-  to pass through without validation.
+  similar to `unknown`. This means that the schema will allow any type of
+  data to pass through without validation.
 </Aside>
 
 ### Index Signatures
@@ -1562,7 +1579,6 @@ const Person = Schema.Struct({
   )
 })
 
-// ---cut---
 console.log(Schema.decodeUnknownSync(Person)({ name: "name", AGE: "18" }))
 // Output: { name: 'name', age: 18 }
 ```
@@ -1670,7 +1686,9 @@ import { Schema } from "@effect/schema"
 const Product = Schema.Struct({
   name: Schema.String,
   price: Schema.NumberFromString,
-  quantity: Schema.optionalWith(Schema.NumberFromString, { default: () => 1 })
+  quantity: Schema.optionalWith(Schema.NumberFromString, {
+    default: () => 1
+  })
 })
 
 // Applying defaults in the decoding phase
@@ -2147,7 +2165,6 @@ However, note that `Schema.instanceOf` can only be used for classes that expose 
 If you try to use it with classes that, for some reason, have marked the constructor as `private`, you'll receive a TypeScript error:
 
 ```ts twoslash
-// @errors: 2345
 import { Schema } from "@effect/schema"
 
 class MyData {
@@ -2155,7 +2172,12 @@ class MyData {
   private constructor(readonly name: string) {}
 }
 
+// @ts-expect-error
 const MyDataSchema = Schema.instanceOf(MyData)
+/*
+Argument of type 'typeof MyData' is not assignable to parameter of type 'abstract new (...args: any) => any'.
+  Cannot assign a 'private' constructor type to a 'public' constructor type.ts(2345)
+*/
 ```
 
 In such cases, you cannot use `Schema.instanceOf`, and you must rely on [Schema.declare](#declaring-new-data-types) like this:
@@ -2192,7 +2214,6 @@ class MyData {
   private constructor(readonly name: string) {}
 }
 
-// ---cut---
 const MyDataSchema = Schema.declare(
   (input: unknown): input is MyData => input instanceof MyData,
   { identifier: "MyData" } // annotations
@@ -2289,9 +2310,12 @@ Schema.decodeUnknownSync(schema)({ a: "a" }) // ok
 Schema.decodeUnknownSync(schema)({ a: undefined }) // ok
 
 // Schema<{ readonly a?: string; }>
-const exactSchema = Schema.partialWith(Schema.Struct({ a: Schema.String }), {
-  exact: true
-})
+const exactSchema = Schema.partialWith(
+  Schema.Struct({ a: Schema.String }),
+  {
+    exact: true
+  }
+)
 
 Schema.decodeUnknownSync(exactSchema)({ a: "a" }) // ok
 Schema.decodeUnknownSync(exactSchema)({ a: undefined })
@@ -2385,8 +2409,8 @@ const Extended = Schema.Struct({
 The `Schema.extend` combinator offers a structured way to extend schemas, particularly useful when direct field spreading is insufficient—for instance, when you need to extend a struct with a union of structs.
 
 <Aside type="caution">
-  Note that not all extensions are supported, and their support depends on the
-  nature of the involved schemas:
+  Note that not all extensions are supported, and their support depends on
+  the nature of the involved schemas:
 </Aside>
 
 Possible extensions include:
@@ -2741,17 +2765,23 @@ const Category = Schema.Struct({
 <Aside type="caution">
   It is necessary to define the `Category` type and add an explicit type
   annotation because otherwise TypeScript would struggle to infer types
-  correctly. Without this annotation, you might encounter the error message:
+  correctly. Without this annotation, you might encounter the error
+  message:
 </Aside>
 
 ```ts twoslash
-// @errors: 2506 7024 7022
 import { Schema } from "@effect/schema"
 
+// @ts-expect-error
 const Category = Schema.Struct({
   name: Schema.String,
+  // @ts-expect-error
   subcategories: Schema.Array(Schema.suspend(() => Category))
 })
+/*
+'Category' implicitly has type 'any' because it does not have a type annotation and is
+referenced directly or indirectly in its own initializer.ts(7022)
+*/
 ```
 
 ### A Helpful Pattern to Simplify Schema Definition
@@ -2828,7 +2858,6 @@ It's important to note that `NumberFromString` is a schema that transforms a str
 When we add this field to the `Category` schema, TypeScript raises an error:
 
 ```ts twoslash
-// @errors: 2322
 import { Schema } from "@effect/schema"
 
 const fields = {
@@ -2843,9 +2872,15 @@ interface Category extends Schema.Struct.Type<typeof fields> {
 const Category = Schema.Struct({
   ...fields,
   subcategories: Schema.Array(
+    // @ts-expect-error
     Schema.suspend((): Schema.Schema<Category> => Category)
   )
 })
+/*
+Type 'Struct<{ subcategories: Array$<suspend<Category, Category, never>>; id: typeof NumberFromString; name: typeof String$; }>' is not assignable to type 'Schema<Category, Category, never>'.
+  The types of 'Encoded.id' are incompatible between these types.
+    Type 'string' is not assignable to type 'number'.ts(2322)
+*/
 ```
 
 This error occurs because the explicit annotation `Schema.Schema<Category>` is no longer sufficient and needs to be adjusted by explicitly adding the `Encoded` type:
@@ -2869,7 +2904,9 @@ interface CategoryEncoded extends Schema.Struct.Encoded<typeof fields> {
 const Category = Schema.Struct({
   ...fields,
   subcategories: Schema.Array(
-    Schema.suspend((): Schema.Schema<Category, CategoryEncoded> => Category)
+    Schema.suspend(
+      (): Schema.Schema<Category, CategoryEncoded> => Category
+    )
   )
 })
 ```

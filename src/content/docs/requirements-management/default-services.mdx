@@ -7,13 +7,8 @@ sidebar:
 
 Effect comes equipped with five pre-built services:
 
-```ts
-type DefaultServices =
-  | Clock
-  | ConfigProvider
-  | Console
-  | Random
-  | Tracer
+```ts showLineNumbers=false
+type DefaultServices = Clock | ConfigProvider | Console | Random | Tracer
 ```
 
 When we employ these services, there's no need to explicitly provide their implementations. Effect automatically supplies live versions of these services to our effects, sparing us from manual setup.

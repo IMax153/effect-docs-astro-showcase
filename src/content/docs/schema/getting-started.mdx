@@ -58,13 +58,13 @@ Once you have installed the library, you can import the necessary types and func
 
 **Example** (Namespace Import)
 
-```ts twoslash
+```ts showLineNumbers=false
 import * as Schema from "@effect/schema/Schema"
 ```
 
 **Example** (Named Import)
 
-```ts twoslash
+```ts showLineNumbers=false
 import { Schema } from "@effect/schema"
 ```
 
@@ -132,7 +132,6 @@ const Person = Schema.Struct({
   age: Schema.NumberFromString
 })
 
-// ---cut---
 interface Person extends Schema.Schema.Type<typeof Person> {}
 /*
 Equivalent to:
@@ -303,7 +302,7 @@ if (Either.isLeft(result2)) {
 
 The `decode` function returns an `Either<A, ParseError>`, where `ParseError` is defined as follows:
 
-```ts
+```ts showLineNumbers=false
 interface ParseError {
   readonly _tag: "ParseError"
   readonly issue: ParseIssue
@@ -435,8 +434,8 @@ console.log(
 ```
 
 <Aside type="note">
-  The [onExcessProperty](#excess-properties) and [error](#all-errors) options
-  also affect encoding.
+  The [onExcessProperty](#excess-properties) and [error](#all-errors)
+  options also affect encoding.
 </Aside>
 
 ### All errors
@@ -472,8 +471,8 @@ ParseError: { readonly name: string; readonly age: number }
 ```
 
 <Aside type="note">
-  The [onExcessProperty](#excess-properties) and [error](#all-errors) options
-  also affect encoding.
+  The [onExcessProperty](#excess-properties) and [error](#all-errors)
+  options also affect encoding.
 </Aside>
 
 ### Managing Property Order
@@ -522,7 +521,9 @@ const effectify = (duration: Duration.DurationInput) =>
     Schema.transformOrFail(Schema.Number, {
       strict: true,
       decode: (x) =>
-        Effect.sleep(duration).pipe(Effect.andThen(ParseResult.succeed(x))),
+        Effect.sleep(duration).pipe(
+          Effect.andThen(ParseResult.succeed(x))
+        ),
       encode: ParseResult.succeed
     })
   )
@@ -710,8 +711,8 @@ ParseError: { readonly name: NonEmpty; readonly age: NumberFromString }
 Note that during encoding, the number value `30` was converted to a string `"30"`.
 
 <Aside type="note">
-  The [onExcessProperty](#excess-properties) and [error](#all-errors) options
-  also affect encoding.
+  The [onExcessProperty](#excess-properties) and [error](#all-errors)
+  options also affect encoding.
 </Aside>
 
 ### Handling Unsupported Encoding
@@ -743,7 +744,11 @@ export const SafeDecode = <A, I>(self: Schema.Schema<A, I, never>) => {
         Either.match(actual, {
           onLeft: () =>
             ParseResult.fail(
-              new ParseResult.Forbidden(ast, actual, "cannot encode a Left")
+              new ParseResult.Forbidden(
+                ast,
+                actual,
+                "cannot encode a Left"
+              )
             ),
           onRight: ParseResult.succeed
         })
@@ -827,7 +832,7 @@ Here's how the `Schema.is` function works
 
 The type `I`, typically used in schema transformations, does not influence the generation of the type guard. The primary focus is on ensuring that the input conforms to the desired type `A`.
 
-**Example Usage**:
+**Example**
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -854,7 +859,7 @@ console.log(isPerson({})) // false
 
 While type guards verify and inform about type conformity, the `Schema.asserts` function takes it a step further by asserting that an input matches the schema `A` type (from `Schema<A, I, R>`). If the input does not match, it throws a detailed error.
 
-**Example Usage**:
+**Example**
 
 ```ts twoslash
 import { Schema } from "@effect/schema"

@@ -40,7 +40,8 @@ The `Schema` type has three type parameters with the following meanings:
 <Aside type="note">
   In the Effect ecosystem, you may often encounter the type parameters of
   `Schema` abbreviated as `A`, `I`, and `R` respectively. This is just
-  shorthand for the type value of type **A**, **I**nput, and **R**equirements.
+  shorthand for the type value of type **A**, **I**nput, and
+  **R**equirements.
 </Aside>
 
 `Schema` values are immutable, and all `@effect/schema` functions produce new `Schema` values.
@@ -79,7 +80,7 @@ Encoding from `unknown` involves two key steps:
 
 2. **Encoding:** Following the successful check, we proceed to convert the `Date` into a `string`. This process completes the encoding operation, where the data is both validated and transformed.
 
-<Aside type="note">
+<Aside type="tip">
   As a general rule, schemas should be defined such that encode + decode
   return the original value.
 </Aside>
@@ -104,11 +105,9 @@ In simpler terms, if you encode a value and then immediately decode it, the resu
 - TypeScript **5.0** or newer
 - The `strict` flag enabled in your `tsconfig.json` file
 - The `exactOptionalPropertyTypes` flag enabled in your `tsconfig.json` file
-  ```json
+  ```json showLineNumbers=false
   {
-    // ...
     "compilerOptions": {
-      // ...
       "strict": true,
       "exactOptionalPropertyTypes": true
     }
@@ -125,9 +124,7 @@ Let's delve into this with an example.
 
 **With exactOptionalPropertyTypes Enabled**
 
-```ts twoslash
-// @exactOptionalPropertyTypes: true
-// @errors: 2379
+```ts
 import { Schema } from "@effect/schema"
 
 const Person = Schema.Struct({
@@ -152,7 +149,7 @@ Here, notice that the type of `name` is "exact" (`string`), which means the type
 
 If, for some reason, you can't enable the `exactOptionalPropertyTypes` option (perhaps due to conflicts with other third-party libraries), you can still use `@effect/schema`. However, there will be a mismatch between the types and the runtime behavior:
 
-```ts twoslash
+```ts
 import { Schema } from "@effect/schema"
 
 const Person = Schema.Struct({

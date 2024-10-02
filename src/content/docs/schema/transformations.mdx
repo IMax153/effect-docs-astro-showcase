@@ -76,8 +76,8 @@ const ReadonlySetFromArray = <A, I, R>(
 <Aside type="note">
   Please note that to define the target schema, we used
   [Schema.typeSchema](/schema/projections#typeschema). This is because the
-  decoding/encoding of the elements is already handled by the `from` schema,
-  `Schema.Array(itemSchema)`.
+  decoding/encoding of the elements is already handled by the `from`
+  schema, `Schema.Array(itemSchema)`.
 </Aside>
 
 **Example: Trim Whitespace**
@@ -137,7 +137,6 @@ Sometimes the strict type checking can impede certain operations where types mig
 Let's consider the scenario where you need to define a constructor `clamp` that ensures a number falls within a specific range. This function returns a schema that "clamps" a number to a specified minimum and maximum range:
 
 ```ts twoslash
-// @errors: 2345
 import { Schema } from "@effect/schema"
 import { Number } from "effect"
 
@@ -150,12 +149,19 @@ const clamp =
         Schema.typeSchema,
         Schema.filter((a) => a <= minimum || a >= maximum)
       ),
+      // @ts-expect-error
       {
         strict: true,
         decode: (a) => Number.clamp(a, { minimum, maximum }),
         encode: (a) => a
       }
     )
+/*
+Argument of type '{ strict: true; decode: (a: A) => number; encode: (a: A) => A; }' is not assignable to parameter of type '{ readonly decode: (fromA: A, fromI: I) => A; readonly encode: (toI: A, toA: A) => A; readonly strict?: true; } | { readonly decode: (fromA: A, fromI: I) => unknown; readonly encode: (toI: A, toA: A) => unknown; readonly strict: false; }'.
+  The types returned by 'decode(...)' are incompatible between these types.
+    Type 'number' is not assignable to type 'A'.
+      'number' is assignable to the constraint of type 'A', but 'A' could be instantiated with a different subtype of constraint 'number'.ts(2345)
+*/
 ```
 
 In this code, `Number.clamp` is a function that adjusts the given number to stay within the specified range. However, the return type of `Number.clamp` may not strictly be of type `A` but just a `number`, which can lead to type mismatches according to TypeScript's strict type-checking.
@@ -165,7 +171,7 @@ There are two ways to resolve the type mismatch:
 1. **Using Type Assertion**:
    Adding a type cast can enforce the return type to be treated as type `A`:
 
-   ```ts
+   ```ts showLineNumbers=false
    decode: (a) => Number.clamp(a, { minimum, maximum }) as A
    ```
 
@@ -289,15 +295,19 @@ const api = (url: string): Effect.Effect<unknown, Error> =>
 const PeopleId = Schema.String.pipe(Schema.brand("PeopleId"))
 
 // Define a schema with async transformation
-const PeopleIdFromString = Schema.transformOrFail(Schema.String, PeopleId, {
-  strict: true,
-  decode: (s, _, ast) =>
-    Effect.mapBoth(api(`https://swapi.dev/api/people/${s}`), {
-      onFailure: (e) => new ParseResult.Type(ast, s, e.message),
-      onSuccess: () => s
-    }),
-  encode: ParseResult.succeed
-})
+const PeopleIdFromString = Schema.transformOrFail(
+  Schema.String,
+  PeopleId,
+  {
+    strict: true,
+    decode: (s, _, ast) =>
+      Effect.mapBoth(api(`https://swapi.dev/api/people/${s}`), {
+        onFailure: (e) => new ParseResult.Type(ast, s, e.message),
+        onSuccess: () => s
+      }),
+    encode: ParseResult.succeed
+  }
+)
 
 const decode = (id: string) =>
   Effect.mapError(Schema.decodeUnknown(PeopleIdFromString)(id), (e) =>
@@ -360,15 +370,19 @@ const api = (url: string): Effect.Effect<unknown, Error, "Fetch"> =>
 
 const PeopleId = Schema.String.pipe(Schema.brand("PeopleId"))
 
-const PeopleIdFromString = Schema.transformOrFail(Schema.String, PeopleId, {
-  strict: true,
-  decode: (s, _, ast) =>
-    Effect.mapBoth(api(`https://swapi.dev/api/people/${s}`), {
-      onFailure: (e) => new ParseResult.Type(ast, s, e.message),
-      onSuccess: () => s
-    }),
-  encode: ParseResult.succeed
-})
+const PeopleIdFromString = Schema.transformOrFail(
+  Schema.String,
+  PeopleId,
+  {
+    strict: true,
+    decode: (s, _, ast) =>
+      Effect.mapBoth(api(`https://swapi.dev/api/people/${s}`), {
+        onFailure: (e) => new ParseResult.Type(ast, s, e.message),
+        onSuccess: () => s
+      }),
+    encode: ParseResult.succeed
+  }
+)
 
 const decode = (id: string) =>
   Effect.mapError(Schema.decodeUnknown(PeopleIdFromString)(id), (e) =>
@@ -385,9 +399,9 @@ Output:
 { _id: 'Exit', _tag: 'Success', value: '1' }
 */
 
-Effect.runPromiseExit(decode("fail").pipe(Effect.provide(FetchLive))).then(
-  console.log
-)
+Effect.runPromiseExit(
+  decode("fail").pipe(Effect.provide(FetchLive))
+).then(console.log)
 /*
 Output:
 {
@@ -421,7 +435,9 @@ async function validateUsername(username: string) {
 const ValidUsername = Schema.String.pipe(
   Schema.filterEffect((username) =>
     Effect.promise(() =>
-      validateUsername(username).then((valid) => valid || "Invalid username")
+      validateUsername(username).then(
+        (valid) => valid || "Invalid username"
+      )
     )
   )
 ).annotations({ identifier: "ValidUsername" })
@@ -489,7 +505,8 @@ console.log(decode(" ABc ")) // " abc "
 
 <Aside type="note">
   If you were looking for a combinator to check if a string is lowercased,
-  check out the `Schema.Lowercased` schema or the `Schema.lowercased` filter.
+  check out the `Schema.Lowercased` schema or the `Schema.lowercased`
+  filter.
 </Aside>
 
 ### Uppercase
@@ -509,7 +526,8 @@ console.log(decode(" abC ")) // " ABC "
 
 <Aside type="note">
   If you were looking for a combinator to check if a string is uppercased,
-  check out the `Schema.Uppercased` schema or the `Schema.uppercased` filter.
+  check out the `Schema.Uppercased` schema or the `Schema.uppercased`
+  filter.
 </Aside>
 
 ### Capitalize
@@ -528,9 +546,9 @@ console.log(decode(" abC ")) // " abC "
 ```
 
 <Aside type="note">
-  If you were looking for a combinator to check if a string is capitalized,
-  check out the `Schema.Capitalized` schema or the `Schema.capitalized`
-  filter.
+  If you were looking for a combinator to check if a string is
+  capitalized, check out the `Schema.Capitalized` schema or the
+  `Schema.capitalized` filter.
 </Aside>
 
 ### Uncapitalize
@@ -549,9 +567,9 @@ console.log(decode(" AbC ")) // " AbC "
 ```
 
 <Aside type="note">
-  If you were looking for a combinator to check if a string is uncapitalized,
-  check out the `Schema.Uncapitalized` schema or the `Schema.uncapitalized`
-  filter.
+  If you were looking for a combinator to check if a string is
+  uncapitalized, check out the `Schema.Uncapitalized` schema or the
+  `Schema.uncapitalized` filter.
 </Aside>
 
 ### parseJson
@@ -772,7 +790,6 @@ decode("-Infinity") // throws
 Transforms a number into a `BigInt` by parsing the number using the `BigInt` constructor.
 
 ```ts twoslash
-// @target: ES2020
 import { Schema } from "@effect/schema"
 
 const decode = Schema.decodeUnknownSync(Schema.BigIntFromNumber)
@@ -804,7 +821,6 @@ encode(BigInt(Number.MIN_SAFE_INTEGER) - 1n) // throws
 Clamps a `BigInt` between a minimum and a maximum value.
 
 ```ts twoslash
-// @target: ES2020
 import { Schema } from "@effect/schema"
 
 // clamps the input to -1n <= x <= 1n
@@ -869,8 +885,8 @@ console.log(decode(".124")) // { _id: 'BigDecimal', value: '124', scale: 3 }
 Transforms a number into a `BigDecimal`.
 
 <Aside type="caution">
-  When encoding, this Schema will produce incorrect results if the BigDecimal
-  exceeds the 64-bit range of a number.
+  When encoding, this Schema will produce incorrect results if the
+  BigDecimal exceeds the 64-bit range of a number.
 </Aside>
 
 ```ts twoslash
@@ -890,7 +906,10 @@ import { Schema } from "@effect/schema"
 import { BigDecimal } from "effect"
 
 const schema = Schema.BigDecimal.pipe(
-  Schema.clampBigDecimal(BigDecimal.fromNumber(-1), BigDecimal.fromNumber(1))
+  Schema.clampBigDecimal(
+    BigDecimal.fromNumber(-1),
+    BigDecimal.fromNumber(1)
+  )
 )
 
 const decode = Schema.decodeUnknownSync(schema)

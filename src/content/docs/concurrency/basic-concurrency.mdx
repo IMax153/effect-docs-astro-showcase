@@ -113,7 +113,7 @@ Effect.runPromise(program) // { _id: 'Exit', _tag: 'Success', value: 55 }
 
 If a fiber's result is no longer needed, it can be interrupted, which immediately terminates the fiber and safely releases all resources by running all finalizers.
 
-Similar to `Fiber.await`, `Fiber.interrupt` returns an [Exit](/data-types/exit)` value describing how the fiber completed.
+Similar to `Fiber.await`, `Fiber.interrupt` returns an [Exit](/data-types/exit) value describing how the fiber completed.
 
 ```ts twoslash
 import { Effect, Fiber } from "effect"

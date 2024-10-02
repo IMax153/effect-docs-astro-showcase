@@ -17,7 +17,7 @@ The `Effect.mapError` function is used when you need to transform or modify an e
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/mapError.ts
+```ts twoslash file=<rootDir>/error-channel-operations/mapError.ts
 
 ```
 
@@ -37,7 +37,7 @@ The `Effect.mapBoth` function allows you to apply transformations to both channe
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/mapBoth.ts
+```ts twoslash file=<rootDir>/error-channel-operations/mapBoth.ts
 
 ```
 
@@ -64,7 +64,7 @@ These operators offer different strategies for handling cases where the predicat
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/filter.ts
+```ts twoslash file=<rootDir>/error-channel-operations/filter.ts
 
 ```
 
@@ -75,7 +75,7 @@ This not only enhances type safety but also improves code clarity.
 
 **Example: Using a Type Guard**
 
-```ts file=<rootDir>/error-channel-operations/filter-type-guard.ts
+```ts twoslash file=<rootDir>/error-channel-operations/filter-type-guard.ts
 
 ```
 
@@ -107,7 +107,7 @@ Executes an effectful operation to inspect the failure of an effect without alte
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/tapError.ts
+```ts twoslash file=<rootDir>/error-channel-operations/tapError.ts
 
 ```
 
@@ -117,7 +117,7 @@ Specifically inspects a failure with a particular tag, allowing focused error ha
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/tapErrorTag.ts
+```ts twoslash file=<rootDir>/error-channel-operations/tapErrorTag.ts
 
 ```
 
@@ -127,7 +127,7 @@ Inspects the underlying cause of an effect's failure.
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/tapErrorCause.ts
+```ts twoslash file=<rootDir>/error-channel-operations/tapErrorCause.ts
 
 ```
 
@@ -137,7 +137,7 @@ Specifically inspects non-recoverable failures or defects in an effect (i.e., on
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/tapDefect.ts
+```ts twoslash file=<rootDir>/error-channel-operations/tapDefect.ts
 
 ```
 
@@ -147,7 +147,7 @@ Inspects both success and failure outcomes of an effect, performing different ac
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/tapBoth.ts
+```ts twoslash file=<rootDir>/error-channel-operations/tapBoth.ts
 
 ```
 
@@ -164,7 +164,7 @@ The error type of the returned `Effect` is specified as `never`, confirming that
 
 This function becomes especially useful when recovering from effects that may fail when using [Effect.gen](/getting-started/using-generators#understanding-effectgen):
 
-```ts file=<rootDir>/error-channel-operations/either.ts
+```ts twoslash file=<rootDir>/error-channel-operations/either.ts
 
 ```
 
@@ -174,7 +174,7 @@ You can use the `Effect.cause` function to expose the cause of an effect, which 
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/cause.ts
+```ts twoslash file=<rootDir>/error-channel-operations/cause.ts
 
 ```
 
@@ -184,7 +184,7 @@ Using the `Effect.merge` function, you can merge the error channel into the succ
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/merge.ts
+```ts twoslash file=<rootDir>/error-channel-operations/merge.ts
 
 ```
 
@@ -194,6 +194,6 @@ Using the `Effect.flip` function, you can flip the error and success channels of
 
 **Example**
 
-```ts file=<rootDir>/error-channel-operations/flip.ts
+```ts twoslash file=<rootDir>/error-channel-operations/flip.ts
 
 ```
