@@ -6,7 +6,7 @@ import {
 } from "@expressive-code/core"
 import { h } from "@expressive-code/core/hast"
 import { createTwoslasher, type NodeHover, type TwoslashOptions } from "twoslash"
-import * as ts from "typescript"
+import ts from "typescript"
 import type { CompilerOptions } from "typescript"
 import FloatingToolipModule from "./twoslash-popup.js?raw"
 
