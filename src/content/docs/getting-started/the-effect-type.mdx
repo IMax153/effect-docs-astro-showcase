@@ -7,11 +7,15 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-The `Effect<Success, Error, Requirements>` type represents an **immutable** value that **lazily** describes a workflow or job.
+The `Effect` type represents an **immutable** value that **lazily** describes a workflow or job:
+
+```ts showLineNumbers=false
+Effect<Success, Error, Requirements>
+```
 
 This type encapsulates the logic of a program, defining whether it succeeds, providing a value of type `Success`, or fails, resulting in an error of type `Error`. Additionally, the program requires a collection of contextual data `Context<Requirements>` to execute.
 
-Conceptually, you can think of `Effect<Success, Error, Requirements>` as an effectful version of the following function type:
+Conceptually, you can think of `Effect` as an effectful version of the following function type:
 
 ```ts showLineNumbers=false
 type Effect<Success, Error, Requirements> = (
@@ -42,4 +46,4 @@ The `Effect` type has three type parameters with the following meanings:
 
 `Effect` values do not actually do anything, they are just values that model or describe effectful interactions.
 
-An `Effect` can be interpreted by the Effect [Runtime](/runtime) System into effectful interactions with the external world. Ideally, this occurs at a single entry point in our application where the effectful interactions are initiated, such as the starting point of your program's execution.
+An `Effect` can be interpreted by the [Effect Runtime System](/runtime) into effectful interactions with the external world. Ideally, this occurs at a single entry point in our application where the effectful interactions are initiated, such as the starting point of your program's execution.
