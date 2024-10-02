@@ -16,6 +16,7 @@
     "@astrojs/markdown-remark": "^5.2.0",
     "@astrojs/starlight": "^0.28.2",
     "@effect/opentelemetry": "^0.37.5",
+    "@effect/platform-node": "^0.61.3",
     "@expressive-code/core": "0.35.6",
     "@expressive-code/plugin-collapsible-sections": "^0.35.6",
     "@expressive-code/plugin-line-numbers": "^0.35.6",
