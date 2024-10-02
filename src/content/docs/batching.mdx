@@ -630,10 +630,10 @@ By using the `Effect.request` function, we integrate the resolvers with the requ
 
 Although the code structure looks similar to earlier examples, employing resolvers significantly enhances efficiency by optimizing how requests are handled and reducing unnecessary API calls.
 
-```ts twoslash {4}
+```ts {4} showLineNumbers=false
 const program = Effect.gen(function* () {
-  const todos = yield* Queries.getTodos
-  yield* Effect.forEach(todos, (todo) => Queries.notifyOwner(todo), {
+  const todos = yield* getTodos
+  yield* Effect.forEach(todos, (todo) => notifyOwner(todo), {
     batching: true
   })
 })
@@ -645,10 +645,10 @@ In the final setup, this program will execute only **3** queries to the APIs, re
 
 Batching can be locally disabled using the `Effect.withRequestBatching` utility in the following way:
 
-```ts twoslash {6}
+```ts {6} showLineNumbers=false
 const program = Effect.gen(function* () {
-  const todos = yield* Queries.getTodos
-  yield* Effect.forEach(todos, (todo) => Queries.notifyOwner(todo), {
+  const todos = yield* getTodos
+  yield* Effect.forEach(todos, (todo) => notifyOwner(todo), {
     concurrency: "unbounded"
   })
 }).pipe(Effect.withRequestBatching(false))
@@ -662,7 +662,7 @@ When creating request resolvers, it's crucial to manage the context carefully. P
 
 Consider the following example where we set up an HTTP service that the resolvers can use to execute API calls:
 
-```ts twoslash
+```ts
 import { Effect, Context, RequestResolver } from "effect"
 import * as Model from "./Model"
 import * as Requests from "./Requests"
@@ -700,7 +700,7 @@ which is an `Effect` that access the `HttpService` and returns a composed resolv
 
 Once we have such `Effect` we can directly use it in our query definition:
 
-```ts twoslash
+```ts
 import { Effect } from "effect"
 import * as Model from "./Model"
 import * as Requests from "./Requests"
@@ -718,7 +718,7 @@ Alternatively you can create `RequestResolver`s as part of layers direcly access
 
 For example:
 
-```ts twoslash
+```ts
 import { Effect, Context, Layer, RequestResolver } from "effect"
 import * as API from "./API"
 import * as Model from "./Model"
@@ -769,7 +769,7 @@ In the Effect library, caching is handled through built-in utilities that allow 
 
 Here's how you can implement caching for the `getUserById` query:
 
-```ts twoslash {9}
+```ts {9}
 import { Effect } from "effect"
 import * as Requests from "./Requests"
 import * as Resolvers from "./Resolvers"
@@ -785,7 +785,7 @@ const getUserById = (id: number) =>
 
 Assuming you've wired everything up correctly:
 
-```ts twoslash
+```ts
 import { Effect, Schedule } from "effect"
 import * as Queries from "./Queries"
 
@@ -815,7 +815,7 @@ There may be scenarios where different parts of your application have unique cac
 
 Here's how you can create a custom cache and apply it to part of your application. This example demonstrates setting up a cache that repeats a task every 10 seconds, caching requests with specific parameters like capacity and TTL (time-to-live).
 
-```ts twoslash
+```ts
 import { Effect, Schedule, Layer, Request } from "effect"
 import * as Queries from "./Queries"
 
