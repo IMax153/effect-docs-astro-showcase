@@ -26,7 +26,6 @@ Let's look at an example of how to test `Effect.timeout` using the `TestClock`:
 <TabItem label="Using Effect.gen">
 
 ```ts twoslash
-// @types: node
 import { Effect, TestClock, Fiber, Option, TestContext } from "effect"
 import * as assert from "node:assert"
 
@@ -60,7 +59,6 @@ Effect.runPromise(test)
 <TabItem label="Using pipe">
 
 ```ts twoslash
-// @types: node
 import { Effect, TestClock, Fiber, Option, TestContext, pipe } from "effect"
 import * as assert from "node:assert"
 
@@ -98,10 +96,10 @@ In this example, we create a test scenario involving a fiber that sleeps for 5 m
 
 A critical point to note is the forking of the fiber where `Effect.sleep` is invoked. Calls to `Effect.sleep` and related methods wait until the clock time matches or surpasses the scheduled time for their execution. By forking the fiber, we ensure that we have control over the clock time adjustment.
 
-<Aside type="tip" title="Recommended Usage">
+<Aside type="tip">
   The recommended pattern when using the `TestClock` involves forking the
-  effect being tested, adjusting the clock time as needed, and then verifying
-  that the expected effects have occurred.
+  effect being tested, adjusting the clock time as needed, and then
+  verifying that the expected effects have occurred.
 </Aside>
 
 ## More Examples
@@ -115,7 +113,6 @@ Let's explore an example demonstrating how to test an effect that runs at fixed 
 <TabItem label="Using Effect.gen">
 
 ```ts twoslash
-// @types: node
 import { Effect, Queue, TestClock, Option, TestContext } from "effect"
 import * as assert from "node:assert"
 
@@ -160,7 +157,6 @@ Effect.runPromise(test)
 <TabItem label="Using pipe">
 
 ```ts twoslash
-// @types: node
 import { Effect, Queue, TestClock, Option, TestContext, pipe } from "effect"
 import * as assert from "node:assert"
 
@@ -230,7 +226,6 @@ Let's explore an example that demonstrates how to test the behavior of the `Cloc
 <TabItem label="Using Effect.gen">
 
 ```ts twoslash
-// @types: node
 import { Effect, Clock, TestClock, TestContext } from "effect"
 import * as assert from "node:assert"
 
@@ -257,7 +252,6 @@ Effect.runPromise(test)
 <TabItem label="Using pipe">
 
 ```ts twoslash
-// @types: node
 import { Effect, Clock, TestClock, TestContext, pipe } from "effect"
 import * as assert from "node:assert"
 
@@ -295,7 +289,6 @@ Effect.runPromise(test)
 <TabItem label="Using Effect.gen">
 
 ```ts twoslash
-// @types: node
 import { Effect, Deferred, TestClock, TestContext } from "effect"
 import * as assert from "node:assert"
 
@@ -327,7 +320,6 @@ Effect.runPromise(test)
 <TabItem label="Using pipe">
 
 ```ts twoslash
-// @types: node
 import { Effect, Deferred, TestClock, TestContext, pipe } from "effect"
 import * as assert from "node:assert"
 
