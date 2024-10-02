@@ -10,7 +10,7 @@ sidebar:
 
 When working with streams that may encounter errors, it's crucial to know how to handle these errors gracefully. The `Stream.orElse` function is a powerful tool for recovering from failures and switching to an alternative stream in case of an error.
 
-Here's a practical example:
+**Example**
 
 ```ts twoslash
 import { Stream, Effect } from "effect"
@@ -129,7 +129,7 @@ In this example, we have a stream, `s1`, which may encounter two different types
 
 When working with streams, it's essential to be prepared for various failure scenarios, including defects that might occur during stream processing. To address this, the `Stream.catchAllCause` function provides a robust solution. It enables you to gracefully handle and recover from any type of failure that may arise.
 
-Here's an example to illustrate its usage:
+**Example**
 
 ```ts twoslash
 import { Stream, Effect } from "effect"
@@ -246,7 +246,7 @@ error: RuntimeException: Oh! Boom!
 
 Sometimes, streams may encounter failures that are temporary or recoverable. In such cases, the `Stream.retry` operator comes in handy. It allows you to specify a retry schedule, and the stream will be retried according to that schedule.
 
-Here's an example to illustrate how it works:
+**Example**
 
 ```ts twoslash
 // @types: node
@@ -303,7 +303,7 @@ In this example, the stream asks the user to input a number, but if an invalid v
 
 When working with streams, there might be situations where you want to selectively keep certain errors and terminate the stream with the remaining errors. You can achieve this using the `Stream.refineOrDie` function.
 
-Here's an example to illustrate how it works:
+**Example**
 
 ```ts twoslash
 import { Stream, Option } from "effect"

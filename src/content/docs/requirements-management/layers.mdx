@@ -47,8 +47,8 @@ We will use Layers to construct the `Database` service instead of providing a se
 <Aside type="note">
   When a service has its own requirements, it's best to separate
   implementation details into layers. Layers act as **constructors** for
-  creating the service, allowing us to handle dependencies at the construction
-  level rather than the service level.
+  creating the service, allowing us to handle dependencies at the
+  construction level rather than the service level.
 </Aside>
 
 A `Layer<RequirementsOut, Error, RequirementsIn>` represents a blueprint for constructing a `RequirementsOut`.
@@ -116,7 +116,7 @@ constructor. However, this is merely a helper to ensure correct type inference
 for the implementation. It's possible to skip this helper and construct the
 implementation directly as a simple object:
 
-```ts twoslash
+```ts twoslash collapse={3-11}
 import { Effect, Context, Layer } from "effect"
 
 class Config extends Context.Tag("Config")<
@@ -129,7 +129,6 @@ class Config extends Context.Tag("Config")<
   }
 >() {}
 
-// ---cut---
 const ConfigLive = Layer.succeed(Config, {
   getConfig: Effect.succeed({
     logLevel: "INFO",
@@ -146,7 +145,7 @@ Just like we did in the [Managing Services](/requirements-management/services#us
 
 Given that using the `Config` tag is an effectful operation, we use `Layer.effect` to create a `Layer` from the resulting `Effect`.
 
-```ts twoslash
+```ts twoslash collapse={3-11}
 import { Effect, Context, Layer } from "effect"
 
 class Config extends Context.Tag("Config")<
@@ -159,7 +158,6 @@ class Config extends Context.Tag("Config")<
   }
 >() {}
 
-// ---cut---
 class Logger extends Context.Tag("Logger")<
   Logger,
   { readonly log: (message: string) => Effect.Effect<void> }
@@ -190,7 +188,7 @@ Looking at the type of `LoggerLive` we can observe:
 
 Finally, we can use our `Config` and `Logger` services to implement the `Database` service.
 
-```ts twoslash
+```ts twoslash collapse={3-16}
 import { Effect, Context, Layer } from "effect"
 
 class Config extends Context.Tag("Config")<
@@ -208,7 +206,6 @@ class Logger extends Context.Tag("Logger")<
   { readonly log: (message: string) => Effect.Effect<void> }
 >() {}
 
-// ---cut---
 class Database extends Context.Tag("Database")<
   Database,
   { readonly query: (sql: string) => Effect.Effect<unknown> }
@@ -241,7 +238,7 @@ Layers can be combined in two primary ways: merging and composing.
 
 Layers can be combined through merging using the `Layer.merge` combinator:
 
-```ts
+```ts showLineNumbers=false
 Layer.merge(layer1, layer2)
 ```
 
@@ -252,7 +249,7 @@ When we merge two layers, the resulting layer:
 
 For example, in our web application above, we can merge our `ConfigLive` and `LoggerLive` layers into a single `AppConfigLive` layer, which retains the requirements of both layers (`never | Config = Config`) and the outputs of both layers (`Config | Logger`):
 
-```ts twoslash
+```ts twoslash collapse={3-40}
 import { Effect, Context, Layer } from "effect"
 
 class Config extends Context.Tag("Config")<
@@ -294,7 +291,6 @@ const LoggerLive = Layer.effect(
   })
 )
 
-// ---cut---
 const AppConfigLive = Layer.merge(ConfigLive, LoggerLive)
 ```
 
@@ -316,7 +312,7 @@ resulting in a single layer with the requirements of the first layer and the out
 
 Now we can compose the `AppConfigLive` layer with the `DatabaseLive` layer:
 
-```ts twoslash
+```ts twoslash collapse={3-61}
 import { Effect, Context, Layer } from "effect"
 
 class Config extends Context.Tag("Config")<
@@ -379,7 +375,6 @@ const DatabaseLive = Layer.effect(
   })
 )
 
-// ---cut---
 const AppConfigLive = Layer.merge(ConfigLive, LoggerLive)
 
 const MainLive = DatabaseLive.pipe(
@@ -394,7 +389,7 @@ const MainLive = DatabaseLive.pipe(
 
 Let's say we want our `MainLive` layer to return both the `Config` and `Database` services. We can achieve this with `Layer.provideMerge`:
 
-```ts twoslash
+```ts twoslash collapse={3-61}
 import { Effect, Context, Layer } from "effect"
 
 class Config extends Context.Tag("Config")<
@@ -457,7 +452,6 @@ const DatabaseLive = Layer.effect(
   })
 )
 
-// ---cut---
 const AppConfigLive = Layer.merge(ConfigLive, LoggerLive)
 
 const MainLive = DatabaseLive.pipe(
@@ -471,7 +465,7 @@ const MainLive = DatabaseLive.pipe(
 Now that we have assembled the fully resolved `MainLive` for our application,
 we can provide it to our program to satisfy the program's requirements using `Effect.provide`:
 
-```ts twoslash
+```ts twoslash collapse={3-68}
 import { Effect, Context, Layer } from "effect"
 
 class Config extends Context.Tag("Config")<
@@ -541,7 +535,6 @@ const MainLive = DatabaseLive.pipe(
   Layer.provide(ConfigLive)
 )
 
-// ---cut---
 const program = Effect.gen(function* () {
   const database = yield* Database
   const result = yield* database.query("SELECT * FROM users")

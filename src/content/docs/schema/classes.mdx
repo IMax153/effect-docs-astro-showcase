@@ -348,18 +348,22 @@ class Category extends Schema.Class<Category>("Category")({
 
 <Aside type="caution">
   It is necessary to add an explicit type annotation because otherwise
-  TypeScript would struggle to infer types correctly. Without this annotation,
-  you might encounter the error message:
+  TypeScript would struggle to infer types correctly. Without this
+  annotation, you might encounter the error message:
 </Aside>
 
 ```ts twoslash
-// @errors: 2506 7024
 import { Schema } from "@effect/schema"
 
+// @ts-expect-error
 class Category extends Schema.Class<Category>("Category")({
   name: Schema.String,
+  // @ts-expect-error
   subcategories: Schema.Array(Schema.suspend(() => Category))
 }) {}
+/*
+'Category' is referenced directly or indirectly in its own base expression.ts(2506)
+*/
 ```
 
 ### Mutually Recursive Schemas
@@ -395,16 +399,21 @@ It's important to note that `NumberFromString` is a schema that transforms a str
 When we add this field to the `Category` schema, TypeScript raises an error:
 
 ```ts twoslash
-// @errors: 2322
 import { Schema } from "@effect/schema"
 
 class Category extends Schema.Class<Category>("Category")({
   id: Schema.NumberFromString,
   name: Schema.String,
   subcategories: Schema.Array(
+    // @ts-expect-error
     Schema.suspend((): Schema.Schema<Category> => Category)
   )
 }) {}
+/*
+Type 'typeof Category' is not assignable to type 'Schema<Category, Category, never>'.
+  The types of 'Encoded.id' are incompatible between these types.
+    Type 'string' is not assignable to type 'number'.ts(2322)
+*/
 ```
 
 This error occurs because the explicit annotation `S.suspend((): S.Schema<Category> => Category` is no longer sufficient and needs to be adjusted by explicitly adding the `Encoded` type:
@@ -422,7 +431,9 @@ class Category extends Schema.Class<Category>("Category")({
   id: Schema.NumberFromString,
   name: Schema.String,
   subcategories: Schema.Array(
-    Schema.suspend((): Schema.Schema<Category, CategoryEncoded> => Category)
+    Schema.suspend(
+      (): Schema.Schema<Category, CategoryEncoded> => Category
+    )
   )
 }) {}
 ```
@@ -448,7 +459,9 @@ class Category extends Schema.Class<Category>("Category")({
   ...fields, // Include the fields
   subcategories: Schema.Array(
     // Define `subcategories` using recursion
-    Schema.suspend((): Schema.Schema<Category, CategoryEncoded> => Category)
+    Schema.suspend(
+      (): Schema.Schema<Category, CategoryEncoded> => Category
+    )
   )
 }) {}
 ```
@@ -499,9 +512,11 @@ class Person extends Schema.Class<Person>("Person")({
   }
 }
 
-class PersonWithAge extends Person.extend<PersonWithAge>("PersonWithAge")({
-  age: Schema.Number
-}) {
+class PersonWithAge extends Person.extend<PersonWithAge>("PersonWithAge")(
+  {
+    age: Schema.Number
+  }
+) {
   get isAdult() {
     return this.age >= 18
   }

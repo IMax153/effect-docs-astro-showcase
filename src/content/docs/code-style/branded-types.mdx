@@ -74,7 +74,6 @@ The use of a symbol ensures that the branding field does not conflict with any e
 Attempting to use a `UserId` in place of a `ProductId` now results in an error:
 
 ```ts twoslash
-// @errors: 2345
 const BrandTypeId: unique symbol = Symbol.for("effect/Brand")
 
 type ProductId = number & {
@@ -82,7 +81,7 @@ type ProductId = number & {
     readonly ProductId: "ProductId"
   }
 }
-// ---cut---
+
 const getProductById = (id: ProductId) => {
   // Logic to retrieve product
 }
@@ -91,7 +90,12 @@ type UserId = number
 
 const id: UserId = 1
 
+// @ts-expect-error
 getProductById(id)
+/*
+Argument of type 'number' is not assignable to parameter of type 'ProductId'.
+  Type 'number' is not assignable to type '{ readonly [BrandTypeId]: { readonly ProductId: "ProductId"; }; }'.ts(2345)
+*/
 ```
 
 The error message clearly states that a `number` cannot be used in place of a `ProductId`.
@@ -101,7 +105,6 @@ TypeScript won't let us pass an instance of `number` to the function accepting `
 What if `UserId` also had its own brand?
 
 ```ts twoslash
-// @errors: 2345
 const BrandTypeId: unique symbol = Symbol.for("effect/Brand")
 
 type ProductId = number & {
@@ -122,7 +125,14 @@ type UserId = number & {
 
 declare const id: UserId
 
+// @ts-expect-error
 getProductById(id)
+/*
+Argument of type 'UserId' is not assignable to parameter of type 'ProductId'.
+  Type 'UserId' is not assignable to type '{ readonly [BrandTypeId]: { readonly ProductId: "ProductId"; }; }'.
+    Types of property '[BrandTypeId]' are incompatible.
+      Property 'ProductId' is missing in type '{ readonly UserId: "UserId"; }' but required in type '{ readonly ProductId: "ProductId"; }'.ts(2345)
+*/
 ```
 
 The error is saying that though both types utilize a branding strategy, the distinct values associated with their branding fields (`"ProductId"` and `"UserId"`) prevent them from being interchangeable.
@@ -165,7 +175,6 @@ type UserId = number & Brand.Brand<"UserId">
 However, creating instances of these types directly leads to an error because the type system expects the brand structure:
 
 ```ts twoslash
-// @errors: 2322
 const BrandTypeId: unique symbol = Symbol.for("effect/Brand")
 
 interface Brand<in out K extends string | symbol> {
@@ -175,8 +184,13 @@ interface Brand<in out K extends string | symbol> {
 }
 
 type ProductId = number & Brand<"ProductId">
-// ---cut---
+
+// @ts-expect-error
 const id: ProductId = 1
+/*
+Type 'number' is not assignable to type 'ProductId'.
+  Type 'number' is not assignable to type 'Brand<"ProductId">'.ts(2322)
+*/
 ```
 
 We need a way to create a value of type `ProductId` without directly assigning a number to it. This is where the Brand module comes in.
@@ -216,7 +230,6 @@ const getProductById = (id: ProductId) => {
 Attempting to assign a non-`ProductId` value will result in a compile-time error:
 
 ```ts twoslash
-// @errors: 2345
 import { Brand } from "effect"
 
 type UserId = number & Brand.Brand<"UserId">
@@ -234,15 +247,27 @@ const ProductId = Brand.nominal<ProductId>()
 const getProductById = (id: ProductId) => {
   // Logic to retrieve product
 }
-// ---cut---
+
 // Correct usage
 getProductById(ProductId(1))
 
 // Incorrect, will result in an error
+// @ts-expect-error
 getProductById(1)
+/*
+Argument of type 'number' is not assignable to parameter of type 'ProductId'.
+  Type 'number' is not assignable to type 'Brand<"ProductId">'.ts(2345)
+*/
 
 // Also incorrect, will result in an error
+// @ts-expect-error
 getProductById(UserId(1))
+/*
+Argument of type 'UserId' is not assignable to parameter of type 'ProductId'.
+  Type 'UserId' is not assignable to type 'Brand<"ProductId">'.
+    Types of property '[BrandTypeId]' are incompatible.
+      Property 'ProductId' is missing in type '{ readonly UserId: "UserId"; }' but required in type '{ readonly ProductId: "ProductId"; }'.ts(2345)
+*/
 ```
 
 ### refined
@@ -278,7 +303,6 @@ const Int = Brand.refined<Int>(
   (n) => Brand.error(`Expected ${n} to be an integer`) // Error message if the value is not an integer
 )
 
-// ---cut---
 // Create a valid Int value
 const x: Int = Int(3)
 console.log(x) // Output: 3
@@ -290,7 +314,6 @@ const y: Int = Int(3.14) // throws [ { message: 'Expected 3.14 to be an integer'
 Attempting to assign a non-`Int` value will result in a compile-time error:
 
 ```ts twoslash
-// @errors: 2322
 import { Brand } from "effect"
 
 type Int = number & Brand.Brand<"Int">
@@ -300,14 +323,15 @@ const Int = Brand.refined<Int>(
   (n) => Brand.error(`Expected ${n} to be an integer`)
 )
 
-// ---cut---
 // Correct usage
 const good: Int = Int(3)
 
 // Incorrect, will result in an error
+// @ts-expect-error
 const bad1: Int = 3
 
 // Also incorrect, will result in an error
+// @ts-expect-error
 const bad2: Int = 3.14
 ```
 

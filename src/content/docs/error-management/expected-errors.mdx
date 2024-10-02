@@ -9,7 +9,7 @@ import { Aside } from "@astrojs/starlight/components"
 
 Expected errors **are tracked at the type level** by the [Effect data type](/getting-started/the-effect-type/) in the "Error" channel:
 
-```ts file=<rootDir>/expected-errors/program.ts
+```ts twoslash file=<rootDir>/expected-errors/program.ts
 
 ```
 
@@ -44,7 +44,7 @@ This will be useful later when we discuss APIs like [Effect.catchTag](#catchtag)
 
 The following program serves as an illustration of how errors are automatically tracked for you:
 
-```ts file=<rootDir>/expected-errors/error-tracking.ts
+```ts twoslash file=<rootDir>/expected-errors/error-tracking.ts
 
 ```
 
@@ -67,7 +67,7 @@ In simpler terms, the short-circuiting behavior ensures that if something goes w
 
 **Example**
 
-```ts {14-15} file=<rootDir>/expected-errors/short-circuiting.ts
+```ts twoslash {14-15} file=<rootDir>/expected-errors/short-circuiting.ts
 
 ```
 
@@ -91,13 +91,13 @@ The error type of the returned `Effect` is specified as `never`, confirming that
 
 By yielding an `Either`, we gain the ability to "pattern match" on this type to handle both failure and success cases within the generator function.
 
-```ts collapse={3-21} file=<rootDir>/expected-errors/either-if.ts
+```ts twoslash collapse={3-21} file=<rootDir>/expected-errors/either-if.ts
 
 ```
 
 We can make the code less verbose by using the `Either.match` function, which directly accepts the two callback functions for handling errors and successful values:
 
-```ts collapse={3-21} file=<rootDir>/expected-errors/either-match.ts
+```ts twoslash collapse={3-21} file=<rootDir>/expected-errors/either-match.ts
 
 ```
 
@@ -105,7 +105,7 @@ We can make the code less verbose by using the `Either.match` function, which di
 
 The `Effect.catchAll` function allows you to catch any error that occurs in the program and provide a fallback.
 
-```ts collapse={3-21} file=<rootDir>/expected-errors/catchAll.ts
+```ts twoslash collapse={3-21} file=<rootDir>/expected-errors/catchAll.ts
 
 ```
 
@@ -121,7 +121,7 @@ indicating that all errors have been handled.
 
 Suppose we want to handle a specific error, such as `HttpError`.
 
-```ts collapse={3-21} file=<rootDir>/expected-errors/catch-some-if-http-error.ts
+```ts twoslash collapse={3-21} file=<rootDir>/expected-errors/catch-some-if-http-error.ts
 
 ```
 
@@ -135,7 +135,7 @@ indicating that `HttpError` has been handled.
 
 If we also want to handle `ValidationError`, we can easily add another case to our code:
 
-```ts collapse={1-21} {29-31} file=<rootDir>/expected-errors/catch-some-if-all.ts
+```ts twoslash collapse={1-21} {29-31} file=<rootDir>/expected-errors/catch-some-if-all.ts
 
 ```
 
@@ -151,7 +151,7 @@ indicating that all errors have been handled.
 
 If we want to catch and recover from only some types of errors and effectfully attempt recovery, we can use the `Effect.catchSome` function:
 
-```ts collapse={3-21} file=<rootDir>/expected-errors/catchSome.ts
+```ts twoslash collapse={3-21} file=<rootDir>/expected-errors/catchSome.ts
 
 ```
 
@@ -168,7 +168,7 @@ const recovered: Effect<string, HttpError | ValidationError, never>
 
 Similar to `Effect.catchSome`, the function `Effect.catchIf` allows you to recover from specific errors based on a predicate:
 
-```ts collapse={3-21} file=<rootDir>/expected-errors/catchIf.ts
+```ts twoslash collapse={3-21} file=<rootDir>/expected-errors/catchIf.ts
 
 ```
 
@@ -183,7 +183,7 @@ In TypeScript versions >= 5.5, improved type narrowing causes the resulting erro
 
 For TypeScript versions < 5.5, if you provide a [user-defined type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) instead of a predicate, the resulting error type will be pruned, returning an `Effect<string, ValidationError, never>`:
 
-```ts collapse={1-21} {25} file=<rootDir>/expected-errors/catchIf-guard.ts
+```ts twoslash collapse={1-21} {25} file=<rootDir>/expected-errors/catchIf-guard.ts
 
 ```
 
@@ -191,7 +191,7 @@ For TypeScript versions < 5.5, if you provide a [user-defined type guard](https:
 
 If your program's errors are all tagged with a `_tag` field that acts as a discriminator you can use the `Effect.catchTag` function to catch and handle specific errors with precision.
 
-```ts collapse={3-21} file=<rootDir>/expected-errors/catchTag-http-error.ts
+```ts twoslash collapse={3-21} file=<rootDir>/expected-errors/catchTag-http-error.ts
 
 ```
 
@@ -204,7 +204,7 @@ indicating that `HttpError` has been handled.
 
 If we also wanted to handle `ValidationError`, we can simply add another `catchTag`:
 
-```ts collapse={1-21} {27-29} file=<rootDir>/expected-errors/catchTag-all.ts
+```ts twoslash collapse={1-21} {27-29} file=<rootDir>/expected-errors/catchTag-all.ts
 
 ```
 
@@ -221,7 +221,7 @@ indicating that all errors have been handled.
 
 Instead of using the `Effect.catchTag` function multiple times to handle individual error types, we have a more convenient option called `Effect.catchTags`. With `Effect.catchTags`, we can handle multiple errors in a single block of code.
 
-```ts collapse={3-21} file=<rootDir>/expected-errors/catchTags.ts
+```ts twoslash collapse={3-21} file=<rootDir>/expected-errors/catchTags.ts
 
 ```
 

@@ -5,7 +5,7 @@ sidebar:
   order: 5
 ---
 
-import { Aside, Tabs, TabItem } from "@astrojs/starlight/components"
+import { Aside, Tabs, TabItem, Badge } from "@astrojs/starlight/components"
 
 Configuration is an essential aspect of any cloud-native application. Effect simplifies the process of managing configuration by offering a convenient interface for configuration providers.
 
@@ -31,7 +31,7 @@ Let's start with a simple example of how to read configuration from environment 
 
 <TabItem label="Using Effect.gen">
 
-```ts [primitives.ts] twoslash
+```ts twoslash
 import { Effect, Config } from "effect"
 
 const program = Effect.gen(function* () {
@@ -47,7 +47,7 @@ Effect.runSync(program)
 
 <TabItem label="Using pipe">
 
-```ts [primitives.ts] twoslash
+```ts twoslash
 import { Effect, Config, Console } from "effect"
 
 const program = Effect.all([
@@ -68,14 +68,14 @@ Effect.runSync(program)
 
 If we run this program we will get the following output:
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 npx tsx primitives.ts
 (Missing data at HOST: "Expected HOST to exist in the process context")
 ```
 
 This is because we have not provided any configuration. Let's try running it with the following environment variables:
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 HOST=localhost PORT=8080 npx tsx primitives.ts
 Application started: localhost:8080
 ```
@@ -84,15 +84,17 @@ Application started: localhost:8080
 
 Effect offers these basic types out of the box:
 
-- `string`: Constructs a config for a string value.
-- `number`: Constructs a config for a float value.
-- `boolean`: Constructs a config for a boolean value.
-- `integer`: Constructs a config for a integer value.
-- `date`: Constructs a config for a date value.
-- `literal`: Constructs a config for a literal (\*) value.
-- `logLevel`: Constructs a config for a [LogLevel](/observability/logging#log-levels) value.
-- `duration`: Constructs a config for a duration value.
-- `redacted`: Constructs a config for a secret value.
+| Type       | Description                                                                    |
+| ---------- | ------------------------------------------------------------------------------ |
+| `string`   | Constructs a config for a string value.                                        |
+| `number`   | Constructs a config for a float value.                                         |
+| `boolean`  | Constructs a config for a boolean value.                                       |
+| `integer`  | Constructs a config for an integer value.                                      |
+| `date`     | Constructs a config for a date value.                                          |
+| `literal`  | Constructs a config for a literal (\*) value.                                  |
+| `logLevel` | Constructs a config for a [LogLevel](/observability/logging#log-levels) value. |
+| `duration` | Constructs a config for a duration value.                                      |
+| `redacted` | Constructs a config for a secret value.                                        |
 
 (\*) `string | number | boolean | null | bigint`
 
@@ -106,7 +108,7 @@ Here's how you can use `Config.withDefault` to handle fallback values:
 
 <TabItem label="Using Effect.gen">
 
-```ts [withDefault.ts] twoslash
+```ts twoslash
 import { Effect, Config } from "effect"
 
 const program = Effect.gen(function* () {
@@ -122,7 +124,7 @@ Effect.runSync(program)
 
 <TabItem label="Using pipe">
 
-```ts [withDefault.ts] twoslash
+```ts twoslash
 import { Effect, Config, Console } from "effect"
 
 const program = Effect.all([
@@ -143,13 +145,13 @@ Effect.runSync(program)
 
 When running the program with the command:
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 HOST=localhost npx tsx withDefault.ts
 ```
 
 you will see the following output:
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 Application started: localhost:8080
 ```
 
@@ -174,7 +176,7 @@ In addition to the basic ones, there are three special constructors you might fi
 
 **Example**
 
-```ts [array.ts] twoslash
+```ts twoslash
 import { Effect, Config } from "effect"
 
 const program = Effect.gen(function* () {
@@ -185,7 +187,7 @@ const program = Effect.gen(function* () {
 Effect.runSync(program)
 ```
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 MY_ARRAY=a,b,c npx tsx array.ts
 
 [ 'a', 'b', 'c' ]
@@ -206,7 +208,7 @@ These operators allow you to transform a config into a new one:
 
 **Example**
 
-```ts [validate.ts] twoslash
+```ts twoslash
 import { Effect, Config } from "effect"
 
 const program = Effect.gen(function* () {
@@ -222,7 +224,7 @@ const program = Effect.gen(function* () {
 Effect.runSync(program)
 ```
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 NAME=foo npx tsx validate.ts
 
 [(Invalid data at NAME: "Expected a string at least 4 characters long")]
@@ -239,7 +241,7 @@ These operators help you set up fallbacks in case of errors or missing data:
 
 In this example, we have a program that requires two configurations: `A` and `B`. We will use two configuration providers, where each provider has only one of the configurations. We will demonstrate how to set up fallbacks using the `orElse` operator.
 
-```ts [orElse.ts] twoslash
+```ts twoslash
 import { Config, ConfigProvider, Effect, Layer } from "effect"
 
 // A program that requires two configurations: A and B
@@ -270,7 +272,7 @@ const layer = Layer.setConfigProvider(
 Effect.runSync(Effect.provide(program, layer))
 ```
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 npx tsx orElse.ts
 
 A: A B: B
@@ -288,7 +290,7 @@ In addition to primitive types, we can also define configurations for custom typ
 
 Let's consider the `HostPort` data type, which consists of two fields: `host` and `port`.
 
-```ts
+```ts twoslash
 class HostPort {
   constructor(readonly host: string, readonly port: number) {}
 }
@@ -296,12 +298,10 @@ class HostPort {
 
 We can define a configuration for this data type by combining primitive configs for `string` and `number`:
 
-<div style="display: none;">
-
-```ts twoslash include hostport
+```ts twoslash
 import { Config } from "effect"
 
-export class HostPort {
+class HostPort {
   constructor(readonly host: string, readonly port: number) {}
 
   get url() {
@@ -311,16 +311,7 @@ export class HostPort {
 
 const both = Config.all([Config.string("HOST"), Config.number("PORT")])
 
-export const config = Config.map(
-  both,
-  ([host, port]) => new HostPort(host, port)
-)
-```
-
-</div>
-
-```ts twoslash
-// @include: hostport
+const config = Config.map(both, ([host, port]) => new HostPort(host, port))
 ```
 
 In the above example, we use the `Config.all(configs)` operator to combine two primitive configs `Config<string>` and `Config<number>` into a `Config<[string, number]>`.
@@ -331,17 +322,23 @@ If we use this customized configuration in our application:
 
 <TabItem label="Using Effect.gen">
 
-```ts [App.ts] twoslash
-// @filename: HostPort.ts
-// @include: hostport
+```ts twoslash
+import { Effect, Config } from "effect"
 
-// @filename: App.ts
-// ---cut---
-import { Effect } from "effect"
-import * as HostPort from "./HostPort"
+class HostPort {
+  constructor(readonly host: string, readonly port: number) {}
 
-export const program = Effect.gen(function* () {
-  const hostPort = yield* HostPort.config
+  get url() {
+    return `${this.host}:${this.port}`
+  }
+}
+
+const both = Config.all([Config.string("HOST"), Config.number("PORT")])
+
+const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+
+const program = Effect.gen(function* () {
+  const hostPort = yield* config
   console.log(`Application started: ${hostPort.url}`)
 })
 ```
@@ -350,16 +347,22 @@ export const program = Effect.gen(function* () {
 
 <TabItem label="Using pipe">
 
-```ts [App.ts] twoslash
-// @filename: HostPort.ts
-// @include: hostport
+```ts twoslash
+import { Effect, Config, Console } from "effect"
 
-// @filename: App.ts
-// ---cut---
-import { Effect, Console } from "effect"
-import * as HostPort from "./HostPort"
+class HostPort {
+  constructor(readonly host: string, readonly port: number) {}
 
-export const program = HostPort.config.pipe(
+  get url() {
+    return `${this.host}:${this.port}`
+  }
+}
+
+const both = Config.all([Config.string("HOST"), Config.number("PORT")])
+
+const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+
+const program = config.pipe(
   Effect.andThen((hostPort) =>
     Console.log(`Application started: ${hostPort.url}`)
   )
@@ -372,7 +375,7 @@ export const program = HostPort.config.pipe(
 
 when you run the program using `Effect.runSync(program)`, it will attempt to read the corresponding values from environment variables (`HOST` and `PORT`):
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 HOST=localhost PORT=8080 npx tsx App.ts
 
 Application started: localhost:8080
@@ -384,20 +387,19 @@ So far, we have learned how to define configurations in a top-level manner, whet
 
 Let's assume we have a `ServiceConfig` data type that consists of two fields: `hostPort` and `timeout`.
 
-```ts [ServiceConfig.ts] twoslash include serviceconfig
-// @filename: HostPort.ts
-// @include: hostport
-
-// @filename: ServiceConfig.ts
-// ---cut---
-import * as HostPort from "./HostPort"
+```ts twoslash
 import { Config } from "effect"
 
+class HostPort {
+  constructor(readonly host: string, readonly port: number) {}
+
+  get url() {
+    return `${this.host}:${this.port}`
+  }
+}
+
 class ServiceConfig {
-  constructor(
-    readonly hostPort: HostPort.HostPort,
-    readonly timeout: number
-  ) {}
+  constructor(readonly hostPort: HostPort, readonly timeout: number) {}
 }
 ```
 
@@ -408,14 +410,26 @@ However, in many cases, we don't want to read all configurations from the top-le
 To achieve this, we can use the `Config.nested` combinator. It allows us to nest configs under a specific namespace. Here's how we can update our configuration:
 
 ```ts twoslash
-// @include: serviceconfig
+import { Config } from "effect"
 
-// ---cut---
-const config = Config.map(
-  Config.all([
-    Config.nested(HostPort.config, "HOSTPORT"),
-    Config.number("TIMEOUT")
-  ]),
+class HostPort {
+  constructor(readonly host: string, readonly port: number) {}
+
+  get url() {
+    return `${this.host}:${this.port}`
+  }
+}
+
+const both = Config.all([Config.string("HOST"), Config.number("PORT")])
+
+const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+
+class ServiceConfig {
+  constructor(readonly hostPort: HostPort, readonly timeout: number) {}
+}
+
+const serfviceConfig = Config.map(
+  Config.all([Config.nested(config, "HOSTPORT"), Config.number("TIMEOUT")]),
   ([hostPort, timeout]) => new ServiceConfig(hostPort, timeout)
 )
 ```
@@ -433,23 +447,24 @@ Once we have the mock config provider, we can use `Layer.setConfigProvider` func
 Here's an example of how we can mock a config provider for testing purposes:
 
 ```ts twoslash
-// @filename: HostPort.ts
-// @include: hostport
+import { Config, ConfigProvider, Layer, Effect } from "effect"
 
-// @filename: App.ts
-import { Effect, Console } from "effect"
-import * as HostPort from "./HostPort"
+class HostPort {
+  constructor(readonly host: string, readonly port: number) {}
 
-export const program = HostPort.config.pipe(
-  Effect.andThen((hostPort) =>
-    Console.log(`Application started: ${hostPort.url}`)
-  )
-)
+  get url() {
+    return `${this.host}:${this.port}`
+  }
+}
 
-// @filename: mockConfigProvider.ts
-// ---cut---
-import { ConfigProvider, Layer, Effect } from "effect"
-import * as App from "./App"
+const both = Config.all([Config.string("HOST"), Config.number("PORT")])
+
+const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+
+const program = Effect.gen(function* () {
+  const hostPort = yield* config
+  console.log(`Application started: ${hostPort.url}`)
+})
 
 // Create a mock config provider using ConfigProvider.fromMap
 const mockConfigProvider = ConfigProvider.fromMap(
@@ -459,12 +474,11 @@ const mockConfigProvider = ConfigProvider.fromMap(
   ])
 )
 
-// Create a layer using Layer.setConfigProvider to override the
-// default config provider
+// Create a layer using Layer.setConfigProvider to override the default config provider
 const layer = Layer.setConfigProvider(mockConfigProvider)
 
 // Run the program using the provided layer
-Effect.runSync(Effect.provide(App.program, layer))
+Effect.runSync(Effect.provide(program, layer))
 // Output: Application started: localhost:8080
 ```
 
@@ -478,7 +492,7 @@ It parses the config value and wraps it in a `Redacted<string>`, a [data type](/
 When you use `Console.log` on a redacted, the actual value remains hidden, providing an added layer of security.
 The only way to access the value is by using `Redacted.value`.
 
-```ts [Redacted.ts] twoslash
+```ts twoslash
 import { Effect, Config, Console, Redacted } from "effect"
 
 const program = Config.redacted("API_KEY").pipe(
@@ -493,7 +507,7 @@ Effect.runSync(program)
 
 If we run this program we will get the following output:
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 API_KEY=my-api-key tsx Redacted.ts
 Console output: <redacted>
 Actual value: my-api-key
@@ -502,17 +516,15 @@ Actual value: my-api-key
 In this example, you can see that when logging the redacted using `Console.log`, the actual value is replaced with `<redacted>`, ensuring that sensitive information is not exposed.
 The `Redacted.value` function, on the other hand, provides a controlled way to retrieve the original secret value.
 
-## Secret
+## Secret <Badge text="Deprecated" variant="caution" />
 
-<Aside type="caution">
-  Deprecated since version 3.3.0: Please use [Config.redacted](#redacted)
-  for handling sensitive information going forward.
-</Aside>
+Deprecated since version 3.3.0: Please use [Config.redacted](#redacted)
+for handling sensitive information going forward.
 
 `Config.secret` functions similarly to `Config.redacted` by securing sensitive information.
 It wraps configuration values in a `Secret` type, which also obscures details when logged but allows access through the `Secret.value` method.
 
-```ts [Secret.ts] twoslash
+```ts twoslash
 import { Effect, Config, Console, Secret } from "effect"
 
 const program = Config.secret("API_KEY").pipe(
@@ -527,7 +539,7 @@ Effect.runSync(program)
 
 If we run this program we will get the following output:
 
-```sh showLineNumbers=false [Terminal]
+```sh showLineNumbers=false
 API_KEY=my-api-key tsx Secret.ts
 Console output: Secret(<redacted>)
 Secret value: my-api-key

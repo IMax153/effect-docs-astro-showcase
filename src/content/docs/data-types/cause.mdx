@@ -30,7 +30,7 @@ const effect = Effect.failCause(Cause.empty)
 
 To uncover the underlying cause of an effect, we can use the `Effect.cause` function:
 
-```ts
+```ts showLineNumbers=false
 Effect.cause(effect).pipe(
   Effect.andThen((cause) => ...)
 )
@@ -142,10 +142,18 @@ Let's take a look at how you can use `Cause.pretty`:
 ```ts twoslash
 import { Cause, FiberId } from "effect"
 
-console.log(Cause.pretty(Cause.empty)) // All fibers interrupted without errors.
-console.log(Cause.pretty(Cause.fail(new Error("my fail message")))) // Error: my fail message
-console.log(Cause.pretty(Cause.die("my die message"))) // Error: my die message
-console.log(Cause.pretty(Cause.interrupt(FiberId.make(1, 0)))) // All fibers interrupted without errors.
+console.log(Cause.pretty(Cause.empty))
+// All fibers interrupted without errors.
+
+console.log(Cause.pretty(Cause.fail(new Error("my fail message"))))
+// Error: my fail message
+
+console.log(Cause.pretty(Cause.die("my die message")))
+// Error: my die message
+
+console.log(Cause.pretty(Cause.interrupt(FiberId.make(1, 0))))
+// All fibers interrupted without errors.
+
 console.log(
   Cause.pretty(Cause.sequential(Cause.fail("fail1"), Cause.fail("fail2")))
 )

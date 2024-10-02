@@ -3,7 +3,7 @@ import { Effect } from "effect"
 let count = 0
 
 // Simulates an effect with possible failures
-export const task = Effect.async<string, Error>((resume) => {
+const task = Effect.async<string, Error>((resume) => {
   if (count <= 2) {
     count++
     console.log("failure")

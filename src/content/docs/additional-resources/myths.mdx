@@ -3,7 +3,7 @@ title: Myths About Effect
 description: Discuss common misconceptions about Effect.
 sidebar:
   label: Myths
-  order: 3
+  order: 1
 ---
 
 ## Effect heavily relies on generators and generators are slow!
@@ -16,13 +16,15 @@ Where generators and iterables are unacceptably slow is in transforming collecti
 
 Effect does perform 500x slower if you are comparing:
 
-```ts
+```ts twoslash
 const result = 1 + 1
 ```
 
 to
 
-```ts
+```ts twoslash
+import { Effect } from "effect"
+
 const result = Effect.runSync(
   Effect.zipWith(Effect.succeed(1), Effect.succeed(1), (a, b) => a + b)
 )

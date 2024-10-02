@@ -11,7 +11,7 @@ Even though JavaScript provides built-in control flow structures, Effect offers 
 
 When working with Effect values, we can use the standard JavaScript if-then-else expressions:
 
-```ts file=<rootDir>/control-flow/if-expr.ts
+```ts twoslash file=<rootDir>/control-flow/if-expr.ts
 
 ```
 
@@ -19,7 +19,7 @@ Here we are using the [Option](/data-types/option) data type to represent the ab
 
 We can also handle invalid inputs by using the error channel:
 
-```ts file=<rootDir>/control-flow/if-expr-error-channel.ts
+```ts twoslash file=<rootDir>/control-flow/if-expr-error-channel.ts
 
 ```
 
@@ -29,7 +29,7 @@ We can also handle invalid inputs by using the error channel:
 
 Instead of using `if (condition) expression`, we can use the `Effect.when` function:
 
-```ts file=<rootDir>/control-flow/when.ts#L1-L6
+```ts twoslash file=<rootDir>/control-flow/when.ts
 
 ```
 
@@ -45,7 +45,7 @@ If the condition itself involves an effect, we can use `Effect.whenEffect`.
 
 For example, the following function creates a random option of an integer value:
 
-```ts file=<rootDir>/control-flow/whenEffect.ts
+```ts twoslash file=<rootDir>/control-flow/whenEffect.ts
 
 ```
 
@@ -59,7 +59,7 @@ The `Effect.if` function allows you to provide an effectful predicate. If the pr
 
 Let's use this function to create a simple virtual coin flip function:
 
-```ts file=<rootDir>/control-flow/if.ts
+```ts twoslash file=<rootDir>/control-flow/if.ts
 
 ```
 
@@ -72,7 +72,7 @@ In this example, we generate a random boolean value using `Random.nextBoolean`. 
 The `Effect.zip` function allows you to combine two effects into a single effect.
 This combined effect yields a tuple containing the results of both input effects once they succeed:
 
-```ts file=<rootDir>/control-flow/zip.ts
+```ts twoslash file=<rootDir>/control-flow/zip.ts
 
 ```
 
@@ -89,7 +89,7 @@ If you want to run the effects concurrently, you can use the `concurrent` option
 The `Effect.zipWith` function operates similarly to [Effect.zip](#zip) by combining two effects.
 However, instead of returning a tuple, it allows you to apply a function to the results of the combined effects, transforming them into a single value:
 
-```ts file=<rootDir>/control-flow/zipWith.ts
+```ts twoslash file=<rootDir>/control-flow/zipWith.ts
 
 ```
 
@@ -121,7 +121,7 @@ return result
 
 **Example**
 
-```ts file=<rootDir>/control-flow/loop.ts
+```ts twoslash file=<rootDir>/control-flow/loop.ts
 
 ```
 
@@ -131,7 +131,7 @@ You can also use the `discard` option if you're not interested in collecting the
 
 **Example: `discard: true`**
 
-```ts file=<rootDir>/control-flow/loop-discard.ts
+```ts twoslash file=<rootDir>/control-flow/loop-discard.ts
 
 ```
 
@@ -159,7 +159,7 @@ return result
 
 **Example**
 
-```ts file=<rootDir>/control-flow/iterate.ts
+```ts twoslash file=<rootDir>/control-flow/iterate.ts
 
 ```
 
@@ -181,7 +181,7 @@ This function returns a new effect that produces an array containing the results
 
 **Example**
 
-```ts file=<rootDir>/control-flow/forEach.ts
+```ts twoslash file=<rootDir>/control-flow/forEach.ts
 
 ```
 
@@ -195,7 +195,7 @@ We also have the `discard` option, which when set to `true` discards the results
 
 **Example**
 
-```ts file=<rootDir>/control-flow/forEach-discard.ts
+```ts twoslash file=<rootDir>/control-flow/forEach-discard.ts
 
 ```
 
@@ -223,25 +223,25 @@ Let's explore examples for each supported shape: tuples, iterables, structs, and
 
 **Tuples**
 
-```ts file=<rootDir>/control-flow/all-tuples.ts
+```ts twoslash file=<rootDir>/control-flow/all-tuples.ts
 
 ```
 
 **Iterables**
 
-```ts file=<rootDir>/control-flow/all-iterables.ts
+```ts twoslash file=<rootDir>/control-flow/all-iterables.ts
 
 ```
 
 **Structs**
 
-```ts file=<rootDir>/control-flow/all-structs.ts
+```ts twoslash file=<rootDir>/control-flow/all-structs.ts
 
 ```
 
 **Records**
 
-```ts file=<rootDir>/control-flow/all-records.ts
+```ts twoslash file=<rootDir>/control-flow/all-records.ts
 
 ```
 
@@ -254,7 +254,7 @@ What does this mean for you as a developer? Well, let's say you have a collectio
 
 In simpler terms, the short-circuiting behavior ensures that if something goes wrong at any step of your program it will immediately stop and return the error to let you know that something went wrong.
 
-```ts file=<rootDir>/control-flow/all-short-circuit.ts
+```ts twoslash file=<rootDir>/control-flow/all-short-circuit.ts
 
 ```
 
@@ -266,7 +266,7 @@ When you use the `{ mode: "either" }` option with `Effect.all`, it modifies the 
 
 **Example: `mode: "either"`**
 
-```ts file=<rootDir>/control-flow/all-mode-either.ts
+```ts twoslash file=<rootDir>/control-flow/all-mode-either.ts
 
 ```
 
@@ -274,6 +274,6 @@ On the other hand, when you use the `{ mode: "validate" }` option with `Effect.a
 
 **Example: `mode: "validate"`**
 
-```ts file=<rootDir>/control-flow/all-mode-validate.ts
+```ts twoslash file=<rootDir>/control-flow/all-mode-validate.ts
 
 ```

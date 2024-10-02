@@ -68,7 +68,7 @@ It's important to note that functions passed to `pipe` must have a **single argu
 
 Let's see an example to better understand how `pipe` works:
 
-```ts file=<rootDir>/building-pipelines/pipe.ts
+```ts twoslash file=<rootDir>/building-pipelines/pipe.ts
 
 ```
 
@@ -106,7 +106,7 @@ In the code above, `transformation` is the function applied to the value, and `m
 
 Consider a program that adds a small service charge to a transaction:
 
-```ts file=<rootDir>/building-pipelines/map.ts
+```ts twoslash file=<rootDir>/building-pipelines/map.ts
 
 ```
 
@@ -114,7 +114,7 @@ Consider a program that adds a small service charge to a transaction:
 
 To map an `Effect` to a constant value, replacing the original value, use `Effect.as`:
 
-```ts file=<rootDir>/building-pipelines/as.ts
+```ts twoslash file=<rootDir>/building-pipelines/as.ts
 
 ```
 
@@ -148,7 +148,7 @@ In the code above, `transformation` is the function that takes a value and retur
 
 **Example**
 
-```ts file=<rootDir>/building-pipelines/flatMap.ts
+```ts twoslash file=<rootDir>/building-pipelines/flatMap.ts
 
 ```
 
@@ -173,7 +173,7 @@ To include effects properly and avoid errors, explicitly chain them using functi
 Although many developers may recognize `flatMap` from its usage with arrays, in the Effect framework, it's utilized to manage and resolve nested `Effect` structures.
 If your goal is to flatten nested arrays within an Effect (`Effect<Array<Array<A>>>`), this can be done using:
 
-```ts file=<rootDir>/building-pipelines/array-flattening.ts
+```ts twoslash file=<rootDir>/building-pipelines/array-flattening.ts
 
 ```
 
@@ -212,7 +212,7 @@ The `anotherEffect` action can take various forms:
 
 Let's see an example where we can compare the use of `Effect.andThen` instead of `Effect.map` and `Effect.flatMap`:
 
-```ts file=<rootDir>/building-pipelines/andThen.ts
+```ts twoslash file=<rootDir>/building-pipelines/andThen.ts
 
 ```
 
@@ -221,7 +221,7 @@ However, it is important to understand that when these types are used, the opera
 
 **Example with Option**
 
-```ts file=<rootDir>/building-pipelines/andThen-with-option.ts
+```ts twoslash file=<rootDir>/building-pipelines/andThen-with-option.ts
 
 ```
 
@@ -231,7 +231,7 @@ A value of type `Option<A>` is interpreted as an effect of type `Effect<A, NoSuc
 
 **Example with Either**
 
-```ts file=<rootDir>/building-pipelines/andThen-with-either.ts
+```ts twoslash file=<rootDir>/building-pipelines/andThen-with-either.ts
 
 ```
 
@@ -246,7 +246,7 @@ This means that the value returned by the previous computation will still be ava
 
 **Example**
 
-```ts file=<rootDir>/building-pipelines/tap.ts
+```ts twoslash file=<rootDir>/building-pipelines/tap.ts
 
 ```
 
@@ -275,7 +275,7 @@ Keep in mind that the order of the results corresponds to the order of the origi
 
 **Example**
 
-```ts file=<rootDir>/building-pipelines/all.ts
+```ts twoslash file=<rootDir>/building-pipelines/all.ts
 
 ```
 
@@ -290,7 +290,7 @@ Keep in mind that the order of the results corresponds to the order of the origi
 
 Now, let's combine `pipe`, `Effect.all` and `Effect.andThen` to build a pipeline that performs a series of transformations:
 
-```ts file=<rootDir>/building-pipelines/pipeline.ts
+```ts twoslash file=<rootDir>/building-pipelines/pipeline.ts
 
 ```
 
@@ -314,7 +314,7 @@ The `pipe` method is available on all effects and many other data types, elimina
 
 Let's rewrite the previous example using the `pipe` method:
 
-```ts file=<rootDir>/building-pipelines/pipe-method.ts#L17-
+```ts twoslash collapse={3-15} file=<rootDir>/building-pipelines/pipe-method.ts
 
 ```
 

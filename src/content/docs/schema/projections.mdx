@@ -14,7 +14,7 @@ The `Schema.typeSchema` function allows you to extract the `Type` portion of a s
 
 **Function Signature**
 
-```ts
+```ts showLineNumbers=false
 declare const typeSchema: <A, I, R>(schema: Schema<A, I, R>) => Schema<A>
 ```
 
@@ -49,8 +49,10 @@ creating a new schema that conforms to the properties defined in the original sc
 
 **Function Signature**
 
-```ts
-declare const encodedSchema: <A, I, R>(schema: Schema<A, I, R>) => Schema<I>
+```ts showLineNumbers=false
+declare const encodedSchema: <A, I, R>(
+  schema: Schema<A, I, R>
+) => Schema<I>
 ```
 
 **Example**
@@ -84,7 +86,7 @@ original schema.
 
 **Function Signature**
 
-```ts
+```ts showLineNumbers=false
 declare const encodedBoundSchema: <A, I, R>(
   schema: Schema<A, I, R>
 ) => Schema<I>
@@ -98,7 +100,10 @@ The term "bound" in this context refers to the boundary up to which refinements 
 import { Schema } from "@effect/schema"
 
 const original = Schema.Struct({
-  foo: Schema.String.pipe(Schema.minLength(3), Schema.compose(Schema.Trim))
+  foo: Schema.String.pipe(
+    Schema.minLength(3),
+    Schema.compose(Schema.Trim)
+  )
 })
 
 // The resultingEncodedBoundSchema preserves the minLength(3) refinement,

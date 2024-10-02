@@ -239,7 +239,6 @@ class Notifications extends Effect.Tag("Notifications")<
   { readonly notify: (message: string) => Effect.Effect<void> }
 >() {}
 
-// ---cut---
 const action = Notifications.notify("Hello, world!")
 ```
 

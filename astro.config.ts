@@ -9,6 +9,7 @@ import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
 import { rehypeHeadingIds } from "@astrojs/markdown-remark"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 // import pluginCodeOutput from "./src/plugins/code-output"
+import pluginTwoslash from "./src/plugins/twoslash"
 
 /* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
 const NETLIFY_PREVIEW_SITE =
@@ -58,7 +59,8 @@ export default defineConfig({
           // commented out to make sure it doesn't interfere with the other plugins
           // pluginCodeOutput(),
           pluginCollapsibleSections(),
-          pluginLineNumbers()
+          pluginLineNumbers(),
+          pluginTwoslash()
         ],
         themes: ["github-light", "github-dark"]
       },

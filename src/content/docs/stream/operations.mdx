@@ -207,7 +207,9 @@ The `Stream.mapAccum` operation is similar to `Stream.map`, but it transforms el
 ```ts twoslash
 import { Stream, Effect } from "effect"
 
-const runningTotal = (stream: Stream.Stream<number>): Stream.Stream<number> =>
+const runningTotal = (
+  stream: Stream.Stream<number>
+): Stream.Stream<number> =>
   stream.pipe(Stream.mapAccum(0, (s, a) => [s + a, s + a]))
 
 Effect.runPromise(Stream.runCollect(runningTotal(Stream.range(0, 5)))).then(
@@ -314,7 +316,7 @@ In this section, we'll explore the concept of stream draining. Imagine you have 
 
 Let's go through a few examples:
 
-**Example 1: Discarding Values**
+**Example: Discarding Values**
 
 ```ts twoslash
 import { Stream, Effect } from "effect"
@@ -331,7 +333,7 @@ Output:
 
 In this example, we have a stream with values from 1 to 5, but we use `Stream.drain` to discard these values. As a result, the output stream is empty.
 
-**Example 2: Executing Random Effects**
+**Example: Executing Random Effects**
 
 ```ts twoslash
 import { Stream, Effect, Random } from "effect"
@@ -716,10 +718,7 @@ import { Stream, Effect, Either } from "effect"
 
 const partition = Stream.range(1, 9).pipe(
   Stream.partitionEither(
-    (n) =>
-      Effect.succeed(n % 2 === 0
-        ? Either.left(n)
-        : Either.right(n)),
+    (n) => Effect.succeed(n % 2 === 0 ? Either.left(n) : Either.right(n)),
     { bufferSize: 5 }
   )
 )
@@ -761,10 +760,7 @@ In the example below, we use `groupByKey` to group exam results by the tens plac
 import { Stream, GroupBy, Effect, Chunk } from "effect"
 
 class Exam {
-  constructor(
-    readonly person: string,
-    readonly score: number
-  ) {}
+  constructor(readonly person: string, readonly score: number) {}
 }
 
 const examResults = [
@@ -1428,8 +1424,8 @@ In this configuration:
 
 <Aside type="note">
   It's important to note that throttling operates on chunks rather than
-  individual elements. The `cost` function determines the token cost for each
-  chunk.
+  individual elements. The `cost` function determines the token cost for
+  each chunk.
 </Aside>
 
 ### Shape Strategy (Default)

@@ -15,7 +15,7 @@ We can attempt one effect, and if it fails, we can try another effect using the 
 
 **Example**
 
-```ts file=<rootDir>/fallback/orElse.ts
+```ts twoslash file=<rootDir>/fallback/orElse.ts
 
 ```
 
@@ -25,13 +25,13 @@ These two operators modify the original failure by replacing it with constant su
 
 The `Effect.orElseFail` will always replace the original failure with the new one:
 
-```ts file=<rootDir>/fallback/orElseFail.ts
+```ts twoslash file=<rootDir>/fallback/orElseFail.ts
 
 ```
 
 The `Effect.orElseSucceed` function will always replace the original failure with a success value, so the resulting effect cannot fail:
 
-```ts file=<rootDir>/fallback/orElseSucceed.ts
+```ts twoslash file=<rootDir>/fallback/orElseSucceed.ts
 
 ```
 
@@ -44,7 +44,7 @@ The `Effect.firstSuccessOf` function simplifies running a series of effects and 
 In the following example, we attempt to retrieve a configuration from different nodes.
 If retrieving from the primary node fails, we successively try retrieving from the next available nodes until we find a successful result.
 
-```ts file=<rootDir>/fallback/firstSuccessOf.ts
+```ts twoslash file=<rootDir>/fallback/firstSuccessOf.ts
 
 ```
 
