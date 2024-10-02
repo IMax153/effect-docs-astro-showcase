@@ -63,7 +63,7 @@ Effect.runPromise(parent)
 
 When you run the above program, you'll see the following output:
 
-```sh showLineNumbers=false [Terminal]
+```ansi showLineNumbers=false
 parent: started!
 child: still running!
 child: still running!
@@ -99,7 +99,7 @@ Effect.runPromise(parent)
 
 If we run the above program, we will see the following output which shows that while the lifetime of the `parent` fiber ends after 3 seconds, the `daemon` fiber is still running:
 
-```sh showLineNumbers=false [Terminal]
+```ansi showLineNumbers=false
 parent: started!
 daemon: still running!
 daemon: still running!
@@ -141,7 +141,7 @@ Effect.runPromise(program)
 
 The output:
 
-```sh showLineNumbers=false [Terminal]
+```ansi showLineNumbers=false
 parent: started!
 daemon: still running!
 daemon: still running!
@@ -190,7 +190,7 @@ In the above example, the `child` fiber forked in the local scope has bigger lif
 So, when its `parent` fiber is terminated, the `child` fiber still running in the local scope until the local scope is closed.
 Let's see the output:
 
-```sh showLineNumbers=false [Terminal]
+```ansi showLineNumbers=false
 Local scope started!
 parent: started!
 child: still running!
@@ -241,7 +241,7 @@ Effect.runPromise(program)
 
 The output:
 
-```sh showLineNumbers=false [Terminal]
+```ansi showLineNumbers=false
 child: still running!
 child: still running!
 child: still running!
