@@ -9,13 +9,13 @@ sidebar:
 
 This section outlines several functions provided by the library that help manage caching and memoization in your application:
 
-| Function Name               | Description                                                                                                                                                                                                 |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **cachedFunction**          | Returns a memoized version of a function with effects. Memoization ensures that results are stored and reused for the same inputs, reducing the need to recompute them.                                     |
-| **once**                    | Returns an effect that executes only once, regardless of how many times it's called.                                                                                                                        |
-| **cached**                  | Returns an effect that computes a result lazily and caches it. Subsequent evaluations of this effect will return the cached result without re-executing the logic.                                          |
-| **cachedWithTTL**           | Returns an effect that caches its result for a specified duration, known as the `timeToLive`. When the cache expires after the duration, the effect will be recomputed upon next evaluation.                |
-| **cachedInvalidateWithTTL** | Similar to `cachedWithTTL`, this function caches an effect's result for a specified duration. It also includes an additional effect for manually invalidating the cached value before it naturally expires. |
+| API                       | Description                                                                                                                                                                                                 |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cachedFunction`          | Returns a memoized version of a function with effects. Memoization ensures that results are stored and reused for the same inputs, reducing the need to recompute them.                                     |
+| `once`                    | Returns an effect that executes only once, regardless of how many times it's called.                                                                                                                        |
+| `cached`                  | Returns an effect that computes a result lazily and caches it. Subsequent evaluations of this effect will return the cached result without re-executing the logic.                                          |
+| `cachedWithTTL`           | Returns an effect that caches its result for a specified duration, known as the `timeToLive`. When the cache expires after the duration, the effect will be recomputed upon next evaluation.                |
+| `cachedInvalidateWithTTL` | Similar to `cachedWithTTL`, this function caches an effect's result for a specified duration. It also includes an additional effect for manually invalidating the cached value before it naturally expires. |
 
 ## cachedFunction
 
@@ -152,9 +152,9 @@ result 2
 
 ## cachedInvalidateWithTTL
 
-Similar to `cachedWithTTL`, this function caches an effect's result for a specified duration. It also includes an additional effect for manually invalidating the cached value before it naturally expires.
+Similar to `Effect.cachedWithTTL`, this function caches an effect's result for a specified duration. It also includes an additional effect for manually invalidating the cached value before it naturally expires.
 
-```ts
+```ts twoslash
 import { Effect, Console } from "effect"
 
 let i = 1
