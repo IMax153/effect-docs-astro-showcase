@@ -41,6 +41,7 @@
   border: 1px solid var(--sl-color-gray-5);
   border-radius: 4px;
   font-size: 90%;
+  overflow-y: auto;
 }
 
 .twoslash-popup-code {
@@ -70,7 +71,5 @@
   font-size: var(--sl-text-code);
   font-weight: 400;
   line-height: var(--sl-line-height);
-  overflow-y: auto;
-  overflow-x: hidden;
   text-wrap: balance;
 }
