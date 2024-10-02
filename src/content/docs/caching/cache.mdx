@@ -23,8 +23,8 @@ Key Features of Cache:
 
 A cache is defined by a lookup function that describes how to compute the value associated with a key if it is not already in the cache.
 
-```ts
-export type Lookup<Key, Value, Error = never, Environment = never> = (
+```ts showLineNumbers=false
+type Lookup<Key, Value, Error = never, Environment = never> = (
   key: Key
 ) => Effect.Effect<Value, Error, Environment>
 ```
@@ -35,8 +35,8 @@ In short, if you can describe it with an `Effect`, you can use it as the lookup 
 
 We construct a cache using a lookup function along with a maximum size and a time to live.
 
-```ts
-export declare const make: <
+```ts showLineNumbers=false
+declare const make: <
   Key,
   Value,
   Error = never,
