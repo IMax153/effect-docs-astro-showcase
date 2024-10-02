@@ -37,10 +37,8 @@
 .twoslash-popup-container {
   position: absolute;
   z-index: 10;
-  background: var(--ec-frm-edBg);
-  border: var(--ec-gtrBrdWd) solid var(--ec-gtrBrdCol);
-  color: white;
-  font-weight: 600;
+  background: var(--sl-color-bg);
+  border: 1px solid var(--sl-color-gray-5);
   border-radius: 4px;
   font-size: 90%;
 }
@@ -51,18 +49,26 @@
   max-width: 600px;
   min-width: 100%;
   padding: 6px 12px;
-  font-family: var(--ec-uiFontFml);
-  white-space: pre-wrap;
+  color: var(--0);
+  font-family: var(--__sl-font) !important;
+  font-size: var(--sl-text-code);
+  font-weight: 400;
+  line-height: var(--sl-line-height);
+}
+
+:root[data-theme="dark"] .twoslash-popup-code {
+  color: var(--1, inherit);
 }
 
 .twoslash-popup-docs {
   max-width: 700px;
   max-height: 500px;
   padding: 12px;
-  border-top: var(--ec-gtrBrdWd) solid var(--ec-gtrBrdCol);
-  font-size: var(--ec-uiFontSize);
-  font-weight: var(--ec-uiFontWg);
-  color: rgba(255, 255, 245, .86);
+  border-top: 1px solid var(--sl-color-gray-5);
+  color: var(--sl-color-text);
+  font-size: var(--sl-text-code);
+  font-weight: 400;
+  line-height: var(--sl-line-height);
   overflow-y: auto;
   overflow-x: hidden;
   text-wrap: balance;

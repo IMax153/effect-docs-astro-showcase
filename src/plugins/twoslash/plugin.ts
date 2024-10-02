@@ -103,21 +103,24 @@ class TwoslashHoverAnnotation extends ExpressiveCodeAnnotation {
 
   render({ nodesToTransform }: AnnotationRenderOptions) {
     return nodesToTransform.map((node) => {
-      return h("span.twoslash", [
-        h("span.twoslash-hover", [
-          h("div.twoslash-popup-container", [
-            h("code.twoslash-popup-code", [this.hover.text]),
-            ...(
-              this.hover.docs
-                ? [h("div.twoslash-popup-docs", [
-                  h("p", [this.hover.docs])
-                ])]
-                : []
-            )
-          ]),
-          node
+      if (node.type === "element") {
+        return h("span.twoslash", node.properties, [
+          h("span.twoslash-hover", [
+            h("div.twoslash-popup-container", [
+              h("code.twoslash-popup-code", node.properties, [this.hover.text]),
+              ...(
+                this.hover.docs
+                  ? [h("div.twoslash-popup-docs", [
+                    h("p", [this.hover.docs])
+                  ])]
+                  : []
+              )
+            ]),
+            node
+          ])
         ])
-      ])
+      }
+      return node
     })
   }
 }

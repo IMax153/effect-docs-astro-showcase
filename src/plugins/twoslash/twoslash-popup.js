@@ -4,6 +4,9 @@ function setupTooltip(referenceNode) {
   const containerNode = document.body
   const popperNode = referenceNode.querySelector(".twoslash-popup-container")
 
+  // Compute a unique identifier to use for the aria-describedby attribute
+  const randomId = `twoslash_popup_${[Math.random(), Date.now()].map(n => n.toString(36).substring(2, 10)).join("_")}`
+
   if (popperNode && popperNode.parentNode) {
     popperNode.parentNode.removeChild(popperNode)
   }
@@ -44,9 +47,15 @@ function setupTooltip(referenceNode) {
 
   referenceNode.addEventListener("mouseenter", () => {
     updatePosition()
+    popperNode.setAttribute("aria-hidden", "false")
+    referenceNode.querySelector(".twoslash-hover span")?.setAttribute("aria-describedby", randomId)
+    popperNode.setAttribute("id", randomId)
   })
   referenceNode.addEventListener("mouseleave", () => {
     containerNode.removeChild(popperNode)
+    popperNode.setAttribute("aria-hidden", "true")
+    referenceNode.querySelector(".twoslash-hover span")?.removeAttribute("aria-describedby")
+    popperNode.removeAttribute("id")
   })
 }
 
