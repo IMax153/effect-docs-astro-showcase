@@ -45,9 +45,6 @@ const defaultCompilerOptions: CompilerOptions = {
   noEmit: true
 }
 
-// let ok = 0
-// let ko = 0
-
 export default function pluginCodeOutput() {
   const vfs = new Map<string, string>()
   const system = createFSBackedSystem(
@@ -81,12 +78,6 @@ export default function pluginCodeOutput() {
         const errs = ls
           .getSemanticDiagnostics(filename)
           .concat(ls.getSyntacticDiagnostics(filename))
-        // if (errs.length) {
-        //   console.log(`ko: ${++ko}`)
-        //   return
-        // } else {
-        //   console.log(`ok: ${++ok}`)
-        // }
         if (errs.length) {
           const diagnostics = errs.map((err) => {
             const message = ts.flattenDiagnosticMessageText(
@@ -101,7 +92,10 @@ export default function pluginCodeOutput() {
         const identifiers = getIdentifierTextSpans(sourceFile)
         for (const identifier of identifiers) {
           const span = identifier.span
-          const quickInfo = ls.getQuickInfoAtPosition(filename, span.start)
+          const quickInfo = ls.getQuickInfoAtPosition(
+            filename,
+            span.start
+          )
           if (quickInfo && quickInfo.displayParts) {
             const text = quickInfo.displayParts
               .map((dp) => dp.text)
