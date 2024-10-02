@@ -13,13 +13,13 @@ Repetition is a common requirement when working with effects in software develop
 
 The `Effect.repeat` function returns a new effect that repeats the given effect according to a specified schedule or until the first failure.
 
-<Aside type="caution">
+<Aside type="note">
   The scheduled recurrences are in addition to the initial execution, so
-  `Effect.repeat(action, Schedule.once)` executes `action` once initially, and
-  if it succeeds, repeats it an additional time.
+  `Effect.repeat(action, Schedule.once)` executes `action` once initially,
+  and if it succeeds, repeats it an additional time.
 </Aside>
 
-**Success Example**
+**Example: success**
 
 ```ts twoslash
 import { Effect, Schedule, Console } from "effect"
@@ -40,7 +40,7 @@ repetitions: 2
 */
 ```
 
-**Failure Example**
+**Example: failure**
 
 ```ts twoslash
 import { Effect, Schedule } from "effect"
@@ -192,6 +192,6 @@ Action called 3 time(s)
 
 <Aside type="note">
   Consider using
-  [Effect.retry](/error-management/retrying#retrying-based-on-a-condition) to
-  set conditions based on errors rather than successful outcomes.
+  [Effect.retry](/error-management/retrying#retrying-based-on-a-condition)
+  to set conditions based on errors rather than successful outcomes.
 </Aside>
