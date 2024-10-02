@@ -6,7 +6,7 @@ sidebar:
   order: 2
 ---
 
-import { Tabs, TabItem } from "@astrojs/starlight/components"
+import { Tabs, TabItem, Steps } from "@astrojs/starlight/components"
 
 Although logs and metrics are useful to understand the behavior of individual services, they are not enough to provide a complete overview of the lifetime of a request in a distributed system.
 
@@ -418,6 +418,8 @@ To get Docker, follow these steps:
 
 Now, let's simulate traces using a sample Node.js application. We'll provide you with the code and guide you on setting up the necessary components.
 
+<Steps>
+
 1. **Download Docker Files**. Download the required Docker files: docker.zip
 
 2. **Set Up docker**. Unzip the downloaded file, navigate to the `/docker/local` directory in your terminal or command prompt and run the following command to start the necessary services:
@@ -570,5 +572,7 @@ Now, let's simulate traces using a sample Node.js application. We'll provide you
 4. **Visualize Traces**. Now, open your web browser and go to `http://localhost:3000/explore`. You will see a generated `Trace ID` on the web page. Click on it to see the details of the trace.
 
    ![Traces in Grafana Tempo](./trace.png "An image displaying an application trace visualized as a waterfall diagram in Grafana Tempo")
+
+</Steps>
 
 That's it! You've simulated and visualized traces using Docker, Prometheus, Grafana, and Tempo. You can use these tools to monitor, analyze, and gain insights into your applications' performance and behavior.
