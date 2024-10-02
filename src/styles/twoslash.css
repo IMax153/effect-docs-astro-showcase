@@ -54,6 +54,7 @@
   font-size: var(--sl-text-code);
   font-weight: 400;
   line-height: var(--sl-line-height);
+  white-space: pre-wrap;
 }
 
 :root[data-theme="dark"] .twoslash-popup-code {
