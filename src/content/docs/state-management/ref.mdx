@@ -23,12 +23,10 @@ Let's dive in and see how we can leverage `Ref` for effective state management i
 
 Let's explore how to use the `Ref` data type with a simple example of a counter:
 
-<div style="display: none;">
-
-```ts twoslash include Counter
+```ts twoslash
 import { Effect, Ref } from "effect"
 
-export class Counter {
+class Counter {
   inc: Effect.Effect<void>
   dec: Effect.Effect<void>
   get: Effect.Effect<number>
@@ -40,13 +38,7 @@ export class Counter {
   }
 }
 
-export const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
-```
-
-</div>
-
-```ts [Counter.ts] twoslash
-// @include: Counter
+const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
 ```
 
 Here is the usage example of the `Counter`:
@@ -55,17 +47,25 @@ Here is the usage example of the `Counter`:
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash
-// @filename: Counter.ts
-// @include: Counter
+```ts twoslash collapse={3-15}
+import { Effect, Ref } from "effect"
 
-// @filename: index.ts
-// ---cut---
-import { Effect } from "effect"
-import * as Counter from "./Counter"
+class Counter {
+  inc: Effect.Effect<void>
+  dec: Effect.Effect<void>
+  get: Effect.Effect<number>
+
+  constructor(private value: Ref.Ref<number>) {
+    this.inc = Ref.update(this.value, (n) => n + 1)
+    this.dec = Ref.update(this.value, (n) => n - 1)
+    this.get = Ref.get(this.value)
+  }
+}
+
+const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
 
 const program = Effect.gen(function* () {
-  const counter = yield* Counter.make
+  const counter = yield* make
   yield* counter.inc
   yield* counter.inc
   yield* counter.dec
@@ -85,16 +85,24 @@ This counter has a value of 2.
 
 <TabItem label="Using pipe">
 
-```ts twoslash
-// @filename: Counter.ts
-// @include: Counter
+```ts twoslash collapse={3-15}
+import { Effect, Ref, Console } from "effect"
 
-// @filename: index.ts
-// ---cut---
-import { Effect, Console } from "effect"
-import * as Counter from "./Counter"
+class Counter {
+  inc: Effect.Effect<void>
+  dec: Effect.Effect<void>
+  get: Effect.Effect<number>
 
-const program = Counter.make.pipe(
+  constructor(private value: Ref.Ref<number>) {
+    this.inc = Ref.update(this.value, (n) => n + 1)
+    this.dec = Ref.update(this.value, (n) => n - 1)
+    this.get = Ref.get(this.value)
+  }
+}
+
+const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
+
+const program = make.pipe(
   Effect.andThen((counter) =>
     counter.inc.pipe(
       Effect.andThen(counter.inc),
@@ -133,17 +141,25 @@ For this example, let's update the counter concurrently:
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash
-// @filename: Counter.ts
-// @include: Counter
+```ts twoslash collapse={3-15}
+import { Effect, Ref } from "effect"
 
-// @filename: index.ts
-// ---cut---
-import { Effect } from "effect"
-import * as Counter from "./Counter"
+class Counter {
+  inc: Effect.Effect<void>
+  dec: Effect.Effect<void>
+  get: Effect.Effect<number>
+
+  constructor(private value: Ref.Ref<number>) {
+    this.inc = Ref.update(this.value, (n) => n + 1)
+    this.dec = Ref.update(this.value, (n) => n - 1)
+    this.get = Ref.get(this.value)
+  }
+}
+
+const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
 
 const program = Effect.gen(function* () {
-  const counter = yield* Counter.make
+  const counter = yield* make
 
   const logCounter = <R, E, A>(
     label: string,
@@ -179,16 +195,24 @@ Output:
 
 <TabItem label="Using pipe">
 
-```ts twoslash
-// @filename: Counter.ts
-// @include: Counter
+```ts twoslash collapse={3-15}
+import { Effect, Ref } from "effect"
 
-// @filename: index.ts
-// ---cut---
-import { Effect } from "effect"
-import * as Counter from "./Counter"
+class Counter {
+  inc: Effect.Effect<void>
+  dec: Effect.Effect<void>
+  get: Effect.Effect<number>
 
-const program = Counter.make.pipe(
+  constructor(private value: Ref.Ref<number>) {
+    this.inc = Ref.update(this.value, (n) => n + 1)
+    this.dec = Ref.update(this.value, (n) => n - 1)
+    this.get = Ref.get(this.value)
+  }
+}
+
+const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
+
+const program = make.pipe(
   Effect.andThen((counter) => {
     const logCounter = <R, E, A>(
       label: string,
@@ -344,14 +368,11 @@ Let's consider an example where we want to read names from user input until the 
 
 First, let's introduce a `readLine` utility to read user input (ensure you have `@types/node` installed):
 
-<div style="display: none;">
-
-```ts twoslash include ReadLine
-// @types: node
+```ts twoslash
 import { Effect } from "effect"
 import * as NodeReadLine from "node:readline"
 
-export const readLine = (message: string): Effect.Effect<string> =>
+const readLine = (message: string): Effect.Effect<string> =>
   Effect.promise(
     () =>
       new Promise((resolve) => {
@@ -367,33 +388,35 @@ export const readLine = (message: string): Effect.Effect<string> =>
   )
 ```
 
-</div>
-
-```ts [ReadLine.ts] twoslash
-// @include: ReadLine
-```
-
 Now, let's take a look at the main program:
 
 <Tabs syncKey="pipe-vs-gen">
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash
-// @filename: ReadLine.ts
-// @include: ReadLine
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={4-17}
 import { Effect, Chunk, Ref } from "effect"
-import * as ReadLine from "./ReadLine"
+import * as NodeReadLine from "node:readline"
+
+const readLine = (message: string): Effect.Effect<string> =>
+  Effect.promise(
+    () =>
+      new Promise((resolve) => {
+        const rl = NodeReadLine.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        })
+        rl.question(message, (answer) => {
+          rl.close()
+          resolve(answer)
+        })
+      })
+  )
 
 const getNames = Effect.gen(function* () {
   const ref = yield* Ref.make(Chunk.empty<string>())
   while (true) {
-    const name = yield* ReadLine.readLine(
-      "Please enter a name or `q` to exit: "
-    )
+    const name = yield* readLine("Please enter a name or `q` to exit: ")
     if (name === "q") {
       break
     }
@@ -419,18 +442,28 @@ Please enter a name or `q` to exit: q
 
 <TabItem label="Using pipe">
 
-```ts twoslash
-// @filename: ReadLine.ts
-// @include: ReadLine
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={4-17}
 import { Effect, Chunk, Ref } from "effect"
-import * as ReadLine from "./ReadLine"
+import * as NodeReadLine from "node:readline"
+
+const readLine = (message: string): Effect.Effect<string> =>
+  Effect.promise(
+    () =>
+      new Promise((resolve) => {
+        const rl = NodeReadLine.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        })
+        rl.question(message, (answer) => {
+          rl.close()
+          resolve(answer)
+        })
+      })
+  )
 
 const getNames = Ref.make(Chunk.empty<string>()).pipe(
   Effect.andThen((ref) =>
-    ReadLine.readLine("Please enter a name or `q` to exit: ").pipe(
+    readLine("Please enter a name or `q` to exit: ").pipe(
       Effect.repeat({
         while: (name) => {
           if (name === "q") {
@@ -471,23 +504,31 @@ Now that we have learned how to use the `Ref` data type, we can use it to manage
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash
-// @filename: ReadLine.ts
-// @include: ReadLine
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={4-17}
 import { Effect, Chunk, Ref, Fiber } from "effect"
-import * as ReadLine from "./ReadLine"
+import * as NodeReadLine from "node:readline"
+
+const readLine = (message: string): Effect.Effect<string> =>
+  Effect.promise(
+    () =>
+      new Promise((resolve) => {
+        const rl = NodeReadLine.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        })
+        rl.question(message, (answer) => {
+          rl.close()
+          resolve(answer)
+        })
+      })
+  )
 
 const getNames = Effect.gen(function* () {
   const ref = yield* Ref.make(Chunk.empty<string>())
   const fiber1 = yield* Effect.fork(
     Effect.gen(function* () {
       while (true) {
-        const name = yield* ReadLine.readLine(
-          "Please enter a name or `q` to exit: "
-        )
+        const name = yield* readLine("Please enter a name or `q` to exit: ")
         if (name === "q") {
           break
         }
@@ -525,20 +566,28 @@ Please enter a name or `q` to exit: q
 
 <TabItem label="Using pipe">
 
-```ts twoslash
-// @filename: ReadLine.ts
-// @include: ReadLine
-
-// @filename: index.ts
-// ---cut---
+```ts twoslash collapse={4-17}
 import { Effect, Chunk, Ref, Fiber } from "effect"
-import * as ReadLine from "./ReadLine"
+import * as NodeReadLine from "node:readline"
+
+const readLine = (message: string): Effect.Effect<string> =>
+  Effect.promise(
+    () =>
+      new Promise((resolve) => {
+        const rl = NodeReadLine.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        })
+        rl.question(message, (answer) => {
+          rl.close()
+          resolve(answer)
+        })
+      })
+  )
 
 const getNames = Ref.make(Chunk.empty<string>()).pipe(
   Effect.andThen((ref) => {
-    const fiber1 = ReadLine.readLine(
-      "Please enter a name or `q` to exit: "
-    ).pipe(
+    const fiber1 = readLine("Please enter a name or `q` to exit: ").pipe(
       Effect.repeat({
         while: (name) => {
           if (name === "q") {
