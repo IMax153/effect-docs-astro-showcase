@@ -8,8 +8,7 @@ import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
 import { rehypeHeadingIds } from "@astrojs/markdown-remark"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
-// import pluginCodeOutput from "./src/plugins/code-output"
-import pluginTwoslash from "./src/plugins/twoslash"
+import pluginTwoslash from "./src/plugins/twoslash/plugin"
 
 /* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
 const NETLIFY_PREVIEW_SITE =
@@ -49,6 +48,8 @@ export default defineConfig({
         Head: "./src/components/starlight-overrides/Head.astro"
       },
       customCss: [
+        // the global styles required for Twoslash (the rest are scoped to the plugin)
+        "./src/styles/twoslash.css",
         // the styles for the autolink headings
         "./src/styles/headings.css",
         // fixes overflow-wrap when the columns contains code blocks
@@ -56,11 +57,9 @@ export default defineConfig({
       ],
       expressiveCode: {
         plugins: [
-          // commented out to make sure it doesn't interfere with the other plugins
-          // pluginCodeOutput(),
           pluginCollapsibleSections(),
           pluginLineNumbers(),
-          pluginTwoslash()
+          pluginTwoslash({ explicitTrigger: true })
         ],
         themes: ["github-light", "github-dark"]
       },
