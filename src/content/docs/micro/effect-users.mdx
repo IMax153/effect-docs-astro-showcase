@@ -7,9 +7,9 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-<Aside type="note">
-  The Micro module is currently in its experimental stages. We encourage your
-  feedback to further improve its features.
+<Aside type="caution">
+  The Micro module is currently in its experimental stages. We encourage
+  your feedback to further improve its features.
 </Aside>
 
 The `Micro` module in Effect is designed as a lighter alternative to the standard `Effect` module, tailored for situations where it is beneficial to reduce the bundle size.
@@ -20,7 +20,7 @@ Micro also supports use cases where a client application uses Micro, and a serve
 
 Integrating Micro adds a minimal footprint to your bundle, starting at **5kb gzipped**, which may increase depending on the features you use.
 
-<Aside type="caution">
+<Aside type="danger" title="Bundle Size">
   Utilizing major Effect modules beyond basic data modules like `Option`,
   `Either`, `Array`, will incorporate the Effect runtime into your bundle,
   negating the benefits of Micro.
@@ -30,7 +30,7 @@ Integrating Micro adds a minimal footprint to your bundle, starting at **5kb gzi
 
 Micro is a part of the Effect library and can be imported just like any other module:
 
-```ts twoslash
+```ts showLineNumbers=false
 import * as Micro from "effect/Micro"
 ```
 
@@ -40,7 +40,7 @@ import * as Micro from "effect/Micro"
 
 The `Micro` type uses three type parameters:
 
-```ts
+```ts showLineNumbers=false
 Micro<Success, Error, Requirements>
 ```
 
@@ -50,7 +50,7 @@ which mirror those of the `Effect` type.
 
 The `MicroExit` type is a streamlined version of the [Exit](/data-types/exit) type, designed to capture the outcome of a `Micro` computation. It uses the [Either](/data-types/either) data type to distinguish between successful outcomes and failures:
 
-```ts
+```ts showLineNumbers=false
 type MicroExit<A, E = never> = Either<A, MicroCause<E>>
 ```
 
@@ -60,7 +60,7 @@ The `MicroCause` type is a streamlined version of the [Cause](/data-types/cause)
 
 Similar to how `Cause` is a union of types, `MicroCause` consists of three specific types:
 
-```ts
+```ts showLineNumbers=false
 type MicroCause<E> = Die | Fail<E> | Interrupt
 ```
 
@@ -74,7 +74,7 @@ type MicroCause<E> = Die | Fail<E> | Interrupt
 
 The `MicroSchedule` type is a streamlined version of the [Schedule](/scheduling/introduction) type.
 
-```ts
+```ts showLineNumbers=false
 type MicroSchedule = (attempt: number, elapsed: number) => Option<number>
 ```
 
@@ -247,15 +247,20 @@ random number: 0.8241872233134417
 ```ts twoslash
 import * as Micro from "effect/Micro"
 
-const consoleLog = (message: string) => Micro.sync(() => console.log(message))
+const consoleLog = (message: string) =>
+  Micro.sync(() => console.log(message))
 
 const program =
   // create a new scope
   Micro.scopeMake.pipe(
     // add finalizer 1
-    Micro.tap((scope) => scope.addFinalizer(() => consoleLog("finalizer 1"))),
+    Micro.tap((scope) =>
+      scope.addFinalizer(() => consoleLog("finalizer 1"))
+    ),
     // add finalizer 2
-    Micro.tap((scope) => scope.addFinalizer(() => consoleLog("finalizer 2"))),
+    Micro.tap((scope) =>
+      scope.addFinalizer(() => consoleLog("finalizer 2"))
+    ),
     // close the scope
     Micro.andThen((scope) =>
       scope.close(Micro.exitSucceed("scope closed successfully"))
