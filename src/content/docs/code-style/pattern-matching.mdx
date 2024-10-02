@@ -19,7 +19,7 @@ Although not yet a native feature in JavaScript, there's an ongoing [tc39 propos
 
 Creating a `Matcher` involves using the `type` constructor function with a specified type. This sets the foundation for pattern matching against that particular type. Once the `Matcher` is established, developers can employ various combinators like `when`, `not`, and `tag` to define patterns that the `Matcher` will check against.
 
-Here's a practical example:
+**Example**
 
 ```ts twoslash
 import { Match } from "effect"
@@ -47,7 +47,7 @@ Finally, the `match` function is applied to test two different objects, `{ a: 0 
 
 In addition to defining a `Matcher` based on a specific type, developers can also create a `Matcher` directly from a value utilizing the `value` constructor function. This method allows matching patterns against the provided value.
 
-Let's take a look at an example to better understand this process:
+**Example**
 
 ```ts twoslash
 import { Match } from "effect"
@@ -137,7 +137,8 @@ import { Match, Either } from "effect"
 const result = Match.value(Either.right(0)).pipe(
   Match.when({ _tag: "Right" }, (_) => _.right),
   // @ts-expect-error
-  Match.exhaustive // TypeError! Type 'Left<never, number>' is not assignable to type 'never'
+  Match.exhaustive
+  // TypeError! Type 'Left<never, number>' is not assignable to type 'never'
 )
 ```
 
