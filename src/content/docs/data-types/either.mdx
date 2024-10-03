@@ -71,8 +71,9 @@ console.log(message) // Output: "The Right value is: 42"
 ```
 
 <Aside type="tip" title="Matching">
-  Using `match` instead of `isLeft` or `isRight` can be more expressive and
-  provide a clear way to handle both cases of an `Either`.
+  Using `Either.match` instead of `Either.isLeft` or `Either.isRight` can
+  be more expressive and provide a clear way to handle both cases of an
+  `Either`.
 </Aside>
 
 ## Working with Either
@@ -149,7 +150,9 @@ import { Effect, Either } from "effect"
 const head = <A>(array: ReadonlyArray<A>): Either.Either<A, string> =>
   array.length > 0 ? Either.right(array[0]) : Either.left("empty array")
 
-const foo = Effect.runSync(Effect.andThen(Effect.succeed([1, 2, 3]), head))
+const foo = Effect.runSync(
+  Effect.andThen(Effect.succeed([1, 2, 3]), head)
+)
 console.log(foo) // Output: 1
 
 const bar = Effect.runSync(Effect.andThen(Effect.succeed([]), head)) // throws "empty array"

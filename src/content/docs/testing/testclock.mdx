@@ -59,7 +59,14 @@ Effect.runPromise(test)
 <TabItem label="Using pipe">
 
 ```ts twoslash
-import { Effect, TestClock, Fiber, Option, TestContext, pipe } from "effect"
+import {
+  Effect,
+  TestClock,
+  Fiber,
+  Option,
+  TestContext,
+  pipe
+} from "effect"
 import * as assert from "node:assert"
 
 const test = pipe(
@@ -96,7 +103,7 @@ In this example, we create a test scenario involving a fiber that sleeps for 5 m
 
 A critical point to note is the forking of the fiber where `Effect.sleep` is invoked. Calls to `Effect.sleep` and related methods wait until the clock time matches or surpasses the scheduled time for their execution. By forking the fiber, we ensure that we have control over the clock time adjustment.
 
-<Aside type="tip">
+<Aside type="tip" title="Best Practices">
   The recommended pattern when using the `TestClock` involves forking the
   effect being tested, adjusting the clock time as needed, and then
   verifying that the expected effects have occurred.
@@ -157,7 +164,14 @@ Effect.runPromise(test)
 <TabItem label="Using pipe">
 
 ```ts twoslash
-import { Effect, Queue, TestClock, Option, TestContext, pipe } from "effect"
+import {
+  Effect,
+  Queue,
+  TestClock,
+  Option,
+  TestContext,
+  pipe
+} from "effect"
 import * as assert from "node:assert"
 
 const test = pipe(

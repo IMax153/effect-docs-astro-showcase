@@ -39,7 +39,7 @@ class HttpError {
 
 This will be useful later when we discuss APIs like [Effect.catchTag](#catchtag).
 
-<Aside type="tip">
+<Aside type="tip" title="Discriminant Fields">
   Adding a discriminant field, such as `_tag`, can be beneficial for
   distinguishing between different types of errors during error handling.
   It also prevents TypeScript from unifying types, ensuring that each
@@ -560,8 +560,8 @@ const recovered = program.pipe(
 We can observe that the type in the error channel of our program has changed to `never`,
 indicating that all errors have been handled.
 
-<Aside type="caution">
-  it is important to ensure that the error type used with
+<Aside type="caution" title="Error Type Requirement">
+  It is important to ensure that the error type used with
   `Effect.catchTag` has a `readonly _tag` discriminant field. This field
   is required for the matching and handling of specific error tags.
 </Aside>
@@ -607,7 +607,7 @@ In the above example, instead of using `Effect.catchTag` multiple times to handl
 This combinator takes an object where each property represents a specific error `_tag` (`"HttpError"` and `"ValidationError"` in this case),
 and the corresponding value is the error handler function to be executed when that particular error occurs.
 
-<Aside type="caution">
+<Aside type="caution" title="Error Type Requirement">
   It is important to ensure that all the error types used with
   `Effect.catchTags` have a `readonly _tag` discriminant field. This field
   is required for the matching and handling of specific error tags.

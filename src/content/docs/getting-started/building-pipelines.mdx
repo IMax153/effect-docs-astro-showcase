@@ -23,15 +23,11 @@ Pipelines are an excellent way to structure your application and handle data tra
 
 ## Functions vs Methods
 
-In the Effect ecosystem, libraries often expose functions rather than methods. This design choice is important for two key reasons: tree shakeability and extensibility.
-
-<Aside type="tip">
-  The use of functions in the Effect ecosystem libraries is important for
-  achieving **tree shakeability** and ensuring **extensibility**.
-  Functions enable efficient bundling by eliminating unused code, and they
-  provide a flexible and modular approach to extending the libraries'
-  functionality.
-</Aside>
+The use of functions in the Effect ecosystem libraries is important for
+achieving **tree shakeability** and ensuring **extensibility**.
+Functions enable efficient bundling by eliminating unused code, and they
+provide a flexible and modular approach to extending the libraries'
+functionality.
 
 ### Tree Shakeability
 
@@ -106,7 +102,7 @@ const mappedEffect = myEffect.pipe(Effect.map(transformation))
 
 In the code above, `transformation` is the function applied to the value, and `myEffect` is the effect being transformed.
 
-<Aside type="note">
+<Aside type="note" title="Effects are Immutable">
   It's important to note that effects are **immutable**, meaning that when
   you use `Effect.map` on an effect, it doesn't modify the original data
   type. Instead, it returns a new copy of the effect with the transformed
@@ -168,7 +164,7 @@ const flatMappedEffect = myEffect.pipe(Effect.flatMap(transformation))
 
 In the code above, `transformation` is the function that takes a value and returns an `Effect`, and `myEffect` is the initial `Effect` being transformed.
 
-<Aside type="note">
+<Aside type="note" title="Effects are Immutable">
   It's important to note that effects are **immutable**, meaning that when
   you use `Effect.flatMap` on an effect, it doesn't modify the original
   data type. Instead, it returns a new copy of the effect with the
@@ -322,7 +318,7 @@ const program = pipe(
 )
 ```
 
-<Aside type="tip">
+<Aside type="note" title="Option As Effect">
 A value of type `Option<A>` is interpreted as an effect of type `Effect<A, NoSuchElementException>`.
 </Aside>
 
@@ -349,7 +345,7 @@ const program = pipe(
 )
 ```
 
-<Aside type="tip">
+<Aside type="note" title="Either As Effect">
 A value of type `Either<A, E>` is interpreted as an effect of type `Effect<A, E>`.
 </Aside>
 
@@ -445,10 +441,10 @@ DB Status: Connected to Database
 */
 ```
 
-<Aside type="tip">
+<Aside type="tip" title="Applicability">
   The `Effect.all` function not only combines tuples but also works with
-  iterables, structs, and records. To explore the full potential of `all`
-  head over to the [Introduction to Effect's Control Flow
+  iterables, structs, and records. To explore the full potential of
+  `Effect.all` head over to the [Introduction to Effect's Control Flow
   Operators](/getting-started/control-flow#all) documentation.
 </Aside>
 

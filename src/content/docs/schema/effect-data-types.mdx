@@ -268,7 +268,9 @@ console.log(Schema.decodeSync(Schema.OptionFromNonEmptyTrimmedString)("")) // Op
 console.log(
   Schema.decodeSync(Schema.OptionFromNonEmptyTrimmedString)(" a ")
 ) // Option.some("a")
-console.log(Schema.decodeSync(Schema.OptionFromNonEmptyTrimmedString)("a")) // Option.some("a")
+console.log(
+  Schema.decodeSync(Schema.OptionFromNonEmptyTrimmedString)("a")
+) // Option.some("a")
 ```
 
 ## Either
@@ -813,7 +815,7 @@ console.log(decode("keep it secret, keep it safe")) // {}
 
 It's important to note that when successfully decoding a `Redacted`, the output is intentionally obscured (`{}`) to prevent the actual secret from being revealed in logs or console outputs.
 
-<Aside type="caution">
+<Aside type="caution" title="Potential Risks">
   When composing the `Redacted` schema with other schemas, care must be
   taken as decoding or encoding errors could potentially expose sensitive
   information.
