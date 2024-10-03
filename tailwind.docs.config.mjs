@@ -1,5 +1,5 @@
 /**
- * This Tailwind configuration is intended for use on pages that are **NOT** 
+ * This Tailwind configuration is intended for use on pages that **ARE** 
  * managed by Starlight. 
  *
  * Both Tailwind and Starlight have CSS resets which are incompatible with one
@@ -23,6 +23,9 @@
 
 /** @type {import("tailwindcss").Config} */
 export default {
+  // content: ["src/components/{*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue},!(overrides)/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}}"],
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
-  plugins: [],
+  corePlugins: {
+    preflight: false
+  }
 }
