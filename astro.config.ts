@@ -1,12 +1,12 @@
 import { defineConfig } from "astro/config"
-import starlight from "@astrojs/starlight"
 import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import starlightBlog from "starlight-blog"
 import starlightLinksValidator from "starlight-links-validator"
+import { rehypeHeadingIds } from "@astrojs/markdown-remark"
+import starlight from "@astrojs/starlight"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
-import { rehypeHeadingIds } from "@astrojs/markdown-remark"
-import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import pluginTwoslash from "./src/plugins/twoslash/plugin"
 
 /* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
@@ -111,7 +111,9 @@ export default defineConfig({
             }
           }
         }),
-        starlightLinksValidator()
+        starlightLinksValidator({
+          exclude: ["/events/effect-days*"]
+        })
       ],
       sidebar: [
         {
