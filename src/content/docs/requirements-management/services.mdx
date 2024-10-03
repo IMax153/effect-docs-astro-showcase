@@ -81,8 +81,13 @@ Let's define our first service:
 - We'll use the string `"MyRandomService"` as the unique identifier.
 - The service type will have a single operation called `next` that returns a random number.
 
-```ts twoslash file=<rootDir>/services/Random.ts
+```ts twoslash
+import { Effect, Context } from "effect"
 
+class Random extends Context.Tag("MyRandomService")<
+  Random,
+  { readonly next: Effect.Effect<number> }
+>() {}
 ```
 
 The exported `Random` value is known as a **tag** in Effect. It acts as a representation of the service and allows Effect to locate and use this service at runtime.
@@ -114,8 +119,19 @@ Now that we have our service tag defined, let's see how we can use it by buildin
 
 <TabItem label="Using Effect.gen">
 
-```ts twoslash file=<rootDir>/services/using-Random-gen.ts
+```ts twoslash
+import { Effect, Context } from "effect"
 
+class Random extends Context.Tag("MyRandomService")<
+  Random,
+  { readonly next: Effect.Effect<number> }
+>() {}
+
+const program = Effect.gen(function* () {
+  const random = yield* Random
+  const randomNumber = yield* random.next
+  console.log(`random number: ${randomNumber}`)
+})
 ```
 
 In the code above, we can observe that we are able to yield the `Random` tag as if it were an effect itself.
@@ -125,8 +141,20 @@ This allows us to access the `next` operation of the service.
 
 <TabItem label="Using pipe">
 
-```ts twoslash file=<rootDir>/services/using-Random-pipe.ts
+```ts twoslash
+import { Effect, Context, Console } from "effect"
 
+class Random extends Context.Tag("MyRandomService")<
+  Random,
+  { readonly next: Effect.Effect<number> }
+>() {}
+
+const program = Random.pipe(
+  Effect.andThen((random) => random.next),
+  Effect.andThen((randomNumber) =>
+    Console.log(`random number: ${randomNumber}`)
+  )
+)
 ```
 
 In the code above, we can observe that we are able to flat-map over the `Random` tag as if it were an effect itself.
@@ -147,8 +175,26 @@ This indicates that our program requires the `Random` service to be provided in 
 
 If we attempt to execute the effect without providing the necessary service we will encounter a type-checking error:
 
-```ts twoslash file=<rootDir>/services/run-error.ts
+```ts twoslash
+import { Effect, Context } from "effect"
 
+class Random extends Context.Tag("MyRandomService")<
+  Random,
+  { readonly next: Effect.Effect<number> }
+>() {}
+
+const program = Effect.gen(function* () {
+  const random = yield* Random
+  const randomNumber = yield* random.next
+  console.log(`random number: ${randomNumber}`)
+})
+
+// @ts-expect-error
+Effect.runSync(program)
+/*
+Argument of type 'Effect<void, never, Random>' is not assignable to parameter of type 'Effect<void, never, never>'.
+  Type 'Random' is not assignable to type 'never'.ts(2345)
+*/
 ```
 
 To resolve this error and successfully execute the program, we need to provide an actual implementation of the `Random` service.

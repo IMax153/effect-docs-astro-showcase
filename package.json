@@ -8,8 +8,7 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "pnpm:devPreinstall": "pnpx playwright-core install --with-deps chromium",
-    "snippets": "tsc --noEmit --skipLibCheck --downlevelIteration src/snippets/**/*.ts"
+    "pnpm:devPreinstall": "pnpx playwright-core install --with-deps chromium"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.3",
@@ -33,7 +32,6 @@
     "effect": "^3.8.4",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-mermaid": "^2.1.0",
-    "remark-code-import": "^1.2.0",
     "sharp": "^0.32.6",
     "starlight-links-validator": "^0.12.1",
     "twoslash": "^0.2.12",

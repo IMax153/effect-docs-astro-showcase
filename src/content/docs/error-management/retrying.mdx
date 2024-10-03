@@ -17,8 +17,22 @@ whether you're working on network requests, database interactions, or any other 
 
 To demonstrate the functionality of different retry functions, we will be working with the following helper that simulates an effect with possible failures:
 
-```ts file=<rootDir>/retrying/simulation.ts
+```ts twoslash
+import { Effect } from "effect"
 
+let count = 0
+
+// Simulates an effect with possible failures
+const task = Effect.async<string, Error>((resume) => {
+  if (count <= 2) {
+    count++
+    console.log("failure")
+    resume(Effect.fail(new Error()))
+  } else {
+    console.log("success")
+    resume(Effect.succeed("yay!"))
+  }
+})
 ```
 
 ## retry
@@ -31,16 +45,68 @@ Effect.retry(effect, policy)
 
 **Example**
 
-```ts twoslash collapse={3-15} file=<rootDir>/retrying/retry.ts
+```ts twoslash collapse={3-15}
+import { Effect, Schedule } from "effect"
 
+let count = 0
+
+// Simulates an effect with possible failures
+const task = Effect.async<string, Error>((resume) => {
+  if (count <= 2) {
+    count++
+    console.log("failure")
+    resume(Effect.fail(new Error()))
+  } else {
+    console.log("success")
+    resume(Effect.succeed("yay!"))
+  }
+})
+
+// Define a repetition policy using a fixed delay between retries
+const policy = Schedule.fixed("100 millis")
+
+const repeated = Effect.retry(task, policy)
+
+Effect.runPromise(repeated).then(console.log)
+/*
+Output:
+failure
+failure
+failure
+success
+yay!
+*/
 ```
 
 ## retry n times
 
 There is a shortcut when the policy is trivial and the failed effect is immediately retried:
 
-```ts twoslash collapse={3-15} file=<rootDir>/retrying/retry-times.ts
+```ts twoslash collapse={3-15}
+import { Effect } from "effect"
 
+let count = 0
+
+// Simulates an effect with possible failures
+const task = Effect.async<string, Error>((resume) => {
+  if (count <= 2) {
+    count++
+    console.log("failure")
+    resume(Effect.fail(new Error()))
+  } else {
+    console.log("success")
+    resume(Effect.succeed("yay!"))
+  }
+})
+
+Effect.runPromise(Effect.retry(task, { times: 5 }))
+/*
+Output:
+failure
+failure
+failure
+success
+*/
 ```
 
 ## retryOrElse
@@ -57,8 +123,45 @@ Effect.retryOrElse(effect, policy, fallback)
 
 **Example**
 
-```ts twoslash collapse={3-15} file=<rootDir>/retrying/retryOrElse.ts
+```ts twoslash collapse={3-15}
+import { Effect, Schedule, Console } from "effect"
 
+let count = 0
+
+// Simulates an effect with possible failures
+const task = Effect.async<string, Error>((resume) => {
+  if (count <= 2) {
+    count++
+    console.log("failure")
+    resume(Effect.fail(new Error()))
+  } else {
+    console.log("success")
+    resume(Effect.succeed("yay!"))
+  }
+})
+
+const policy = Schedule.addDelay(
+  // Retry for a maximum of 2 times
+  Schedule.recurs(2),
+  // Add a delay of 100 milliseconds between retries
+  () => "100 millis"
+)
+
+// Create a new effect that retries the effect with the specified policy,
+// and provides a fallback effect if all retries fail
+const repeated = Effect.retryOrElse(task, policy, () =>
+  Console.log("orElse").pipe(Effect.as("default value"))
+)
+
+Effect.runPromise(repeated).then(console.log)
+/*
+Output:
+failure
+failure
+failure
+orElse
+default value
+*/
 ```
 
 ## Retrying Based on a Condition
@@ -67,12 +170,38 @@ You can manage how an effect is retried by specifying conditions using either th
 
 **Example**
 
-```ts twoslash file=<rootDir>/retrying/retry-until.ts
+```ts twoslash
+import { Effect } from "effect"
 
+let count = 0
+
+// Define an effect that simulates varying error on each invocation
+const action = Effect.failSync(() => {
+  console.log(`Action called ${++count} time(s)`)
+  return `Error ${count}`
+})
+
+// Retry the action until a specific condition is met
+const program = Effect.retry(action, {
+  until: (err) => err === "Error 3"
+})
+
+Effect.runPromiseExit(program).then(console.log)
+/*
+Output:
+Action called 1 time(s)
+Action called 2 time(s)
+Action called 3 time(s)
+{
+  _id: 'Exit',
+  _tag: 'Failure',
+  cause: { _id: 'Cause', _tag: 'Fail', failure: 'Error 3' }
+}
+*/
 ```
 
 <Aside type="tip">
   Consider using
-  [Effect.repeat](/scheduling/repetition#repeating-based-on-a-condition) to
-  set conditions based on successful outcomes rather than errors.
+  [Effect.repeat](/scheduling/repetition#repeating-based-on-a-condition)
+  to set conditions based on successful outcomes rather than errors.
 </Aside>
