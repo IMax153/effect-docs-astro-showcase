@@ -53,6 +53,8 @@ export default defineConfig({
       customCss: [
         // the styles for the autolink headings
         "./src/styles/headings.css",
+        // the styles for the main site logo
+        "./src/styles/logo.css",
         // fixes overflow-wrap when the columns contains code blocks
         "./src/styles/tables.css",
         // the base styles for tailwind
