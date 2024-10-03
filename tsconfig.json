@@ -1,4 +1,15 @@
 {
   "extends": "astro/tsconfigs/strictest",
-  "exclude": ["src/snippets", "dev"]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "src/snippets",
+    "dev"
+  ]
 }

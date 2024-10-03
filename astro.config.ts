@@ -1,13 +1,13 @@
 import { defineConfig } from "astro/config"
-import starlight from "@astrojs/starlight"
 import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid"
-// import remarkCodeImport from "remark-code-import"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
+import starlightBlog from "starlight-blog"
 import starlightLinksValidator from "starlight-links-validator"
-// import * as path from "node:path"
+import { rehypeHeadingIds } from "@astrojs/markdown-remark"
+import starlight from "@astrojs/starlight"
+import tailwind from "@astrojs/tailwind"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
-import { rehypeHeadingIds } from "@astrojs/markdown-remark"
-import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import pluginTwoslash from "./src/plugins/twoslash/plugin"
 
 /* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
@@ -21,10 +21,6 @@ const rehypeMermaidOptions: RehypeMermaidOptions = {
   dark: true
 }
 
-// const remarkCodeImportOptions: Parameters<typeof remarkCodeImport>[0] = {
-//   rootDir: path.resolve("src/snippets")
-// }
-
 export default defineConfig({
   site,
   markdown: {
@@ -35,26 +31,42 @@ export default defineConfig({
       rehypeHeadingIds,
       [rehypeAutolinkHeadings, { behavior: "wrap" }]
     ]
-    // remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]]
+  },
+  redirects: {
+    "/docs": {
+      destination: "/docs/getting-started/introduction",
+      status: 308
+    }
   },
   integrations: [
+    tailwind({
+      applyBaseStyles: false
+    }),
     starlight({
       title: "Effect Documentation",
       lastUpdated: true,
+      components: {
+        Head: "./src/components/overrides/Head.astro",
+        SocialIcons: "./src/components/overrides/SocialIcons.astro",
+        ThemeSelect: "./src/components/overrides/ThemeSelect.astro"
+      },
+      customCss: [
+        // the styles for the autolink headings
+        "./src/styles/headings.css",
+        // the styles for the main site logo
+        "./src/styles/logo.css",
+        // fixes overflow-wrap when the columns contains code blocks
+        "./src/styles/tables.css",
+        // the base styles for tailwind
+        "./src/styles/tailwind.docs.css",
+        // fixes styles for astro-tweet
+        "./src/styles/tweet.css",
+        // the styles required for twoslash 
+        "./src/styles/twoslash.css",
+      ],
       editLink: {
         baseUrl: "https://github.com/Effect-TS/website/edit/main/docs/"
       },
-      components: {
-        Head: "./src/components/starlight-overrides/Head.astro"
-      },
-      customCss: [
-        // the global styles required for Twoslash (the rest are scoped to the plugin)
-        "./src/styles/twoslash.css",
-        // the styles for the autolink headings
-        "./src/styles/headings.css",
-        // fixes overflow-wrap when the columns contains code blocks
-        "./src/styles/tables.css"
-      ],
       expressiveCode: {
         plugins: [
           pluginCollapsibleSections(),
@@ -63,6 +75,7 @@ export default defineConfig({
         ],
         themes: ["github-light", "github-dark"]
       },
+      favicon: "/favicon.png",
       logo: {
         light: "./src/assets/logo-light.svg",
         dark: "./src/assets/logo-dark.svg",
@@ -70,9 +83,57 @@ export default defineConfig({
       },
       social: {
         discord: "https://discord.gg/effect-ts",
-        github: "https://github.com/Effect-TS"
+        github: "https://github.com/Effect-TS",
+        twitter: "https://twitter.com/EffectTS_",
+        "x.com": "https://x.com/EffectTS_",
+        youtube: "https://youtube.com/@effect-ts",
       },
-      plugins: [starlightLinksValidator()],
+      plugins: [
+        starlightBlog({
+          recentPostCount: 5,
+          authors: {
+            davide_scognamiglio: {
+              name: "Davide Scognamiglio",
+              title: "Project Manager",
+              picture: "/authors/davide_scognamiglio.png",
+              url: "https://twitter.com/DadeSkoTV"
+            },
+            guilio_canti: {
+              name: "Guilio Canti",
+              title: "Founding Engineer",
+              picture: "/authors/guilio_canti.png",
+              url: "https://github.com/gcanti"
+            },
+            maxwell_brown: {
+              name: "Maxwell Brown",
+              title: "Founding Engineer",
+              picture: "/authors/maxwell_brown.png",
+              url: "https://github.com/IMax153"
+            },
+            mirela_prifti: {
+              name: "Mirela Prifti",
+              title: "Community Manager",
+              picture: "/authors/mirela_prifti.png",
+              url: "https://twitter.com/mirepri4"
+            },
+            michael_arnaldi: {
+              name: "Michael Arnaldi",
+              title: "Chief Executive Officer",
+              picture: "/authors/michael_arnaldi.png",
+              url: "https://github.com/mikearnaldi"
+            },
+            tim_smart: {
+              name: "Tim Smart",
+              title: "Founding Engineer",
+              picture: "/authors/tim_smart.png",
+              url: "https://github.com/timsmart"
+            }
+          }
+        }),
+        starlightLinksValidator({
+          exclude: ["/events/effect-days*"]
+        })
+      ],
       sidebar: [
         {
           label: "Getting Started",
