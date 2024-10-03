@@ -35,9 +35,9 @@ This will be useful later when we discuss APIs like [Effect.catchTag](#catchtag)
 
 <Aside type="tip">
   Adding a discriminant field, such as `_tag`, can be beneficial for
-  distinguishing between different types of errors during error handling. It
-  also prevents TypeScript from unifying types, ensuring that each error is
-  treated uniquely based on its discriminant value.
+  distinguishing between different types of errors during error handling.
+  It also prevents TypeScript from unifying types, ensuring that each
+  error is treated uniquely based on its discriminant value.
 </Aside>
 
 ## Error Tracking
@@ -135,7 +135,7 @@ indicating that `HttpError` has been handled.
 
 If we also want to handle `ValidationError`, we can easily add another case to our code:
 
-```ts twoslash collapse={1-21} {29-31} file=<rootDir>/expected-errors/catch-some-if-all.ts
+```ts twoslash collapse={3-21} {29-31} file=<rootDir>/expected-errors/catch-some-if-all.ts
 
 ```
 
@@ -183,7 +183,7 @@ In TypeScript versions >= 5.5, improved type narrowing causes the resulting erro
 
 For TypeScript versions < 5.5, if you provide a [user-defined type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) instead of a predicate, the resulting error type will be pruned, returning an `Effect<string, ValidationError, never>`:
 
-```ts twoslash collapse={1-21} {25} file=<rootDir>/expected-errors/catchIf-guard.ts
+```ts twoslash collapse={3-21} {25} file=<rootDir>/expected-errors/catchIf-guard.ts
 
 ```
 
@@ -204,7 +204,7 @@ indicating that `HttpError` has been handled.
 
 If we also wanted to handle `ValidationError`, we can simply add another `catchTag`:
 
-```ts twoslash collapse={1-21} {27-29} file=<rootDir>/expected-errors/catchTag-all.ts
+```ts twoslash collapse={3-21} {27-29} file=<rootDir>/expected-errors/catchTag-all.ts
 
 ```
 

@@ -7,11 +7,11 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-Logging is a crucial aspect of software development, especially when it comes to debugging and monitoring the behavior of your applications. In this section, we'll delve into Effect's logging utilities and explore their advantages over traditional methods like `console.log`.
+Logging is a crucial aspect of software development, especially when it comes to debugging and monitoring the behavior of your applications. In this section, we'll delve into Effect's logging utilities and explore their advantages over traditional methods.
 
 ## Advantages Over Traditional Logging
 
-Effect's logging utilities offer several advantages over traditional logging methods like `console.log`:
+Effect's logging utilities offer several advantages over traditional logging methods:
 
 1. **Dynamic Log Level Control**: With Effect's logging, you have the ability to change the log level dynamically. This means you can control which log messages get displayed based on their severity. For example, you can configure your application to log only warnings or errors, which can be extremely helpful in production environments to reduce noise.
 
@@ -22,8 +22,6 @@ Effect's logging utilities offer several advantages over traditional logging met
 4. **Environment-Based Logging**: Effect's logging utilities can be combined with deployment environments to achieve granular logging strategies. For instance, during development, you might choose to log everything at a trace level and above for detailed debugging. In contrast, your production version could be configured to log only errors or critical issues, minimizing the impact on performance and noise in production logs.
 
 5. **Additional Features**: Effect's logging utilities come with additional features such as the ability to measure time spans, alter log levels on a per-effect basis, and integrate spans for performance monitoring.
-
-Now, let's dive into the specific logging utilities provided by Effect.
 
 ## log
 
@@ -50,9 +48,10 @@ When you use the default logger with `Effect.log`, it incorporates several impor
 - `span`: (Optional) The duration of the span in milliseconds.
 
 <Aside type="tip" title="Customizing Loggers">
-  For information on how to tailor the logging setup to meet specific needs,
-  such as integrating a custom logging framework or adjusting log formats,
-  please consult the section on [customizing loggers](#custom-loggers)
+  For information on how to tailor the logging setup to meet specific
+  needs, such as integrating a custom logging framework or adjusting log
+  formats, please consult the section on [customizing
+  loggers](#custom-loggers)
 </Aside>
 
 You can log multiple messages simultaneously:
@@ -441,7 +440,9 @@ const configured = Effect.provide(program, LogLevelLive)
 const test = Effect.provide(
   configured,
   Layer.setConfigProvider(
-    ConfigProvider.fromMap(new Map([["LOG_LEVEL", LogLevel.Warning.label]]))
+    ConfigProvider.fromMap(
+      new Map([["LOG_LEVEL", LogLevel.Warning.label]])
+    )
   )
 )
 
@@ -634,7 +635,7 @@ Effect.runFork(program.pipe(Effect.provide(Logger.pretty)))
 Output:
 
 ```ansi showLineNumbers=false
-[19:50:04.994] INFO (#0) myspan=1ms: message1
+[19:50:04.994] [32mINFO[0m (#0) myspan=1ms: [36mmessage1[0m
   message2
   key2: value2
   key1: value1

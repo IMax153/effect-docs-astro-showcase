@@ -91,28 +91,12 @@ export default defineConfig({
         },
         {
           label: "Resource Management",
-          items: [
-            { label: "Scope", slug: "resource-management/scope" },
-            { label: "Patterns", slug: "resource-management/patterns" }
-          ],
+          autogenerate: { directory: "resource-management" },
           collapsed: false
         },
         {
           label: "Observability",
-          items: [
-            { label: "Logging", slug: "observability/logging" },
-            {
-              label: "Supervisor",
-              slug: "observability/supervisor"
-            },
-            {
-              label: "Telemetry",
-              autogenerate: {
-                directory: "observability/telemetry"
-              },
-              collapsed: false
-            }
-          ],
+          autogenerate: { directory: "observability" },
           collapsed: false
         },
         { label: "Configuration", slug: "configuration" },
@@ -182,42 +166,7 @@ export default defineConfig({
         {
           label: "Schema",
           badge: { text: "Unstable", variant: "caution" },
-          items: [
-            { label: "Introduction", slug: "schema/introduction" },
-            {
-              label: "Getting Started",
-              slug: "schema/getting-started"
-            },
-            { label: "Basic Usage", slug: "schema/basic-usage" },
-            { label: "Projections", slug: "schema/projections" },
-            {
-              label: "Transformations",
-              slug: "schema/transformations"
-            },
-            { label: "Annotations", slug: "schema/annotations" },
-            {
-              label: "Error Messages",
-              slug: "schema/error-messages"
-            },
-            {
-              label: "Error Formatters",
-              slug: "schema/error-formatters"
-            },
-            { label: "Class APIs", slug: "schema/classes" },
-            {
-              label: "Default Constructors",
-              slug: "schema/default-constructors"
-            },
-            {
-              label: "Effect Data Types",
-              slug: "schema/effect-data-types"
-            },
-            {
-              label: "Schema to X",
-              autogenerate: { directory: "schema/schema-to-x" },
-              collapsed: false
-            }
-          ],
+          autogenerate: { directory: "schema" },
           collapsed: false
         },
         {
