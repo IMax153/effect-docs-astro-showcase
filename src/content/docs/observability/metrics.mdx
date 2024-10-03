@@ -96,7 +96,9 @@ const program = Effect.gen(function* () {
   return a + b
 })
 
-const showMetric = Metric.value(taskCount).pipe(Effect.andThen(Console.log))
+const showMetric = Metric.value(taskCount).pipe(
+  Effect.andThen(Console.log)
+)
 
 Effect.runPromise(program.pipe(Effect.tap(() => showMetric))).then(
   console.log

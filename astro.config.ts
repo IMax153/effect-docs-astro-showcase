@@ -96,20 +96,7 @@ export default defineConfig({
         },
         {
           label: "Observability",
-          items: [
-            { label: "Logging", slug: "observability/logging" },
-            {
-              label: "Supervisor",
-              slug: "observability/supervisor"
-            },
-            {
-              label: "Telemetry",
-              autogenerate: {
-                directory: "observability/telemetry"
-              },
-              collapsed: false
-            }
-          ],
+          autogenerate: { directory: "observability" },
           collapsed: false
         },
         { label: "Configuration", slug: "configuration" },
