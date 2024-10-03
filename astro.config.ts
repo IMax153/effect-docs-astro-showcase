@@ -84,7 +84,6 @@ export default defineConfig({
       social: {
         discord: "https://discord.gg/effect-ts",
         github: "https://github.com/Effect-TS",
-        twitter: "https://twitter.com/EffectTS_",
         "x.com": "https://x.com/EffectTS_",
         youtube: "https://youtube.com/@effect-ts",
       },
