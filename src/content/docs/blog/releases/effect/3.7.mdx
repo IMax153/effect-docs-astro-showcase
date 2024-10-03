@@ -27,7 +27,7 @@ https://github.com/Effect-TS/effect/blob/main/packages/platform/README.md
 `Effect.bindAll` combines `Effect.all` with `Effect.bind`, to allow you to
 combine multiple effects inside of a do notation pipeline.
 
-```ts showLineNumbers=false
+```ts
 import { Effect } from "effect"
 
 const result = Effect.Do.pipe(
@@ -52,7 +52,7 @@ assert.deepStrictEqual(Effect.runSync(result), {
 `Stream.race` takes two streams, and the first stream to emit an item will be elected
 as the winner and continue to emit items. The other stream will be interrupted.
 
-```ts showLineNumbers=false
+```ts
 import { Stream, Schedule, Console, Effect } from "effect"
 
 const stream = Stream.fromSchedule(Schedule.spaced('2 millis')).pipe(
@@ -82,7 +82,7 @@ non-empty string. If the config value is present but is empty,
 In the case you would like Fiber interrupts to be propogated to `Fiber{Handle,Set,Map}.join`,
 you can now use the `propagateInterruption` option.
 
-```ts showLineNumbers=false
+```ts
 import { Effect, FiberHandle } from "effect"
 
 Effect.gen(function*() {
@@ -122,7 +122,7 @@ concurrency would be automatically adjusted to match.
 In some scenarios this could cause finalizers to leak, so now the behavior must
 be explicitly requested using the `concurrentFinalizers` option.
 
-```ts showLineNumbers=false
+```ts
 import { Effect } from "effect"
 
 Effect.forEach([1, 2, 3], (n) => Effect.succeed(n), {

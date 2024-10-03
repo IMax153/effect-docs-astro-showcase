@@ -16,7 +16,7 @@ A new minor release of `Effect` has gone out, with some big changes we wanted to
 
 The following should be used:
 
-```ts showLineNumbers=false
+```ts
 import { Effect } from "effect"
 
 interface Logger {
@@ -26,7 +26,7 @@ interface Logger {
 
 instead of:
 
-```ts showLineNumbers=false
+```ts
 import { Effect } from "effect"
 
 interface Logger {
@@ -40,7 +40,7 @@ For this inhuman work we have to thank deeply Giulio Canti, who's now officially
 
 The following should be used:
 
-```ts showLineNumbers=false
+```ts
 import { Context } from "effect"
 
 interface ServiceId {
@@ -56,7 +56,7 @@ const Service = Context.GenericTag<ServiceId, Service>("@services/Service")
 
 instead of:
 
-```ts showLineNumbers=false
+```ts
 import { Context } from "effect"
 
 interface ServiceId {
@@ -74,7 +74,7 @@ const Service = Context.Tag<ServiceId, Service>()
 
 For example:
 
-```ts showLineNumbers=false
+```ts
 import { Context, Effect } from "effect"
 
 class MyService extends Context.Tag("MyService")<
@@ -104,7 +104,7 @@ You can see an example at [platform-node/examples/http-client.ts](https://github
 
 Notice the imports:
 
-```ts showLineNumbers=false
+```ts
 import { runMain } from "@effect/platform-node/NodeRuntime"
 import * as Http from "@effect/platform/HttpClient"
 ```
@@ -115,7 +115,7 @@ You can see a small example of usage here: [rpc-http/examples](https://github.co
 
 We start by defining our requests using `S.TaggedRequest` or `Rpc.StreamingRequest`:
 
-```ts showLineNumbers=false filename="schema.ts"
+```ts filename="schema.ts"
 import * as Rpc from "@effect/rpc/Rpc"
 import * as S from "@effect/schema/Schema"
 import { pipe } from "effect/Function"
@@ -136,7 +136,7 @@ export class GetUser extends S.TaggedRequest<GetUser>()("GetUser", S.never, User
 
 We then define our router:
 
-```ts showLineNumbers=false filename="router.ts"
+```ts filename="router.ts"
 import { NodeHttpServer, NodeRuntime } from "@effect/platform-node"
 import * as Http from "@effect/platform/HttpServer"
 import { Router, Rpc } from "@effect/rpc"
@@ -168,7 +168,7 @@ Layer.launch(HttpLive).pipe(
 
 And finally the client:
 
-```ts showLineNumbers=false
+```ts
 import * as Http from "@effect/platform/HttpClient"
 import { Resolver } from "@effect/rpc"
 import { HttpResolver } from "@effect/rpc-http"
@@ -194,7 +194,7 @@ client(new GetUserIds()).pipe(
 
 + A new module called `RateLimiter` has been released to help you with rate limiting effects, an example of its usage:
 
-```ts showLineNumbers=false
+```ts
 import { Context, Effect, Layer, RateLimiter } from "effect"
 
 class ApiLimiter extends Context.Tag("@services/ApiLimiter")<

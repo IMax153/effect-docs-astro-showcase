@@ -18,7 +18,7 @@ This api can be used to zip multiple streams together. When a value is emitted
 by any of the streams, it is combined with the latest values from the other
 streams to produce a result.
 
-```ts showLineNumbers=false
+```ts
 import { Stream, Schedule, Console, Effect } from "effect"
 
 const stream = Stream.zipLatestAll(
@@ -79,7 +79,7 @@ they were created.
 
 The value to bind to `this` can be passed as the first argument to the .gen function.
 
-```ts showLineNumbers=false
+```ts
 import { Option } from "effect"
 
 class MyClass {
@@ -116,7 +116,7 @@ Similar to `Layer.annotateLogs`, but for tracing spans.
 If you pass a `URL` object to the ClientRequest constructors, it will now also
 populate the url parameters & hash of the request.
 
-```ts showLineNumbers=false
+```ts
 // create a request to https://example.com/foo?foo=bar&baz=qux#hash
 Http.request
   .get(new URL("https://example.com/?foo=bar#hash"))

@@ -18,7 +18,7 @@ These functions allow you to calculate the difference between two `Chunk`'s. Thi
 can be useful when you want to know what elements are in one chunk but not in
 another.
 
-```ts showLineNumbers=false
+```ts
 expect(
   Chunk.difference(Chunk.make(1, 2, 3, 4, 5), Chunk.make(1, 2, 3))
 ).toEqual(Chunk.make(4, 5))
@@ -32,7 +32,7 @@ the source location to any errors created within the span.
 
 To disable this feature, pass `captureStackTrace: false` to the `Effect.withSpan` options:
 
-```ts showLineNumbers=false
+```ts
 Effect.log("Hello World").pipe(
   Effect.withSpan("my span", { captureStackTrace: false }),
 )
@@ -52,7 +52,7 @@ This api allows you to define an effectful function that is wrapped with a span.
 
 You can also use the function arguments to generate the span options.
 
-```ts showLineNumbers=false
+```ts
 import { Effect } from "effect";
 
 const getTodo = Effect.functionWithSpan({
@@ -69,7 +69,7 @@ const getTodo = Effect.functionWithSpan({
 Do notation has been added to the `Array` module, for building up arrays in a
 sequential manner.
 
-```ts showLineNumbers=false
+```ts
 const props = pipe(
   Array.Do,
   Array.bind("size", () => ["small", "medium", "large"] as const),
@@ -91,7 +91,7 @@ The `$is` and `$match` helpers have been added to the
 `Data.TaggedEnum.WithGenerics` constructors.  You can use these apis to perform
 type-safe checks and pattern matching.
 
-```ts showLineNumbers=false
+```ts
 type Result<E, A> = Data.TaggedEnum<{
   Success: { value: A }
   Failure: {

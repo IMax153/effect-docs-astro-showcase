@@ -15,7 +15,7 @@ Effect 3.1.0 has been released! This release includes a number of new features a
 
 This new api allows you to create a `Stream` from an `EventTarget`:
 
-```ts showLineNumbers=false
+```ts
 import { Stream } from "effect/Stream"
 
 Stream.fromEventListener(window, "click")
@@ -45,7 +45,7 @@ For example, `@effect/platform/HttpServer` will generate spans with a `kind` of 
 
 A new api has been added to `Effect` which allows you to annotate logs during the lifetime of a Scope.
 
-```ts showLineNumbers=false
+```ts
 import { Effect } from "effect"
 
 Effect.gen(function* () {
@@ -59,7 +59,7 @@ Effect.gen(function* () {
 
 `$is` & `$match` helpers have been added to `Data.TaggedEnum` constructors.
 
-```ts showLineNumbers=false
+```ts
 import { Data } from "effect"
 
 type HttpError = Data.TaggedEnum<{
@@ -84,7 +84,7 @@ $is("NotFound")(InternalServerError({ reason: "fail" })) // false
 
 A type helper has been added, which transforms a type into a deeply mutable version.
 
-```ts showLineNumbers=false
+```ts
 import { Types } from "effect"
 
 type Values<A> = {

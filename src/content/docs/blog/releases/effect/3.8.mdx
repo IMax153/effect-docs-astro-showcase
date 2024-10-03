@@ -21,7 +21,7 @@ This is useful in environments such as browsers, where the different log levels 
 
 For example:
 
-```ts showLineNumbers=false
+```ts
 import { Effect, Logger } from "effect"
 
 const loggerLayer = Logger.replace(
@@ -53,7 +53,7 @@ These include:
 `Semaphore.withPermitsIfAvailable` will attempt to run an effect immediately if permits are available.
 It will return an `Option<A>` from the result of the effect, depending on whether the permits were available.
 
-```ts showLineNumbers=false
+```ts
 import { Effect } from "effect"
 
 Effect.gen(function*() {
@@ -72,7 +72,7 @@ You can create an `Effect.Latch` with `Effect.makeLatch`, which can be used to s
 
 The latch can be opened, closed and waited on.
 
-```ts showLineNumbers=false
+```ts
 import { Effect } from "effect"
 
 Effect.gen(function* () {
@@ -102,7 +102,7 @@ Effect.gen(function* () {
 
 It is useful when you want to share a `Stream`, and ensure any resources are finalized when no more consumers are subscribed.
 
-```ts showLineNumbers=false
+```ts
 import { Effect, Stream } from "effect"
 
 Effect.gen(function*() {
@@ -133,7 +133,7 @@ The `@effect/platform/HttpClient` module has been refactored to reduce and simpl
 The `HttpClient.fetch` client implementation has been removed. Instead, you can
 access a `HttpClient` using the corresponding `Context.Tag`.
 
-```ts showLineNumbers=false
+```ts
 import { FetchHttpClient, HttpClient } from "@effect/platform"
 import { Effect } from "effect"
 
@@ -157,7 +157,7 @@ interface now uses methods to make requests.
 Some shorthand methods have been added to the `HttpClient` interface to make
 less complex requests easier to implement.
 
-```ts showLineNumbers=false
+```ts
 import {
   FetchHttpClient,
   HttpClient,
@@ -187,7 +187,7 @@ The `HttpClientResponse` helpers that also supplied the `Scope` have been remove
 Instead, you can use the `HttpClientResponse` methods directly, and explicitly
 add a `Effect.scoped` to the pipeline.
 
-```ts showLineNumbers=false
+```ts
 import { FetchHttpClient, HttpClient } from "@effect/platform"
 import { Effect } from "effect"
 
@@ -214,7 +214,7 @@ that can have a done / failure signal.
 It is useful when you want to communicate between effects, and have a way to determine that
 the communication is complete.
 
-```ts showLineNumbers=false
+```ts
 import { Chunk, Effect, Mailbox } from "effect"
 import * as assert from "node:assert"
 
@@ -255,14 +255,14 @@ You can now access the available keys of a `RcMap` or `MutableMap` using the `ke
 
 For example:
 
-```ts showLineNumbers=false
+```ts
 const map = MutableHashMap.make([["a", "a"], ["b", "b"], ["c", "c"]])
 const keys = MutableHashMap.keys(map) // ["a", "b", "c"]
 ```
 
 And for `RcMap`:
 
-```ts showLineNumbers=false
+```ts
 Effect.gen(function* () {
   const map = yield* RcMap.make({
     lookup: (key) => Effect.succeed(key)

@@ -15,7 +15,7 @@ When we work with schemas, it's common to need to extract their types automatica
 To make this easier, we've made some changes to the `Schema` interface.
 Now, you can easily access `Type` and `Encoded` directly from a schema without the need for `Schema.Schema.Type` and `Schema.Schema.Encoded`.
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const PersonSchema = Schema.Struct({
@@ -36,7 +36,7 @@ Let's dive into each of them with some examples to understand better how they wo
 
 **Example** (`Struct`)
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MyStruct = Schema.Struct({
@@ -57,7 +57,7 @@ Error: { name: NonEmpty }
 
 **Example** (`filter`)
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MyNumber = Schema.Number.pipe(Schema.between(1, 10))
@@ -75,7 +75,7 @@ Error: a number between 1 and 10
 
 **Example** (`brand`)
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MyBrand = Schema.Number.pipe(
@@ -107,7 +107,7 @@ Our new `Schema.withConstructorDefault` combinator allows you to effortlessly ma
 
 **Example**
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const PersonSchema = Schema.Struct({
@@ -125,7 +125,7 @@ console.log(PersonSchema.make({ name: "John" }))
 
 Defaults are **lazily evaluated**, meaning that a new instance of the default is generated every time the constructor is called:
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const PersonSchema = Schema.Struct({
@@ -150,7 +150,7 @@ Note how the `timestamp` field varies.
 
 Defaults can also be applied using the `Class` API:
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 class Person extends Schema.Class<Person>("Person")({
@@ -175,7 +175,7 @@ console.log(new Person({ name: "name2" }))
 
 Our new `Schema.withDecodingDefault` combinator makes it easy to handle the optionality of a field during the **decoding process**.
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MySchema = Schema.Struct({
@@ -192,7 +192,7 @@ console.log(Schema.decodeUnknownSync(MySchema)({ a: "a" }))
 
 If you want to set default values both for the decoding phase and for the default constructor, you can use `Schema.withDefaults`:
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MySchema = Schema.Struct({
@@ -223,7 +223,7 @@ Now, custom messages no longer have absolute precedence by default. Instead, it 
 
 **Previous Approach**
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MyString = Schema.String.pipe(
@@ -248,7 +248,7 @@ Now, let's see how the same schema works with the new system.
 
 **Current Approach**
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MyString = Schema.String.pipe(
@@ -268,7 +268,7 @@ console.log(decode("abc")) // "my custom message"
 
 To restore the old behavior (for example, to address the scenario where a user wants to define a single cumulative custom message describing the properties that a valid value must have and does not want to see default messages), you need to set the `override` flag to `true`:
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MyString = Schema.String.pipe(
@@ -291,7 +291,7 @@ console.log(decode("abc")) // "my custom message"
 
 We've introduced a new API interface to the `filter` API. This allows you to access the refined schema using the exposed `from` field:
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const MyFilter = Schema.Struct({
@@ -304,7 +304,7 @@ const aField = MyFilter.from.fields.a
 
 The signature of the `filter` function has been simplified and streamlined to be more ergonomic when setting a default message. In the new signature of `filter`, the type of the predicate passed as an argument is as follows:
 
-```ts showLineNumbers=false
+```ts
 predicate: (a: A, options: ParseOptions, self: AST.Refinement) =>
   undefined | boolean | string | ParseResult.ParseIssue
 ```
@@ -318,7 +318,7 @@ with the following semantics:
 
 **Example**
 
-```ts showLineNumbers=false
+```ts
 import { Schema } from "@effect/schema"
 
 const Positive = Schema.Number.pipe(
@@ -340,7 +340,7 @@ The JSON Schema compiler has been refactored to be more user-friendly. Now, the 
 
 Let's see an example:
 
-```ts showLineNumbers=false
+```ts
 import { JSONSchema, Schema } from "@effect/schema"
 
 const MySchema = Schema.Struct({
@@ -387,7 +387,7 @@ As you can see, the JSON Schema produced has:
 
 This happens because in the previous version, the `JSONSchema.make` API by default produces a JSON Schema for the `Type` part of the schema. That is:
 
-```ts showLineNumbers=false
+```ts
 type Type = Schema.Schema.Type<typeof MySchema>
 /*
 type Type = {
@@ -399,7 +399,7 @@ type Type = {
 
 However, typically, we are interested in generating a JSON Schema for the input part of the decoding process, i.e., in this case for:
 
-```ts showLineNumbers=false
+```ts
 type Encoded = Schema.Schema.Encoded<typeof MySchema>
 /*
 type Encoded = {
@@ -411,7 +411,7 @@ type Encoded = {
 
 At first glance, a possible solution might be to generate the JSON Schema of `Schema.encodedSchema(schema)`:
 
-```ts showLineNumbers=false
+```ts
 console.log(
   JSON.stringify(JSONSchema.make(Schema.encodedSchema(MySchema)), null, 2)
 )

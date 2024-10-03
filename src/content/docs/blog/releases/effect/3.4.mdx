@@ -18,7 +18,7 @@ The HTTP modules in `@effect/platform` have been reorganized to have a flat stru
 
 Instead of a single import, you now import the specific modules you need:
 
-```ts showLineNumbers=false
+```ts
 import { HttpClient, HttpClientRequest, HttpClientResponse } from "@effect/platform"
 
 HttpClientRequest.get("/").pipe(
@@ -39,7 +39,7 @@ At a minimum, Micro adds 5kb gzipped to your bundle, and scales with the amount 
 
 `Array.ensure` is an api that can be used to normalize `A | ReadonlyArray<A>` to `Array<A>`.
 
-```ts showLineNumbers=false
+```ts
 import { ensure } from "effect/Array"
 
 // lets say you are not 100% sure if it's a member or a collection
@@ -64,7 +64,7 @@ const normalized = ensure(someValue)
 
 The `Tuple.at` api can be used to retrieve an element at a specified index from a tuple.
 
-```ts showLineNumbers=false
+```ts
 import { Tuple } from "effect"
 
 assert.deepStrictEqual(Tuple.at([1, 'hello', true], 1), 'hello')
@@ -74,7 +74,7 @@ assert.deepStrictEqual(Tuple.at([1, 'hello', true], 1), 'hello')
 
 If you have a `NonEmptyChunk`, you can use `lastNonEmpty` to directly get the last element without having to do a runtime check.
 
-```ts showLineNumbers=false
+```ts
 import { Chunk } from "effect"
 
 const last = Chunk.lastNonEmpty(Chunk.of(1))

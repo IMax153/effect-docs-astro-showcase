@@ -17,7 +17,7 @@ and improvements. Here's a summary of what's new:
 If you add a `cause` property to `Data.Error` or `Data.TaggedError`, it will now be properly
 forwarded to the `cause` property of the `Error` instance.
 
-```ts showLineNumbers=false
+```ts
 import { Data } from "effect"
 
 class MyError extends Data.Error<{ cause: Error }> {}
@@ -40,7 +40,7 @@ The wrapped resource will be acquired on the first access and released when no l
 `RcRef` can be used to manage a single resource, and `RcMap` can be used to manage
 multiple resources referenced by a key.
 
-```ts showLineNumbers=false
+```ts
 import { Effect, RcMap } from "effect"
 
 Effect.gen(function* () {
@@ -66,7 +66,7 @@ Effect.gen(function* () {
 
 To try it out, provide it to your program:
 
-```ts showLineNumbers=false
+```ts
 import { Effect, Logger } from "effect"
 
 Effect.log("Hello, World!").pipe(Effect.provide(Logger.pretty))
@@ -79,7 +79,7 @@ In Effect 4.0, `Logger.pretty` will become default logger.
 The `replay` option adds a replay buffer in front of the given PubSub. The buffer will
 replay the last `n` messages to any new subscriber.
 
-```ts showLineNumbers=false
+```ts
 Effect.gen(function*() {
   const messages = [1, 2, 3, 4, 5]
   const pubsub = yield* PubSub.bounded<number>({ capacity: 16, replay: 3 })
@@ -94,7 +94,7 @@ Effect.gen(function*() {
 `Stream.raceAll` races the given streams, with the first stream to emit an item declared the
 winner. The resulting stream will emit the items from the winning stream.
 
-```ts showLineNumbers=false
+```ts
 import { Stream, Schedule, Console, Effect } from "effect"
 
 const stream = Stream.raceAll(
@@ -123,7 +123,7 @@ It will calculate the hash of the seed value, and use that to seed the random nu
 
 You can now customize the output buffer options for `Stream.async*`:
 
-```ts showLineNumbers=false
+```ts
 import { Stream } from "effect"
 
 Stream.async((emit) => {
@@ -139,7 +139,7 @@ Stream apis:
 - `Stream.toPubSub`
 - `Stream.broadcast*`
 
-```ts showLineNumbers=false
+```ts
 import { Schedule, Stream } from "effect"
 
 // toPubSub

@@ -16,7 +16,7 @@ The `To` and `From` type extractors have been renamed to `Type` and `Encoded` re
 
 Before:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 const schema = S.string
@@ -27,7 +27,7 @@ type SchemaEncoded = S.Schema.From<typeof schema>
 
 Now:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 const schema = S.string
@@ -44,7 +44,7 @@ As a consequence, the APIs `AST.to`, `AST.from`, `Schema.to`, and `Schema.from` 
 
 Now, in addition to the `pipe` method, all schemas have a `annotations` method that can be used to add annotations:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 const Name = S.string.annotations({ identifier: "Name" })
@@ -52,7 +52,7 @@ const Name = S.string.annotations({ identifier: "Name" })
 
 For backward compatibility and to leverage a pipeline, you can still use the pipeable `S.annotations` API:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 const Name = S.string.pipe(S.annotations({ identifier: "Name" }))
@@ -66,7 +66,7 @@ An "API Interface" is an `interface` specifically defined for a schema exported 
 
 **Example** (an `Age` schema)
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // API interface
@@ -84,7 +84,7 @@ The benefit is that when we hover over the `Age` schema, we see `Age` instead of
 
 Many of the built-in schemas exported from `@effect/schema` have been equipped with API interfaces, for example `number` or `never`.
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // const number: S.$number
@@ -100,7 +100,7 @@ Now let's see an example with a combinator that, given an input schema for a cer
 
 **Example** (a `pair` combinator)
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // API interface
@@ -120,14 +120,14 @@ export const pair = <S extends S.Schema.Any>(schema: S): pair<S> =>
 
 If we try to use our `pair` combinator, we see that readability is also improved in this case:
 
-```ts showLineNumbers=false
+```ts
 // const Coords: pair<S.$number>
 const Coords = pair(S.number)
 ```
 
 In hover, we simply see `pair<S.$number>` instead of the old:
 
-```ts showLineNumbers=false
+```ts
 // const Coords: S.Schema<readonly [number, number], readonly [number, number], never>
 const Coords = S.tuple(S.number, S.number)
 ```
@@ -138,7 +138,7 @@ The new name is not only shorter and more readable but also carries along the or
 
 Opaque names generated in this way are very convenient, but sometimes there's a need to see what the underlying types are, perhaps for debugging purposes while you declare your schemas. At any time, you can use the `asSchema` function, which returns an `Schema<A, I, R>` compatible with your opaque definition:
 
-```ts showLineNumbers=false
+```ts
 // const Coords: pair<S.$number>
 const Coords = pair(S.number)
 
@@ -150,7 +150,7 @@ const NonOpaqueCoords = S.asSchema(Coords)
 
 Many of the built-in combinators exported from `@effect/schema` have been equipped with API interfaces, for example `struct`:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 /*
@@ -167,7 +167,7 @@ const Person = S.struct({
 
 In hover, we simply see:
 
-```ts showLineNumbers=false
+```ts
 const Person: S.struct<{
   name: S.$string
   age: S.$number
@@ -176,7 +176,7 @@ const Person: S.struct<{
 
 instead of the old:
 
-```ts showLineNumbers=false
+```ts
 const Person: S.Schema<
   {
     readonly name: string
@@ -198,7 +198,7 @@ The benefits of API interfaces don't end with better readability; in fact, the d
 
 Now when we define literals, we can retrieve them using the `literals` field exposed by the generated schema:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // const myliterals: S.literal<["A", "B"]>
@@ -214,7 +214,7 @@ console.log(myliterals.literals) // Output: [ 'A', 'B' ]
 
 Similarly to what we've seen for literals, when we define a struct, we can retrieve its `fields`:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 /*
@@ -253,7 +253,7 @@ console.log(Person.fields)
 
 Being able to retrieve the `fields` is particularly advantageous when you want to extend a struct with new fields; now you can do it simply using the spread operator:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 const Person = S.struct({
@@ -276,7 +276,7 @@ const PersonWithId = S.struct({
 
 The list of APIs equipped with API interfaces is extensive; here we provide only the main ones just to give you an idea of the new development possibilities that have opened up:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // ------------------------
@@ -314,7 +314,7 @@ S.tuple(S.string, S.number).elements
 
 All the API interfaces equipped with schemas and built-in combinators are compatible with the `annotations` method, meaning that their type is not lost but remains the original one before annotation:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // const Name: S.$string
@@ -325,7 +325,7 @@ As you can see, the type of `Name` is still `$string` and has not been lost, bec
 
 This doesn't happen by default with API interfaces defined in userland:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // API interface
@@ -339,7 +339,7 @@ const AnotherAge = Age.annotations({ identifier: "AnotherAge" })
 
 However, the fix is very simple; just modify the definition of the `Age` API interface using the `Annotable` interface exported by `@effect/schema`:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // API interface
@@ -355,7 +355,7 @@ const AnotherAge = Age.annotations({ identifier: "AnotherAge" })
 
 Now, defining a `Class` requires an identifier (to avoid dual package hazard):
 
-```ts showLineNumbers=false
+```ts
 // new required identifier  v
 //                          v
 class A extends S.Class<A>("A")({ a: S.string }) {}
@@ -363,7 +363,7 @@ class A extends S.Class<A>("A")({ a: S.string }) {}
 
 Similar to the case with `struct`, classes now also expose `fields`:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 class A extends S.Class<A>("A")({ a: S.string }) {}
@@ -380,13 +380,13 @@ A.fields
 
 Now the `struct` constructor optionally accepts a list of key/value pairs representing index signatures:
 
-```ts showLineNumbers=false
+```ts
 const struct = (props, ...indexSignatures)
 ```
 
 **Example**
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 /*
@@ -418,7 +418,7 @@ const nonOpaque = S.asSchema(opaque)
 
 Since the `record` constructor returns a schema that exposes both the `key` and the `value`, instead of passing a bare object `{ key, value }`, you can use the `record` constructor:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 /*
@@ -453,7 +453,7 @@ The `tuple` constructor has been improved to allow building any variant supporte
 
 As before, to define a tuple with required elements, simply specify the list of elements:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // const opaque: S.tuple<[S.$string, S.$number]>
@@ -467,7 +467,7 @@ const nonOpaque = S.asSchema(opaque)
 
 To define an optional element, wrap the schema of the element with the `optionalElement` modifier:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // const opaque: S.tuple<[S.$string, S.OptionalElement<S.$number>]>
@@ -481,7 +481,7 @@ const nonOpaque = S.asSchema(opaque)
 
 To define rest elements, follow the list of elements (required or optional) with an element for the rest:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // const opaque: S.tupleType<readonly [S.$string, S.OptionalElement<S.$number>], [S.$boolean]>
@@ -493,7 +493,7 @@ const nonOpaque = S.asSchema(opaque)
 
 and optionally other elements that follow the rest:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 // const opaque: S.tupleType<readonly [S.$string, S.OptionalElement<S.$number>], [S.$boolean, S.$string]>
@@ -511,7 +511,7 @@ const nonOpaque = S.asSchema(opaque)
 
 The definition of property signatures has been completely redesigned to allow for any type of transformation. Recall that a `PropertySignature` generally represents a transformation from a "From" field:
 
-```ts showLineNumbers=false
+```ts
 {
   fromKey: fromType
 }
@@ -519,7 +519,7 @@ The definition of property signatures has been completely redesigned to allow fo
 
 to a "To" field:
 
-```ts showLineNumbers=false
+```ts
 {
   toKey: toType
 }
@@ -527,7 +527,7 @@ to a "To" field:
 
 Let's start with the simple definition of a property signature that can be used to add annotations:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 /*
@@ -546,7 +546,7 @@ const Person = S.struct({
 
 Let's delve into the details of all the information contained in the type of a `PropertySignature`:
 
-```ts showLineNumbers=false
+```ts
 age: PropertySignature<ToToken, ToType, FromKey, FromToken, FromType, Context>
 ```
 
@@ -559,7 +559,7 @@ age: PropertySignature<ToToken, ToType, FromKey, FromToken, FromType, Context>
 
 In our case, the type
 
-```ts showLineNumbers=false
+```ts
 PropertySignature<":", number, never, ":", string, never>
 ```
 
@@ -574,14 +574,14 @@ indicates that there is the following transformation:
 
 Let's see an example of decoding:
 
-```ts showLineNumbers=false
+```ts
 console.log(S.decodeUnknownSync(Person)({ name: "name", age: "18" }))
 // Output: { name: 'name', age: 18 }
 ```
 
 Now, suppose the field from which decoding occurs is named `"AGE"`, but for our model, we want to keep the name in lowercase `"age"`. To achieve this result, we need to map the field key from `"AGE"` to `"age"`, and to do that, we can use the `fromKey` combinator:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 
 /*
@@ -598,14 +598,14 @@ const Person = S.struct({
 
 This modification is represented in the type of the created `PropertySignature`:
 
-```ts showLineNumbers=false
+```ts
 // fromKey ----------------------v
 PropertySignature<":", number, "AGE", ":", string, never>
 ```
 
 Now, let's see an example of decoding:
 
-```ts showLineNumbers=false
+```ts
 console.log(S.decodeUnknownSync(Person)({ name: "name", AGE: "18" }))
 // Output: { name: 'name', age: 18 }
 ```
@@ -614,7 +614,7 @@ console.log(S.decodeUnknownSync(Person)({ name: "name", AGE: "18" }))
 
 Now messages are not only of type `string` but can return an `Effect` so that they can have dependencies (for example, from an internationalization service). Let's see the outline of a similar situation with a very simplified example for demonstration purposes:
 
-```ts showLineNumbers=false
+```ts
 import * as S from "@effect/schema/Schema"
 import * as TreeFormatter from "@effect/schema/TreeFormatter"
 import * as Context from "effect/Context"
@@ -671,13 +671,13 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 - `format` has been removed:
   Before
 
-  ```ts showLineNumbers=false
+  ```ts
   AST.format(ast, verbose?)
   ```
 
   Now
 
-  ```ts showLineNumbers=false
+  ```ts
   ast.toString(verbose?)
   ```
 
@@ -689,7 +689,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 - The `ParseResult` module now uses classes and custom constructors have been removed:
   Before
 
-  ```ts showLineNumbers=false
+  ```ts
   import * as ParseResult from "@effect/schema/ParseResult"
 
   ParseResult.type(ast, actual)
@@ -697,7 +697,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 
   Now
 
-  ```ts showLineNumbers=false
+  ```ts
   import * as ParseResult from "@effect/schema/ParseResult"
 
   new ParseResult.Type(ast, actual)
@@ -723,7 +723,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 
   Before
 
-  ```ts showLineNumbers=false
+  ```ts
   import * as S from "@effect/schema/Schema"
 
   const schema1 = S.tuple().pipe(S.rest(S.number), S.element(S.boolean))
@@ -736,7 +736,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 
   Now
 
-  ```ts showLineNumbers=false
+  ```ts
   import * as S from "@effect/schema/Schema"
 
   const schema1 = S.array(S.number, S.boolean)
@@ -748,7 +748,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 
   Before
 
-  ```ts showLineNumbers=false
+  ```ts
   import * as S from "@effect/schema/Schema"
 
   const schema = S.tuple(S.string).pipe(S.optionalElement(S.number))
@@ -756,7 +756,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 
   Now
 
-  ```ts showLineNumbers=false
+  ```ts
   import * as S from "@effect/schema/Schema"
 
   const schema = S.tuple(S.string, S.optionalElement(S.number))
@@ -770,7 +770,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 - `propertySignatureAnnotations` has been replaced by the `propertySignature` constructor which owns a `annotations` method
   Before
 
-  ```ts showLineNumbers=false
+  ```ts
   S.string.pipe(
     S.propertySignatureAnnotations({ description: "description" })
   )
@@ -783,7 +783,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 
   Now
 
-  ```ts showLineNumbers=false
+  ```ts
   S.propertySignatureDeclaration(S.string).annotations({
     description: "description"
   })
@@ -802,7 +802,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 ### Schema
 
 - enhance the `struct` API to allow records:
-  ```ts showLineNumbers=false
+  ```ts
   const schema1 = S.struct(
     { a: S.number },
     { key: S.string, value: S.number }
@@ -811,7 +811,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
   const schema2 = S.struct({ a: S.number }, S.record(S.string, S.number))
   ```
 - enhance the `extend` API to allow nested (non-overlapping) fields:
-  ```ts showLineNumbers=false
+  ```ts
   const A = S.struct({ a: S.struct({ b: S.string }) })
   const B = S.struct({ a: S.struct({ c: S.number }) })
   const schema = S.extend(A, B)
@@ -833,7 +833,7 @@ console.log(result) // => { _id: 'Either', _tag: 'Left', left: 'should be non em
 - fix `BrandAnnotation` type and add `getBrandAnnotation`
 - add `annotations?` parameter to Class constructors:
 
-  ```ts showLineNumbers=false
+  ```ts
   import * as AST from "@effect/schema/AST"
   import * as S from "@effect/schema/Schema"
 

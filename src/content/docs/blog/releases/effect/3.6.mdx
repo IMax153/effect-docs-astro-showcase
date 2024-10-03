@@ -24,7 +24,7 @@ a `DateTime.Zoned` contains both a UTC timestamp and a time zone.
 
 There is also a `CurrentTimeZone` service, for setting a time zone contextually.
 
-```ts showLineNumbers=false
+```ts
 import { DateTime, Effect } from "effect"
 
 Effect.gen(function* () {
@@ -50,7 +50,7 @@ Effect.gen(function* () {
 You can customize the buffer size and strategy by passing an object as the
 second argument with the `bufferSize` and `strategy` fields.
 
-```ts showLineNumbers=false
+```ts
 import { Effect, Stream } from "effect";
 
 Stream.asyncPush<string>(
@@ -74,7 +74,7 @@ Stream.asyncPush<string>(
 
 To access the fully typed keys of a struct, you can use the `Struct.keys` function.
 
-```ts showLineNumbers=false
+```ts
 import { Struct } from "effect"
 
 const symbol: unique symbol = Symbol()
@@ -93,7 +93,7 @@ const keys: Array<"a" | "b"> = Struct.keys(value)
 The `@effect/sql-kysely` package provides `@effect/sql` integration with the `kysely`
 query builder apis.
 
-```ts showLineNumbers=false
+```ts
 // create a Tag with your `Database` type
 class KyselyDB extends Context.Tag("KyselyDB")<KyselyDB, Kysely<Database>>() {}
 
@@ -119,7 +119,7 @@ This api allows you to randomly select an item from an `Iterable`.
 
 Unless the `Iterable` is "NonEmpty", then the Effect can fail with a `Cause.NoSuchElementException`.
 
-```ts showLineNumbers=false
+```ts
 import { Random } from "effect"
 
 Effect.gen(function* () {
@@ -138,7 +138,7 @@ This can be useful when you want to add strictness to your program.
 
 Refinements can now be used with `Predicate.tuple` and `Predicate.struct` to narrow the resulting type.
 
-```ts showLineNumbers=false
+```ts
 import { Predicate } from "effect"
 
 const isTrue = (u: unknown): u is true => u === true

@@ -142,7 +142,7 @@ Let's see some code, before and after Effect, by analyzing a single HTTP call.
 
 ### Plain TS code
 
-```ts showLineNumbers=false
+```ts
 interface Todo {
   readonly id: number
   readonly userId: number
@@ -161,7 +161,7 @@ Even going beyond the fault of assuming the todo returned by the API necessarily
 
 If we were to add such a requirement our code would become:
 
-```ts showLineNumbers=false
+```ts
 async function getTodo(
   id: number
 ): Promise<
@@ -191,7 +191,7 @@ Lets say that it is good enough, this still does not represent the rest of the a
 
 We'd end up with:
 
-```ts showLineNumbers=false
+```ts
 const tracer = Otel.trace.getTracer("todos")
 
 function getTodo(
@@ -283,7 +283,7 @@ By this time I challenge every human being to look at the code and tell me if it
 
 By using Effect the above mess becomes just 25 lines of highly declarative code (imports & formatting included):
 
-```ts showLineNumbers=false
+```ts
 import {
   HttpClient,
   HttpClientRequest,
@@ -313,7 +313,7 @@ export const getTodo = (
 
 If we unpack each piece in its own code block and allow for type inference it becomes even simpler to read and understand:
 
-```ts showLineNumbers=false
+```ts
 import {
   HttpClient,
   HttpClientRequest,
@@ -343,7 +343,7 @@ In this example we can truly see the power of composition, each block of Effect 
 
 The last problem we wanted to solve with our code is checking the types at the edge, accounting for that our full example code becomes:
 
-```ts showLineNumbers=false
+```ts
 import {
   HttpClient,
   HttpClientRequest,
