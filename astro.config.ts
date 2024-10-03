@@ -91,10 +91,7 @@ export default defineConfig({
         },
         {
           label: "Resource Management",
-          items: [
-            { label: "Scope", slug: "resource-management/scope" },
-            { label: "Patterns", slug: "resource-management/patterns" }
-          ],
+          autogenerate: { directory: "resource-management" },
           collapsed: false
         },
         {
