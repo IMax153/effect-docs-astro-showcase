@@ -76,108 +76,108 @@ export default defineConfig({
       sidebar: [
         {
           label: "Getting Started",
-          autogenerate: { directory: "getting-started" },
+          autogenerate: { directory: "docs/getting-started" },
           collapsed: false
         },
         {
           label: "Error Management",
-          autogenerate: { directory: "error-management" },
+          autogenerate: { directory: "docs/error-management" },
           collapsed: false
         },
         {
           label: "Requirements Management",
-          autogenerate: { directory: "requirements-management" },
+          autogenerate: { directory: "docs/requirements-management" },
           collapsed: false
         },
         {
           label: "Resource Management",
-          autogenerate: { directory: "resource-management" },
+          autogenerate: { directory: "docs/resource-management" },
           collapsed: false
         },
         {
           label: "Observability",
-          autogenerate: { directory: "observability" },
+          autogenerate: { directory: "docs/observability" },
           collapsed: false
         },
-        { label: "Configuration", slug: "configuration" },
-        { label: "Runtime", slug: "runtime" },
+        { label: "Configuration", slug: "docs/configuration" },
+        { label: "Runtime", slug: "docs/runtime" },
         {
           label: "Scheduling",
-          autogenerate: { directory: "scheduling" },
+          autogenerate: { directory: "docs/scheduling" },
           collapsed: false
         },
         {
           label: "State Management",
-          autogenerate: { directory: "state-management" },
+          autogenerate: { directory: "docs/state-management" },
           collapsed: false
         },
-        { label: "Batching", slug: "batching" },
+        { label: "Batching", slug: "docs/batching" },
         {
           label: "Caching",
-          autogenerate: { directory: "caching" },
+          autogenerate: { directory: "docs/caching" },
           collapsed: false
         },
         {
           label: "Concurrency",
-          autogenerate: { directory: "concurrency" },
+          autogenerate: { directory: "docs/concurrency" },
           collapsed: false
         },
         {
           label: "Stream",
-          autogenerate: { directory: "stream" },
+          autogenerate: { directory: "docs/stream" },
           collapsed: false
         },
         {
           label: "Sink",
-          autogenerate: { directory: "sink" },
+          autogenerate: { directory: "docs/sink" },
           collapsed: false
         },
         {
           label: "Testing",
-          autogenerate: { directory: "testing" },
+          autogenerate: { directory: "docs/testing" },
           collapsed: false
         },
         {
           label: "Code Style",
-          autogenerate: { directory: "code-style" },
+          autogenerate: { directory: "docs/code-style" },
           collapsed: false
         },
         {
           label: "Data Types",
-          autogenerate: { directory: "data-types" },
+          autogenerate: { directory: "docs/data-types" },
           collapsed: false
         },
         {
           label: "Traits",
-          autogenerate: { directory: "trait" },
+          autogenerate: { directory: "docs/trait" },
           collapsed: false
         },
         {
           label: "Behaviours",
-          autogenerate: { directory: "behaviour" },
+          autogenerate: { directory: "docs/behaviour" },
           collapsed: false
         },
         {
           label: "Micro",
           badge: { text: "Unstable", variant: "caution" },
-          autogenerate: { directory: "micro" },
+          autogenerate: { directory: "docs/micro" },
           collapsed: false
         },
         {
           label: "Schema",
           badge: { text: "Unstable", variant: "caution" },
-          autogenerate: { directory: "schema" },
+          autogenerate: { directory: "docs/schema" },
           collapsed: false
         },
         {
           label: "Platform",
           badge: { text: "Unstable", variant: "caution" },
-          autogenerate: { directory: "platform" },
+          autogenerate: { directory: "docs/platform" },
           collapsed: false
         },
         {
           label: "Additional Resources",
-          autogenerate: { directory: "additional-resources" },
+          autogenerate: { directory: "docs/additional-resources" },
           collapsed: false
         }
       ]
