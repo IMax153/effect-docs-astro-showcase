@@ -1,0 +1,23 @@
+---
+import type { Props } from "@astrojs/starlight/props";
+import Default from "@astrojs/starlight/components/SocialIcons.astro";
+
+const links = Object.entries({
+	Docs: "/docs/",
+	Blog: "/blog/",
+})
+---
+<div class="items-center hidden lg:flex mx-auto">
+	{
+		links.map(([text, href]) => (
+			<a
+				href={href}
+				class="px-4 no-underline text-[--sl-color-text] font-medium"
+			>
+				<span>{text}</span>
+			</a>
+		))
+	}
+</div>
+<Default {...Astro.props}><slot /></Default>
+

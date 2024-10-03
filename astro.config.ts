@@ -5,6 +5,7 @@ import starlightBlog from "starlight-blog"
 import starlightLinksValidator from "starlight-links-validator"
 import { rehypeHeadingIds } from "@astrojs/markdown-remark"
 import starlight from "@astrojs/starlight"
+import tailwind from "@astrojs/tailwind"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
 import pluginTwoslash from "./src/plugins/twoslash/plugin"
@@ -32,20 +33,27 @@ export default defineConfig({
     ]
   },
   integrations: [
+    tailwind({
+      applyBaseStyles: false
+    }),
     starlight({
       title: "Effect Documentation",
       lastUpdated: true,
       components: {
-        Head: "./src/components/starlight-overrides/Head.astro"
+        Head: "./src/components/overrides/Head.astro",
+        SocialIcons: "./src/components/overrides/SocialIcons.astro",
+        ThemeSelect: "./src/components/overrides/ThemeSelect.astro"
       },
       customCss: [
         // the styles for the autolink headings
         "./src/styles/headings.css",
         // fixes overflow-wrap when the columns contains code blocks
         "./src/styles/tables.css",
+        // the base styles for tailwind
+        "./src/styles/tailwind.css",
         // fixes styles for astro-tweet
         "./src/styles/tweet.css",
-        // the global styles required for Twoslash (the rest are scoped to the plugin)
+        // the styles required for twoslash 
         "./src/styles/twoslash.css",
       ],
       editLink: {
@@ -67,7 +75,10 @@ export default defineConfig({
       },
       social: {
         discord: "https://discord.gg/effect-ts",
-        github: "https://github.com/Effect-TS"
+        github: "https://github.com/Effect-TS",
+        twitter: "https://twitter.com/EffectTS_",
+        "x.com": "https://x.com/EffectTS_",
+        youtube: "https://youtube.com/@effect-ts",
       },
       plugins: [
         starlightBlog({
