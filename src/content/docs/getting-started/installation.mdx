@@ -144,8 +144,12 @@ touch src/index.ts
 
 Open the `index.ts` file and add the following code:
 
-```ts title="src/index.ts" file=<rootDir>/installation/hello-world.ts
+```ts title="src/index.ts"
+import { Effect, Console } from "effect"
 
+const program = Console.log("Hello, World!")
+
+Effect.runSync(program)
 ```
 
 Run the `index.ts` file. Here we are using [tsx](https://github.com/privatenumber/tsx) to run the `index.ts` file in the terminal:
@@ -181,8 +185,12 @@ Let's write and run a simple program to ensure that everything is set up correct
 
 Open the `main.ts` file and replace the content with the following code:
 
-```ts title="main.ts" file=<rootDir>/installation/hello-world.ts
+```ts title="main.ts"
+import { Effect, Console } from "effect"
 
+const program = Console.log("Hello, World!")
+
+Effect.runSync(program)
 ```
 
 Run the `main.ts` file:
@@ -238,8 +246,12 @@ Let's write and run a simple program to ensure that everything is set up correct
 
 Open the `index.ts` file and replace the content with the following code:
 
-```ts title="index.ts" file=<rootDir>/installation/hello-world.ts
+```ts title="index.ts"
+import { Effect, Console } from "effect"
 
+const program = Console.log("Hello, World!")
+
+Effect.runSync(program)
 ```
 
 Run the `index.ts` file:

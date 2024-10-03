@@ -17,18 +17,26 @@ The `Effect.mapError` function is used when you need to transform or modify an e
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/mapError.ts
+```ts twoslash
+import { Effect } from "effect"
 
+const simulatedTask = Effect.fail("Oh no!").pipe(Effect.as(1))
+
+const mapped = Effect.mapError(
+  simulatedTask,
+  (message) => new Error(message)
+)
 ```
 
 We can observe that the type in the error channel of our program has changed from `string` to `Error`.
 
 <Aside type="note">
-  It's important to note that using the `Effect.mapError` function does not
-  change the overall success or failure of the effect. If the mapped effect
-  is successful, then the mapping function is ignored. In other words, the
-  `Effect.mapError` operation only applies the transformation to the error
-  channel of the effect, while leaving the success channel unchanged.
+  It's important to note that using the `Effect.mapError` function does
+  not change the overall success or failure of the effect. If the mapped
+  effect is successful, then the mapping function is ignored. In other
+  words, the `Effect.mapError` operation only applies the transformation
+  to the error channel of the effect, while leaving the success channel
+  unchanged.
 </Aside>
 
 ### mapBoth
@@ -37,8 +45,15 @@ The `Effect.mapBoth` function allows you to apply transformations to both channe
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/mapBoth.ts
+```ts twoslash
+import { Effect } from "effect"
 
+const simulatedTask = Effect.fail("Oh no!").pipe(Effect.as(1))
+
+const modified = Effect.mapBoth(simulatedTask, {
+  onFailure: (message) => new Error(message),
+  onSuccess: (n) => n > 0
+})
 ```
 
 After using `mapBoth`, we can observe that the type of our program has changed from `Effect<number, string>` to `Effect<boolean, Error>`.
@@ -64,8 +79,32 @@ These operators offer different strategies for handling cases where the predicat
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/filter.ts
+```ts twoslash
+import { Effect, Random, Cause } from "effect"
 
+const task1 = Effect.filterOrFail(
+  Random.nextRange(-1, 1),
+  (n) => n >= 0,
+  () => "random number is negative"
+)
+
+const task2 = Effect.filterOrDie(
+  Random.nextRange(-1, 1),
+  (n) => n >= 0,
+  () => new Cause.IllegalArgumentException("random number is negative")
+)
+
+const task3 = Effect.filterOrDieMessage(
+  Random.nextRange(-1, 1),
+  (n) => n >= 0,
+  "random number is negative"
+)
+
+const task4 = Effect.filterOrElse(
+  Random.nextRange(-1, 1),
+  (n) => n >= 0,
+  () => task3
+)
 ```
 
 It's important to note that depending on the specific filtering operator used, the effect can either fail, terminate abruptly, or execute an alternative effect when the predicate fails. Choose the appropriate operator based on your desired error handling strategy and program logic.
@@ -75,8 +114,27 @@ This not only enhances type safety but also improves code clarity.
 
 **Example: Using a Type Guard**
 
-```ts twoslash file=<rootDir>/error-channel-operations/filter-type-guard.ts
+```ts twoslash
+import { Effect, pipe } from "effect"
 
+// Define a user interface
+interface User {
+  readonly name: string
+}
+
+// Assume an asynchronous authentication function
+declare const auth: () => Promise<User | null>
+
+const program = pipe(
+  Effect.promise(() => auth()),
+  Effect.filterOrFail(
+    // Define a guard to narrow down the type
+    (user): user is User => user !== null,
+    () => new Error("Unauthorized")
+  ),
+  // The 'user' here has type `User`, not `User | null`
+  Effect.andThen((user) => user.name)
+)
 ```
 
 In the example above, a guard is used within the `filterOrFail` API to ensure that the `user` is of type `User` rather than `User | null`. This refined type information improves the reliability of your code and makes it more understandable.
@@ -97,8 +155,8 @@ These operators allow developers to observe failures or underlying issues withou
 | `tapBoth`       | Inspects both success and failure outcomes of an effect, performing different actions based on the result.                      |
 
 <Aside type="note">
-  Utilizing these error inspection tools does not alter the outcome or type
-  of the effect.
+  Utilizing these error inspection tools does not alter the outcome or
+  type of the effect.
 </Aside>
 
 ### tapError
@@ -107,8 +165,25 @@ Executes an effectful operation to inspect the failure of an effect without alte
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/tapError.ts
+```ts twoslash
+import { Effect, Console } from "effect"
 
+// Create an effect that is designed to fail, simulating an occurrence
+// of a network error
+const task: Effect.Effect<number, string> = Effect.fail("NetworkError")
+
+// Log the error message if the task fails. This function only executes
+// if there is an error, providing a method to handle or inspect errors
+// without altering the outcome of the original effect.
+const tapping = Effect.tapError(task, (error) =>
+  Console.log(`expected error: ${error}`)
+)
+
+Effect.runFork(tapping)
+/*
+Output:
+expected error: NetworkError
+*/
 ```
 
 ### tapErrorTag
@@ -117,8 +192,35 @@ Specifically inspects a failure with a particular tag, allowing focused error ha
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/tapErrorTag.ts
+```ts twoslash
+import { Effect, Console } from "effect"
 
+class NetworkError {
+  readonly _tag = "NetworkError"
+  constructor(readonly statusCode: number) {}
+}
+
+class ValidationError {
+  readonly _tag = "ValidationError"
+  constructor(readonly field: string) {}
+}
+
+// Create an effect that is designed to fail, simulating an
+// occurrence of a network error
+const task: Effect.Effect<number, NetworkError | ValidationError> =
+  Effect.fail(new NetworkError(504))
+
+// Apply an error handling function only to errors tagged as
+// "NetworkError", and log the corresponding status code of the error.
+const tapping = Effect.tapErrorTag(task, "NetworkError", (error) =>
+  Console.log(`expected error: ${error.statusCode}`)
+)
+
+Effect.runFork(tapping)
+/*
+Output:
+expected error: 504
+*/
 ```
 
 ### tapErrorCause
@@ -127,8 +229,41 @@ Inspects the underlying cause of an effect's failure.
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/tapErrorCause.ts
+```ts twoslash
+import { Effect, Console } from "effect"
 
+// Create an effect that is designed to fail, simulating an occurrence of a
+// network error
+const task1: Effect.Effect<number, string> = Effect.fail("NetworkError")
+
+// This will log the cause of any expected error or defect
+const tapping1 = Effect.tapErrorCause(task1, (cause) =>
+  Console.log(`error cause: ${cause}`)
+)
+
+Effect.runFork(tapping1)
+/*
+Output:
+error cause: Error: NetworkError
+*/
+
+// Simulate a severe failure in the system by causing a defect with
+// a specific message.
+const task2: Effect.Effect<number, string> = Effect.dieMessage(
+  "Something went wrong"
+)
+
+// This will log the cause of any expected error or defect
+const tapping2 = Effect.tapErrorCause(task2, (cause) =>
+  Console.log(`error cause: ${cause}`)
+)
+
+Effect.runFork(tapping2)
+/*
+Output:
+error cause: RuntimeException: Something went wrong
+  ... stack trace ...
+*/
 ```
 
 ### tapDefect
@@ -137,8 +272,40 @@ Specifically inspects non-recoverable failures or defects in an effect (i.e., on
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/tapDefect.ts
+```ts twoslash
+import { Effect, Console } from "effect"
 
+// Create an effect that is designed to fail, simulating an occurrence of a
+// network error
+const task1: Effect.Effect<number, string> = Effect.fail("NetworkError")
+
+// this won't log anything because is not a defect
+const tapping1 = Effect.tapDefect(task1, (cause) =>
+  Console.log(`defect: ${cause}`)
+)
+
+Effect.runFork(tapping1)
+/*
+No Output
+*/
+
+// Simulate a severe failure in the system by causing a defect with
+// a specific message.
+const task2: Effect.Effect<number, string> = Effect.dieMessage(
+  "Something went wrong"
+)
+
+// This will only log defects, not errors
+const tapping2 = Effect.tapDefect(task2, (cause) =>
+  Console.log(`defect: ${cause}`)
+)
+
+Effect.runFork(tapping2)
+/*
+Output:
+defect: RuntimeException: Something went wrong
+  ... stack trace ...
+*/
 ```
 
 ### tapBoth
@@ -147,8 +314,29 @@ Inspects both success and failure outcomes of an effect, performing different ac
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/tapBoth.ts
+```ts twoslash
+import { Effect, Random, Console } from "effect"
 
+// Simulate an effect that might fail
+const task = Effect.filterOrFail(
+  Random.nextRange(-1, 1),
+  (n) => n >= 0,
+  () => "random number is negative"
+)
+
+// Define an effect that logs both success and failure outcomes
+// of the task
+const tapping = Effect.tapBoth(task, {
+  onFailure: (error) => Console.log(`failure: ${error}`),
+  onSuccess: (randomNumber) =>
+    Console.log(`random number: ${randomNumber}`)
+})
+
+Effect.runFork(tapping)
+/*
+Example Output:
+failure: random number is negative
+*/
 ```
 
 ## Exposing Errors in The Success Channel
@@ -164,8 +352,23 @@ The error type of the returned `Effect` is specified as `never`, confirming that
 
 This function becomes especially useful when recovering from effects that may fail when using [Effect.gen](/getting-started/using-generators#understanding-effectgen):
 
-```ts twoslash file=<rootDir>/error-channel-operations/either.ts
+```ts twoslash
+import { Effect, Either, Console } from "effect"
 
+const simulatedTask = Effect.fail("Oh uh!").pipe(Effect.as(2))
+
+const program = Effect.gen(function* () {
+  const failureOrSuccess = yield* Effect.either(simulatedTask)
+  if (Either.isLeft(failureOrSuccess)) {
+    const error = failureOrSuccess.left
+    yield* Console.log(`failure: ${error}`)
+    return 0
+  } else {
+    const value = failureOrSuccess.right
+    yield* Console.log(`success: ${value}`)
+    return value
+  }
+})
 ```
 
 ## Exposing the Cause in The Success Channel
@@ -174,8 +377,15 @@ You can use the `Effect.cause` function to expose the cause of an effect, which 
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/cause.ts
+```ts twoslash
+import { Effect, Console } from "effect"
 
+const simulatedTask = Effect.fail("Oh uh!").pipe(Effect.as(2))
+
+const program = Effect.gen(function* () {
+  const cause = yield* Effect.cause(simulatedTask)
+  yield* Console.log(cause)
+})
 ```
 
 ## Merging the Error Channel into the Success Channel
@@ -184,8 +394,12 @@ Using the `Effect.merge` function, you can merge the error channel into the succ
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/merge.ts
+```ts twoslash
+import { Effect } from "effect"
 
+const simulatedTask = Effect.fail("Oh uh!").pipe(Effect.as(2))
+
+const merged = Effect.merge(simulatedTask)
 ```
 
 ## Flipping Error and Success Channels
@@ -194,6 +408,10 @@ Using the `Effect.flip` function, you can flip the error and success channels of
 
 **Example**
 
-```ts twoslash file=<rootDir>/error-channel-operations/flip.ts
+```ts twoslash
+import { Effect } from "effect"
 
+const simulatedTask = Effect.fail("Oh uh!").pipe(Effect.as(2))
+
+const flipped = Effect.flip(simulatedTask)
 ```

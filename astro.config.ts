@@ -1,9 +1,9 @@
 import { defineConfig } from "astro/config"
 import starlight from "@astrojs/starlight"
 import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid"
-import remarkCodeImport from "remark-code-import"
+// import remarkCodeImport from "remark-code-import"
 import starlightLinksValidator from "starlight-links-validator"
-import * as path from "node:path"
+// import * as path from "node:path"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
 import { rehypeHeadingIds } from "@astrojs/markdown-remark"
@@ -21,9 +21,9 @@ const rehypeMermaidOptions: RehypeMermaidOptions = {
   dark: true
 }
 
-const remarkCodeImportOptions: Parameters<typeof remarkCodeImport>[0] = {
-  rootDir: path.resolve("src/snippets")
-}
+// const remarkCodeImportOptions: Parameters<typeof remarkCodeImport>[0] = {
+//   rootDir: path.resolve("src/snippets")
+// }
 
 export default defineConfig({
   site,
@@ -34,8 +34,8 @@ export default defineConfig({
       // the headings are styled in the headings.css file
       rehypeHeadingIds,
       [rehypeAutolinkHeadings, { behavior: "wrap" }]
-    ],
-    remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]]
+    ]
+    // remarkPlugins: [[remarkCodeImport as any, remarkCodeImportOptions]]
   },
   integrations: [
     starlight({

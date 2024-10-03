@@ -16,8 +16,25 @@ This class can be used to represent different types of errors in your code.
 
 **Example:**
 
-```ts twoslash file=<rootDir>/yieldable-errors/Data.Error.ts
+```ts twoslash
+import { Effect, Data } from "effect"
 
+class MyError extends Data.Error<{ message: string }> {}
+
+export const program = Effect.gen(function* () {
+  // same as yield* Effect.fail(new MyError({ message: "Oh no!" })
+  yield* new MyError({ message: "Oh no!" })
+})
+
+Effect.runPromiseExit(program).then(console.log)
+/*
+Output:
+{
+  _id: 'Exit',
+  _tag: 'Failure',
+  cause: { _id: 'Cause', _tag: 'Fail', failure: { message: 'Oh no!' } }
+}
+*/
 ```
 
 ## Data.TaggedError
@@ -27,8 +44,38 @@ These errors bear a distinct property named `_tag`, which acts as their unique i
 
 **Example:**
 
-```ts twoslash file=<rootDir>/yieldable-errors/Data.TaggedError.ts
+```ts twoslash
+import { Effect, Data, Random } from "effect"
 
+// An error with _tag: "Foo"
+class FooError extends Data.TaggedError("Foo")<{
+  message: string
+}> {}
+
+// An error with _tag: "Bar"
+class BarError extends Data.TaggedError("Bar")<{
+  randomNumber: number
+}> {}
+
+export const program = Effect.gen(function* () {
+  const n = yield* Random.next
+  return n > 0.5
+    ? "yay!"
+    : n < 0.2
+    ? yield* new FooError({ message: "Oh no!" })
+    : yield* new BarError({ randomNumber: n })
+}).pipe(
+  Effect.catchTags({
+    Foo: (error) => Effect.succeed(`Foo error: ${error.message}`),
+    Bar: (error) => Effect.succeed(`Bar error: ${error.randomNumber}`)
+  })
+)
+
+Effect.runPromise(program).then(console.log, console.error)
+/*
+Example Output (n < 0.2):
+Foo error: Oh no!
+*/
 ```
 
 In this example, we create `FooError` and `BarError` classes with distinct tags ("Foo" and "Bar"). These tags help identify the type of error when handling errors in your code.

@@ -11,9 +11,10 @@ To execute an effect, we can utilize a variety of "run" functions provided by th
 
 <Aside type="tip">
   The recommended approach is to design your program with the majority of
-  its logic as Effects. It's advisable to use the `run*` functions closer to
-  the "edge" of your program. This approach allows for greater flexibility
-  in executing your program and building sophisticated Effects.
+  its logic as Effects. It's advisable to use the `run*` functions closer
+  to the "edge" of your program. This approach allows for greater
+  flexibility in executing your program and building sophisticated
+  Effects.
 </Aside>
 
 ## runSync
@@ -22,16 +23,31 @@ The `Effect.runSync` function is used to execute an effect synchronously, which 
 
 **Example**
 
-```ts twoslash file=<rootDir>/running-effects/runSync.ts
+```ts twoslash
+import { Effect } from "effect"
 
+const program = Effect.sync(() => {
+  console.log("Hello, World!")
+  return 1
+})
+
+const result = Effect.runSync(program)
+// Output: Hello, World!
+
+console.log(result)
+// Output: 1
 ```
 
 The `Effect.runSync` function will throw an error if your effect fails or performs any
 asynchronous tasks. In the latter case, the execution will not proceed
 beyond that asynchronous task:
 
-```ts twoslash file=<rootDir>/running-effects/runSync-caution.ts
+```ts twoslash
+import { Effect } from "effect"
 
+Effect.runSync(Effect.fail("my error")) // throws
+
+Effect.runSync(Effect.promise(() => Promise.resolve(1))) // throws
 ```
 
 ## runSyncExit
@@ -41,30 +57,62 @@ The `Effect.runSyncExit` function is used to execute an effect synchronously, wh
 
 **Example**
 
-```ts twoslash file=<rootDir>/running-effects/runSyncExit.ts
+```ts twoslash
+import { Effect } from "effect"
 
+const result1 = Effect.runSyncExit(Effect.succeed(1))
+console.log(result1)
+/*
+Output:
+{
+  _id: "Exit",
+  _tag: "Success",
+  value: 1
+}
+*/
+
+const result2 = Effect.runSyncExit(Effect.fail("my error"))
+console.log(result2)
+/*
+Output:
+{
+  _id: "Exit",
+  _tag: "Failure",
+  cause: {
+    _id: "Cause",
+    _tag: "Fail",
+    failure: "my error"
+  }
+}
+*/
 ```
 
 The `Effect.runSyncExit` function will throw an error if your effect performs any
 asynchronous tasks and the execution will not proceed beyond that
 asynchronous task:
 
-```ts twoslash file=<rootDir>/running-effects/runSyncExit-caution.ts
+```ts twoslash
+import { Effect } from "effect"
 
+Effect.runSyncExit(Effect.promise(() => Promise.resolve(1))) // throws
 ```
 
 ## runPromise
 
 The `Effect.runPromise` function is used to execute an effect and obtain the result as a `Promise`.
 
-```ts twoslash file=<rootDir>/running-effects/runPromise.ts
+```ts twoslash
+import { Effect } from "effect"
 
+Effect.runPromise(Effect.succeed(1)).then(console.log) // Output: 1
 ```
 
 The `Effect.runPromise` function will reject with an error if your Effect fails:
 
-```ts twoslash file=<rootDir>/running-effects/runPromise-caution.ts
+```ts twoslash
+import { Effect } from "effect"
 
+Effect.runPromise(Effect.fail("my error")) // rejects
 ```
 
 ## runPromiseExit
@@ -72,16 +120,51 @@ The `Effect.runPromise` function will reject with an error if your Effect fails:
 The `Effect.runPromiseExit` function is used to execute an Effect and obtain the result as a `Promise` that resolves to an [Exit](/data-types/exit)
 (a data type used to describe the result of executing an `Effect` workflow).
 
-```ts twoslash file=<rootDir>/running-effects/runPromiseExit.ts
+```ts twoslash
+import { Effect } from "effect"
 
+Effect.runPromiseExit(Effect.succeed(1)).then(console.log)
+/*
+Output:
+{
+  _id: "Exit",
+  _tag: "Success",
+  value: 1
+}
+*/
+
+Effect.runPromiseExit(Effect.fail("my error")).then(console.log)
+/*
+Output:
+{
+  _id: "Exit",
+  _tag: "Failure",
+  cause: {
+    _id: "Cause",
+    _tag: "Fail",
+    failure: "my error"
+  }
+}
+*/
 ```
 
 ## runFork
 
-The `Effect.runFork` function serves as a foundational building block for running effects. In fact, all other run functions are built upon it. Unless you have a specific need for a Promise or a synchronous operation, `Effect.runFork` is the recommended choice. It returns a fiber that you can observe or interrupt as needed.
+The `Effect.runFork` function serves as a foundational building block for running effects. In fact, all other run functions are built upon it. Unless you have a specific need for a `Promise` or a synchronous operation, `Effect.runFork` is the recommended choice. It returns a fiber that you can observe or interrupt as needed.
 
-```ts twoslash file=<rootDir>/running-effects/runFork.ts
+```ts twoslash
+import { Effect, Console, Schedule, Fiber } from "effect"
 
+const program = Effect.repeat(
+  Console.log("running..."),
+  Schedule.spaced("200 millis")
+)
+
+const fiber = Effect.runFork(program)
+
+setTimeout(() => {
+  Effect.runFork(Fiber.interrupt(fiber))
+}, 500)
 ```
 
 In this example, the `program` continuously logs "running..." with each repetition spaced 200 milliseconds apart. You can learn more about repetitions and scheduling in our [Introduction to Scheduling](/scheduling/introduction) guide.

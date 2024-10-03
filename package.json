@@ -8,8 +8,7 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "pnpm:devPreinstall": "pnpx playwright-core install --with-deps chromium",
-    "snippets": "tsc --noEmit --skipLibCheck --downlevelIteration src/snippets/**/*.ts"
+    "pnpm:devPreinstall": "pnpx playwright-core install --with-deps chromium"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.3",
