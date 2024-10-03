@@ -1,7 +1,6 @@
 import { defineConfig } from "astro/config"
 import starlight from "@astrojs/starlight"
 import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid"
-import remarkCodeImport from "remark-code-import"
 import starlightBlog from "starlight-blog"
 import starlightLinksValidator from "starlight-links-validator"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
@@ -72,12 +71,19 @@ export default defineConfig({
       },
       plugins: [
         starlightBlog({
+          recentPostCount: 5,
           authors: {
             davide_scognamiglio: {
               name: "Davide Scognamiglio",
               title: "Project Manager",
               picture: "/authors/davide_scognamiglio.png",
               url: "https://twitter.com/DadeSkoTV"
+            },
+            guilio_canti: {
+              name: "Guilio Canti",
+              title: "Founding Engineer",
+              picture: "/authors/guilio_canti.png",
+              url: "https://github.com/gcanti"
             },
             maxwell_brown: {
               name: "Maxwell Brown",
@@ -86,7 +92,7 @@ export default defineConfig({
               url: "https://github.com/IMax153"
             },
             mirela_prifti: {
-              name: "Maxwell Brown",
+              name: "Mirela Prifti",
               title: "Community Manager",
               picture: "/authors/mirela_prifti.png",
               url: "https://twitter.com/mirepri4"
@@ -96,9 +102,14 @@ export default defineConfig({
               title: "Chief Executive Officer",
               picture: "/authors/michael_arnaldi.png",
               url: "https://github.com/mikearnaldi"
+            },
+            tim_smart: {
+              name: "Tim Smart",
+              title: "Founding Engineer",
+              picture: "/authors/tim_smart.png",
+              url: "https://github.com/timsmart"
             }
-          },
-          recentPostCount: 3
+          }
         }),
         starlightLinksValidator()
       ],
