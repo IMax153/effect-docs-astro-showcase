@@ -1,5 +1,6 @@
 # build output
 dist/
+
 # generated types
 .astro/
 
@@ -24,3 +25,6 @@ pnpm-debug.log*
 
 # development
 dev
+
+# TODO REMOVE
+monaco-editor

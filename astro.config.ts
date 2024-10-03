@@ -7,11 +7,13 @@ import rehypeAutolinkHeadings, {
 import starlightBlog from "starlight-blog"
 import starlightLinksValidator from "starlight-links-validator"
 import { rehypeHeadingIds } from "@astrojs/markdown-remark"
+import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
 import tailwind from "@astrojs/tailwind"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
 import pluginTwoslash from "./src/plugins/twoslash/plugin"
+import { monacoEditorPlugin } from "./src/plugins/vite/monaco-editor"
 
 const VERCEL_PREVIEW_DOMAIN =
   process.env.PUBLIC_VERCEL_ENV !== "production" &&
@@ -83,7 +85,11 @@ export default defineConfig({
       [rehypeAutolinkHeadings, rehypeAutolinkHeadingsOptions]
     ]
   },
+  vite: {
+    plugins: [monacoEditorPlugin({ languages: ["json", "typescript"] })]
+  },
   integrations: [
+    react(),
     tailwind({
       applyBaseStyles: false,
       nesting: true
