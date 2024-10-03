@@ -7,9 +7,58 @@ sidebar:
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components"
 
-In this tutorial, we will guide you through the process of setting up a new Effect project from scratch using plain **TypeScript 5.4 or newer**.
+System Requirements:
 
-## Node.js
+- TypeScript 5.4 or newer.
+- Node.js, Deno, and Bun are supported.
+
+## Automatic Installation
+
+To quickly set up a new Effect application, we recommend using `create-effect-app`, which will handle all configurations for you. To create a new project, run:
+
+<Tabs syncKey="package-manager">
+
+<TabItem label="npm" icon="seti:npm">
+
+```sh showLineNumbers=false
+npx create-effect-app@latest
+```
+
+</TabItem>
+
+<TabItem label="pnpm" icon="pnpm">
+
+```sh showLineNumbers=false
+pnpm create effect-app@latest
+```
+
+</TabItem>
+
+<TabItem label="Yarn" icon="seti:yarn">
+
+```sh showLineNumbers=false
+yarn create effect-app@latest
+```
+
+</TabItem>
+
+<TabItem label="Bun" icon="bun">
+
+```sh showLineNumbers=false
+bunx create-effect-app@latest
+```
+
+</TabItem>
+
+</Tabs>
+
+Once you complete the prompts, `create-effect-app` will create a folder with your project name and install all required dependencies.
+
+For more details on the CLI, see the [Create Effect App](/docs/getting-started/create-effect-app) documentation.
+
+## Manual Installation
+
+### Node.js
 
 Follow these steps to create a new Effect project for [Node.js](https://nodejs.org/):
 
@@ -160,7 +209,7 @@ npx tsx src/index.ts
 
 You should see the message `"Hello, World!"` printed. This confirms that the program is working correctly.
 
-## Deno
+### Deno
 
 Follow these steps to create a new Effect project for [Deno](https://deno.com/):
 
@@ -201,7 +250,7 @@ deno run main.ts
 
 You should see the message `"Hello, World!"` printed. This confirms that the program is working correctly.
 
-## Bun
+### Bun
 
 Follow these steps to create a new Effect project for [Bun](https://bun.sh/):
 
@@ -262,7 +311,7 @@ bun index.ts
 
 You should see the message `"Hello, World!"` printed. This confirms that the program is working correctly.
 
-## Vite + React
+### Vite + React
 
 Follow these steps to create a new Effect project for [Vite](https://vitejs.dev/guide/) + [React](https://react.dev/):
 
