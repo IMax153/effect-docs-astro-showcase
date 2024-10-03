@@ -180,7 +180,7 @@ Important Notes:
 - **Execution**: The side effect (logging to the console) encapsulated within `program` won't occur until the effect is explicitly [run](/getting-started/running-effects). This allows you to define side effects at one point in your code and control when they are activated, improving manageability and predictability of side effects in larger applications.
 - **Error Handling**: It's crucial that the function you pass to `Effect.sync` does not throw any errors. If you anticipate potential errors, consider using [try](#try) instead, which handles errors gracefully.
 
-<Aside type="caution">
+<Aside type="danger" title="Do Not Throw">
   The thunk passed to `Effect.sync` should never throw errors.
 </Aside>
 
@@ -276,7 +276,7 @@ The `program` value has the type `Effect<string, never, never>` and can be inter
 - does not produce any expected error (`never`)
 - does not require any context (`never`)
 
-<Aside type="caution">
+<Aside type="danger" title="Avoid Rejections">
   The `Promise` within the thunk passed to `Effect.promise` should never
   reject.
 </Aside>
@@ -393,7 +393,7 @@ console.log(Effect.runSync(good)) // Output: 1
 console.log(Effect.runSync(good)) // Output: 2
 ```
 
-<Aside type="tip">
+<Aside type="note" title="Running Effects">
   This example utilizes `Effect.runSync` to execute effects and display
   their results (refer to [Running
   Effects](/getting-started/running-effects#runsync) for more details).
@@ -429,7 +429,7 @@ const allGood = (n: number): Effect.Effect<number> =>
 console.log(Effect.runSync(allGood(32))) // Output: 3524578
 ```
 
-<Aside type="tip">
+<Aside type="note" title="Running Effects">
   This example utilizes `Effect.zipWith` to combine the results of two
   effects (refer to the documentation on
   [zipping](/getting-started/control-flow#zipwith) for more details).

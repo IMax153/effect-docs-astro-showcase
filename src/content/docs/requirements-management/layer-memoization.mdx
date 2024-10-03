@@ -15,11 +15,11 @@ Layer.merge(Layer.provide(b, a), Layer.provide(c, a))
 
 then the `a` layer will be allocated only once.
 
-<Aside type="caution">
-  Layers are memoized using **reference equality**. Therefore, if you have a
-  layer that is created by calling a function like `f()`, you should _only_
-  call that `f` once and re-use the resulting layer so that you are always
-  using the same instance.
+<Aside type="caution" title="Avoid Duplicate Layer Creation">
+  Layers are memoized using **reference equality**. Therefore, if you have
+  a layer that is created by calling a function like `f()`, you should
+  _only_ call that `f` once and re-use the resulting layer so that you are
+  always using the same instance.
 </Aside>
 
 ## Memoization When Providing Globally
@@ -39,7 +39,9 @@ class C extends Context.Tag("C")<C, { readonly c: boolean }>() {}
 
 const a = Layer.effect(
   A,
-  Effect.succeed({ a: 5 }).pipe(Effect.tap(() => Effect.log("initialized")))
+  Effect.succeed({ a: 5 }).pipe(
+    Effect.tap(() => Effect.log("initialized"))
+  )
 )
 
 const b = Layer.effect(
@@ -92,7 +94,9 @@ class C extends Context.Tag("C")<C, { readonly c: boolean }>() {}
 
 const a = Layer.effect(
   A,
-  Effect.succeed({ a: 5 }).pipe(Effect.tap(() => Effect.log("initialized")))
+  Effect.succeed({ a: 5 }).pipe(
+    Effect.tap(() => Effect.log("initialized"))
+  )
 )
 
 const b = Layer.effect(
@@ -145,7 +149,9 @@ class A extends Context.Tag("A")<A, { readonly a: number }>() {}
 
 const a = Layer.effect(
   A,
-  Effect.succeed({ a: 5 }).pipe(Effect.tap(() => Effect.log("initialized")))
+  Effect.succeed({ a: 5 }).pipe(
+    Effect.tap(() => Effect.log("initialized"))
+  )
 )
 
 const program = Effect.gen(function* () {
@@ -172,7 +178,9 @@ class A extends Context.Tag("A")<A, { readonly a: number }>() {}
 
 const a = Layer.effect(
   A,
-  Effect.succeed({ a: 5 }).pipe(Effect.tap(() => Effect.log("initialized")))
+  Effect.succeed({ a: 5 }).pipe(
+    Effect.tap(() => Effect.log("initialized"))
+  )
 )
 
 const program = Effect.scoped(

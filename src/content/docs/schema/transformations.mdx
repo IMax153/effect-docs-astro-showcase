@@ -503,7 +503,7 @@ console.log(decode("Ab ")) // "ab "
 console.log(decode(" ABc ")) // " abc "
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Lowercase And Lowercased">
   If you were looking for a combinator to check if a string is lowercased,
   check out the `Schema.Lowercased` schema or the `Schema.lowercased`
   filter.
@@ -524,7 +524,7 @@ console.log(decode("aB ")) // "AB "
 console.log(decode(" abC ")) // " ABC "
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Uppercase And Uppercased">
   If you were looking for a combinator to check if a string is uppercased,
   check out the `Schema.Uppercased` schema or the `Schema.uppercased`
   filter.
@@ -545,7 +545,7 @@ console.log(decode("aB ")) // "AB "
 console.log(decode(" abC ")) // " abC "
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Capitalize And Capitalized">
   If you were looking for a combinator to check if a string is
   capitalized, check out the `Schema.Capitalized` schema or the
   `Schema.capitalized` filter.
@@ -566,7 +566,7 @@ console.log(decode("Ab ")) // "ab "
 console.log(decode(" AbC ")) // " AbC "
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Uncapitalize And Uncapitalized">
   If you were looking for a combinator to check if a string is
   uncapitalized, check out the `Schema.Uncapitalized` schema or the
   `Schema.uncapitalized` filter.
@@ -884,7 +884,7 @@ console.log(decode(".124")) // { _id: 'BigDecimal', value: '124', scale: 3 }
 
 Transforms a number into a `BigDecimal`.
 
-<Aside type="caution">
+<Aside type="caution" title="Invalid Range">
   When encoding, this Schema will produce incorrect results if the
   BigDecimal exceeds the 64-bit range of a number.
 </Aside>

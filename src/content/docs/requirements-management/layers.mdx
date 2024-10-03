@@ -44,7 +44,7 @@ Now let's take our dependency graph and translate it into code.
 
 We will use Layers to construct the `Database` service instead of providing a service implementation directly as we did in the [Managing Services](/requirements-management/services) guide. Layers are a way of separating implementation details from the service itself.
 
-<Aside type="note">
+<Aside type="tip" title="Use Layers for Dependencies">
   When a service has its own requirements, it's best to separate
   implementation details into layers. Layers act as **constructors** for
   creating the service, allowing us to handle dependencies at the
@@ -66,12 +66,12 @@ Now, let's determine how many layers we need to implement our dependency graph:
 | `LoggerLive`   | The `Logger` service depends on the `Config` service       | `Layer<Logger, never, Config>`             |
 | `DatabaseLive` | The `Database` service depends on `Config` and `Logger`    | `Layer<Database, never, Config \| Logger>` |
 
-<Aside type="tip">
-  A common convention when naming the `Layer` for a particular service is to
-  add a `Live` suffix for the "live" implementation and a `Test` suffix for
-  the "test" implementation. For example, for a `Database` service, the
-  `DatabaseLive` would be the layer you provide in your application and the
-  `DatabaseTest` would be the layer you provide in your tests.
+<Aside type="tip" title="Naming Conventions">
+  A common convention when naming the `Layer` for a particular service is
+  to add a `Live` suffix for the "live" implementation and a `Test` suffix
+  for the "test" implementation. For example, for a `Database` service,
+  the `DatabaseLive` would be the layer you provide in your application
+  and the `DatabaseTest` would be the layer you provide in your tests.
 </Aside>
 
 When a service has multiple dependencies, they are represented as a **union type**. In our case, the `Database` service depends on both the `Config` and `Logger` services. Therefore, the type for the `DatabaseLive` layer will be `Layer<Database, never, Config | Logger>`.

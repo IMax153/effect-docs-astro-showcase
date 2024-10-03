@@ -5,7 +5,12 @@ sidebar:
   order: 5
 ---
 
-import { Aside, Tabs, TabItem, Badge } from "@astrojs/starlight/components"
+import {
+  Aside,
+  Tabs,
+  TabItem,
+  Badge
+} from "@astrojs/starlight/components"
 
 Configuration is an essential aspect of any cloud-native application. Effect simplifies the process of managing configuration by offering a convenient interface for configuration providers.
 
@@ -279,7 +284,7 @@ A: A B: B
 ```
 
 <Aside type="note">
-  The `ConfigProvider.fromMap` method used in this example creates a
+  The `ConfigProvider.fromMap` function used in this example creates a
   configuration provider from a `Map`. This behavior is explained in more
   detail in the [Testing Services](#testing-services) section.
 </Aside>
@@ -311,7 +316,10 @@ class HostPort {
 
 const both = Config.all([Config.string("HOST"), Config.number("PORT")])
 
-const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+const config = Config.map(
+  both,
+  ([host, port]) => new HostPort(host, port)
+)
 ```
 
 In the above example, we use the `Config.all(configs)` operator to combine two primitive configs `Config<string>` and `Config<number>` into a `Config<[string, number]>`.
@@ -335,7 +343,10 @@ class HostPort {
 
 const both = Config.all([Config.string("HOST"), Config.number("PORT")])
 
-const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+const config = Config.map(
+  both,
+  ([host, port]) => new HostPort(host, port)
+)
 
 const program = Effect.gen(function* () {
   const hostPort = yield* config
@@ -360,7 +371,10 @@ class HostPort {
 
 const both = Config.all([Config.string("HOST"), Config.number("PORT")])
 
-const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+const config = Config.map(
+  both,
+  ([host, port]) => new HostPort(host, port)
+)
 
 const program = config.pipe(
   Effect.andThen((hostPort) =>
@@ -422,14 +436,20 @@ class HostPort {
 
 const both = Config.all([Config.string("HOST"), Config.number("PORT")])
 
-const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+const config = Config.map(
+  both,
+  ([host, port]) => new HostPort(host, port)
+)
 
 class ServiceConfig {
   constructor(readonly hostPort: HostPort, readonly timeout: number) {}
 }
 
 const serfviceConfig = Config.map(
-  Config.all([Config.nested(config, "HOSTPORT"), Config.number("TIMEOUT")]),
+  Config.all([
+    Config.nested(config, "HOSTPORT"),
+    Config.number("TIMEOUT")
+  ]),
   ([hostPort, timeout]) => new ServiceConfig(hostPort, timeout)
 )
 ```
@@ -459,7 +479,10 @@ class HostPort {
 
 const both = Config.all([Config.string("HOST"), Config.number("PORT")])
 
-const config = Config.map(both, ([host, port]) => new HostPort(host, port))
+const config = Config.map(
+  both,
+  ([host, port]) => new HostPort(host, port)
+)
 
 const program = Effect.gen(function* () {
   const hostPort = yield* config

@@ -13,7 +13,7 @@ Repetition is a common requirement when working with effects in software develop
 
 The `Effect.repeat` function returns a new effect that repeats the given effect according to a specified schedule or until the first failure.
 
-<Aside type="note">
+<Aside type="caution" title="Initial Execution Included">
   The scheduled recurrences are in addition to the initial execution, so
   `Effect.repeat(action, Schedule.once)` executes `action` once initially,
   and if it succeeds, repeats it an additional time.
@@ -190,7 +190,7 @@ Action called 3 time(s)
 */
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Alternative">
   Consider using
   [Effect.retry](/error-management/retrying#retrying-based-on-a-condition)
   to set conditions based on errors rather than successful outcomes.

@@ -34,7 +34,7 @@ Example Output:
 */
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Access FastCheck API">
   The entirety of `fast-check`'s API is accessible via the `FastCheck`
   export, allowing direct use of all its functionalities within your
   projects.
@@ -44,7 +44,7 @@ Example Output:
 
 The generation of arbitrary data requires a clear understanding of how transformations and filters are considered within a schema:
 
-<Aside type="caution">
+<Aside type="caution" title="Filters Ignored">
   Filters applied before the last transformation in the transformation
   chain are not considered during the generation of arbitrary data.
 </Aside>
@@ -139,7 +139,7 @@ const schema = Schema.Number.annotations({
 The annotation allows access to any type parameters via the first argument (`typeParameters`) and the complete export of the fast-check library (`fc`).
 This setup enables you to return an `Arbitrary` that precisely generates the type of data desired.
 
-<Aside type="caution">
+<Aside type="caution" title="Customization May Disrupt Filters">
   Customizing a schema can disrupt previously applied filters. Filters set
   after the customization will remain effective, while those applied
   before will be disregarded.

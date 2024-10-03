@@ -120,9 +120,9 @@ console.log(match(Either.right(123))) // Output: 123
 console.log(match(Either.left("Oh no!"))) // Output: "Oh no!"
 ```
 
-<Aside type="caution">
-  Note that it only works with the convention within the Effect ecosystem of
-  naming the tag field with `"_tag"`.
+<Aside type="caution" title="Tag Field Naming Convention">
+  Note that it only works with the convention within the Effect ecosystem
+  of naming the tag field with `"_tag"`.
 </Aside>
 
 ## Transforming a Matcher

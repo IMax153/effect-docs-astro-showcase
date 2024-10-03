@@ -46,7 +46,9 @@ const log = <A, Out>(
         start = now
       }
     ).pipe(
-      Effect.repeat(schedule.pipe(Schedule.intersect(Schedule.recurs(10)))),
+      Effect.repeat(
+        schedule.pipe(Schedule.intersect(Schedule.recurs(10)))
+      ),
       Effect.fork
     )
     yield* TestClock.adjust(Infinity)
@@ -59,10 +61,10 @@ const log = <A, Out>(
 
 The `log` helper logs the time delay between each execution. We will use this helper to showcase the behavior of various built-in schedules.
 
-<Aside type="note">
+<Aside type="note" title="Implementation Details">
   The `log` helper accelerates time using [TestClock](/testing/testclock),
-  which means it simulates the passing of time that would normally occur in
-  a real-world application.
+  which means it simulates the passing of time that would normally occur
+  in a real-world application.
 </Aside>
 
 ## forever
@@ -95,7 +97,9 @@ const log = <A, Out>(
         start = now
       }
     ).pipe(
-      Effect.repeat(schedule.pipe(Schedule.intersect(Schedule.recurs(10)))),
+      Effect.repeat(
+        schedule.pipe(Schedule.intersect(Schedule.recurs(10)))
+      ),
       Effect.fork
     )
     yield* TestClock.adjust(Infinity)
@@ -152,7 +156,9 @@ const log = <A, Out>(
         start = now
       }
     ).pipe(
-      Effect.repeat(schedule.pipe(Schedule.intersect(Schedule.recurs(10)))),
+      Effect.repeat(
+        schedule.pipe(Schedule.intersect(Schedule.recurs(10)))
+      ),
       Effect.fork
     )
     yield* TestClock.adjust(Infinity)
@@ -200,7 +206,9 @@ const log = <A, Out>(
         start = now
       }
     ).pipe(
-      Effect.repeat(schedule.pipe(Schedule.intersect(Schedule.recurs(10)))),
+      Effect.repeat(
+        schedule.pipe(Schedule.intersect(Schedule.recurs(10)))
+      ),
       Effect.fork
     )
     yield* TestClock.adjust(Infinity)
@@ -260,7 +268,9 @@ const log = <A, Out>(
         start = now
       }
     ).pipe(
-      Effect.repeat(schedule.pipe(Schedule.intersect(Schedule.recurs(10)))),
+      Effect.repeat(
+        schedule.pipe(Schedule.intersect(Schedule.recurs(10)))
+      ),
       Effect.fork
     )
     yield* TestClock.adjust(Infinity)
@@ -319,7 +329,9 @@ const log = <A, Out>(
         start = now
       }
     ).pipe(
-      Effect.repeat(schedule.pipe(Schedule.intersect(Schedule.recurs(10)))),
+      Effect.repeat(
+        schedule.pipe(Schedule.intersect(Schedule.recurs(10)))
+      ),
       Effect.fork
     )
     yield* TestClock.adjust(Infinity)
@@ -378,7 +390,9 @@ const log = <A, Out>(
         start = now
       }
     ).pipe(
-      Effect.repeat(schedule.pipe(Schedule.intersect(Schedule.recurs(10)))),
+      Effect.repeat(
+        schedule.pipe(Schedule.intersect(Schedule.recurs(10)))
+      ),
       Effect.fork
     )
     yield* TestClock.adjust(Infinity)
@@ -435,7 +449,9 @@ const log = <A, Out>(
         start = now
       }
     ).pipe(
-      Effect.repeat(schedule.pipe(Schedule.intersect(Schedule.recurs(10)))),
+      Effect.repeat(
+        schedule.pipe(Schedule.intersect(Schedule.recurs(10)))
+      ),
       Effect.fork
     )
     yield* TestClock.adjust(Infinity)

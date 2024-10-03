@@ -218,7 +218,7 @@ const mySymbolSchema = Schema.UniqueSymbolFromSelf(mySymbol)
 
 Using the `Schema.filter` function, developers can define custom validation logic that goes beyond basic type checks, allowing for in-depth control over the data conformity process. This function applies a predicate to data, and if the data fails the predicate's condition, a custom error message can be returned.
 
-<Aside type="note">
+<Aside type="tip" title="Effectful Filters">
   For effectful filters, see
   [filterEffect](/schema/transformations#effectful-filters).
 </Aside>
@@ -246,7 +246,7 @@ ParseError: { string | filter }
 */
 ```
 
-<Aside type="note">
+<Aside type="note" title="Filters and Schema Type">
   Please note that the use of filters do not alter the `Type` of the
   schema. They only serve to add additional constraints to the parsing
   process. If you intend to modify the `Type`, consider using [Branded
@@ -523,7 +523,7 @@ Schema.String.pipe(Schema.trimmed())
 Schema.String.pipe(Schema.lowercased())
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Trim vs Trimmed">
   The `trimmed` combinator does not make any transformations, it only
   validates. If what you were looking for was a combinator to trim
   strings, then check out the `trim` combinator or the `Trim` schema.
@@ -1012,7 +1012,7 @@ console.log(
 // Output: { radius: 10 }
 ```
 
-<Aside type="caution">
+<Aside type="caution" title="Property Addition Only">
   Please note that with `Schema.attachPropertySignature`, you can only add
   a property, it cannot override an existing one.
 </Aside>
@@ -1340,7 +1340,7 @@ const schema: Schema.Schema<{
 const schema = Schema.asSchema(MyStruct)
 ```
 
-<Aside type="caution">
+<Aside type="caution" title="Allows Any Data">
   Note that `Schema.Struct({})` models the TypeScript type `{}`, which is
   similar to `unknown`. This means that the schema will allow any type of
   data to pass through without validation.
@@ -2404,9 +2404,9 @@ const Extended = Schema.Struct({
 
 The `Schema.extend` combinator offers a structured way to extend schemas, particularly useful when direct field spreading is insufficient—for instance, when you need to extend a struct with a union of structs.
 
-<Aside type="caution">
+<Aside type="caution" title="Extension Support Limitations">
   Note that not all extensions are supported, and their support depends on
-  the nature of the involved schemas:
+  the nature of the involved schemas.
 </Aside>
 
 Possible extensions include:
@@ -2664,7 +2664,7 @@ ParseError: ReadonlyArray<NumberFromString>
 */
 ```
 
-<Aside type="caution">
+<Aside type="caution" title="Decoding/Encoding Limitations">
   The decoding and encoding functions cannot use context (the `R` type
   parameter) and cannot use async effects.
 </Aside>
@@ -2758,7 +2758,7 @@ const Category = Schema.Struct({
 })
 ```
 
-<Aside type="caution">
+<Aside type="note" title="Correct Inference">
   It is necessary to define the `Category` type and add an explicit type
   annotation because otherwise TypeScript would struggle to infer types
   correctly. Without this annotation, you might encounter the error

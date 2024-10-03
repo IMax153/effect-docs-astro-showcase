@@ -37,7 +37,7 @@ The `Schema` type has three type parameters with the following meanings:
 - `Schema<string>` (defaulted to `Schema<string, string, never>`) represents a schema that decodes to `string`, encodes to `string`, and has no requirements.
 - `Schema<number, string>` (defaulted to `Schema<number, string, never>`) represents a schema that decodes to `number` from `string`, encodes a `number` to a `string`, and has no requirements.
 
-<Aside type="note">
+<Aside type="note" title="Type Parameter Abbreviations">
   In the Effect ecosystem, you may often encounter the type parameters of
   `Schema` abbreviated as `A`, `I`, and `R` respectively. This is just
   shorthand for the type value of type **A**, **I**nput, and
@@ -80,7 +80,7 @@ Encoding from `unknown` involves two key steps:
 
 2. **Encoding:** Following the successful check, we proceed to convert the `Date` into a `string`. This process completes the encoding operation, where the data is both validated and transformed.
 
-<Aside type="tip">
+<Aside type="tip" title="Ensure Consistency">
   As a general rule, schemas should be defined such that encode + decode
   return the original value.
 </Aside>

@@ -78,10 +78,10 @@ interface User {
 }
 ```
 
-<Aside type="caution">
+<Aside type="caution" title="Property Key Always Present">
   Optionality only applies to the value of the property. The key `"email"`
-  will always be present in the object, regardless of whether it has a value
-  or not.
+  will always be present in the object, regardless of whether it has a
+  value or not.
 </Aside>
 
 Now, let's see how we can create instances of `User` with and without an email:
@@ -145,9 +145,10 @@ const result = Option.match(foo, {
 console.log(result) // Output: "Option has a value: 1"
 ```
 
-<Aside type="tip">
-  Using `match` instead of `isSome` or `isNone` can be more expressive and
-  provide a clear way to handle both cases of an `Option`.
+<Aside type="tip" title="Matching">
+  Using `Option.match` instead of `Option.isSome` or `Option.isNone` can
+  be more expressive and provide a clear way to handle both cases of an
+  `Option`.
 </Aside>
 
 ## Working with Option

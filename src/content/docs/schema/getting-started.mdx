@@ -7,7 +7,7 @@ sidebar:
 
 import { Aside, Tabs, TabItem } from "@astrojs/starlight/components"
 
-<Aside type="caution">
+<Aside type="caution" title="Pre-Release Notice">
   This is a pre-release version. Expect possible breaking changes and
   inconsistencies until the stable release (v1.0) is achieved.
 </Aside>
@@ -83,7 +83,7 @@ const Person = Schema.Struct({
 })
 ```
 
-<Aside type="note">
+<Aside type="note" title="Readonly Types by Default">
   It's important to note that by default, most constructors exported by
   `@effect/schema` return `readonly` types. For instance, in the `Person`
   schema above, the resulting type would be `{ readonly name: string; readonly age: number; }`.
@@ -433,7 +433,7 @@ console.log(
 */
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Options Impact">
   The [onExcessProperty](#excess-properties) and [error](#all-errors)
   options also affect encoding.
 </Aside>
@@ -470,7 +470,7 @@ ParseError: { readonly name: string; readonly age: number }
 */
 ```
 
-<Aside type="note">
+<Aside type="tip" title="Options Impact">
   The [onExcessProperty](#excess-properties) and [error](#all-errors)
   options also affect encoding.
 </Aside>
@@ -710,7 +710,7 @@ ParseError: { readonly name: NonEmpty; readonly age: NumberFromString }
 
 Note that during encoding, the number value `30` was converted to a string `"30"`.
 
-<Aside type="note">
+<Aside type="tip" title="Options Impact">
   The [onExcessProperty](#excess-properties) and [error](#all-errors)
   options also affect encoding.
 </Aside>
