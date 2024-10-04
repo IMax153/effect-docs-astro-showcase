@@ -10,11 +10,11 @@ import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
 import pluginTwoslash from "./src/plugins/twoslash/plugin"
 
-/* https://docs.netlify.com/configure-builds/environment-variables/#read-only-variables */
-const NETLIFY_PREVIEW_SITE =
-  process.env.CONTEXT !== "production" && process.env.DEPLOY_PRIME_URL
+const VERCEL_PREVIEW_DOMAIN = process.env.PUBLIC_VERCEL_ENV !== "production" && process.env.PUBLIC_VERCEL_BRANCH_URL
 
-const site = NETLIFY_PREVIEW_SITE || "https://effect.website"
+const domain = VERCEL_PREVIEW_DOMAIN || process.env.PUBLIC_VERCEL_PROJECT_PRODUCTION_URL || "effect.website"
+
+const site = `https://${domain}`
 
 const rehypeMermaidOptions: RehypeMermaidOptions = {
   strategy: "img-svg",
