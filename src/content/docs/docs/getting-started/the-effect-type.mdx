@@ -42,8 +42,11 @@ The `Effect` type has three type parameters with the following meanings:
   **R**equirements.
 </Aside>
 
-`Effect` values are immutable, and all Effect functions produce new `Effect` values.
+## Understanding Effect Values and Their Execution
 
-`Effect` values do not actually do anything, they are just values that model or describe effectful interactions.
+**Immutability**. `Effect` values are immutable, and every function in the Effect library produces a new `Effect` value.
 
-An `Effect` can be interpreted by the [Effect Runtime System](/docs/runtime) into effectful interactions with the external world. Ideally, this occurs at a single entry point in our application where the effectful interactions are initiated, such as the starting point of your program's execution.
+**Modeling Interactions**. These values do not perform any actions themselves, they simply model or describe effectful interactions.
+
+**Execution**. An `Effect` can be executed by the [Effect Runtime System](/docs/runtime), which interprets it into actual interactions with the external world.
+Ideally, this execution happens at a single entry point in your application, such as the main function where effectful operations are initiated.
