@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/events/:path*",
+      "destination": "https://webflow.effect.website/events:path*"
+    }
+  ]
+}
