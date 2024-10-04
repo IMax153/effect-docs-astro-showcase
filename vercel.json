@@ -1,5 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/docs",
+      "destination": "/docs/getting-started/introduction",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/events/:path*",
