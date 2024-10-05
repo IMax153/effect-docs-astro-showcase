@@ -34,6 +34,7 @@ The `Effect.succeed` constructor in the Effect library is used to explicitly cre
 ```ts twoslash
 import { Effect } from "effect"
 
+// Creating an effect that represents a successful scenario
 const success = Effect.succeed(42)
 ```
 
@@ -83,7 +84,7 @@ With `Effect.succeed` and `Effect.fail`, you can explicitly handle success and f
 
 **Example: Rewriting a Division Function**
 
-Let's see an example of rewriting the `divide` function using Effect to make the error handling explicit:
+Let's see an example of rewriting the [`divide`](#why-not-throw-errors) function using Effect to make the error handling explicit:
 
 ```ts twoslash
 import { Effect } from "effect"
