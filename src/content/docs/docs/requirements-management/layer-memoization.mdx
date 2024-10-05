@@ -7,13 +7,13 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-Layer memoization allows a layer to be created once and used multiple times in the dependency graph. If we use the same layer twice, for example
+Layer memoization allows a layer to be created once and used multiple times in the dependency graph. If we use the same layer twice:
 
-```ts showLineNumbers=false
-Layer.merge(Layer.provide(b, a), Layer.provide(c, a))
+```ts showLineNumbers=false "L1"
+Layer.merge(Layer.provide(L2, L1), Layer.provide(L3, L1))
 ```
 
-then the `a` layer will be allocated only once.
+then the `L1` layer will be allocated only once.
 
 <Aside type="caution" title="Avoid Duplicate Layer Creation">
   Layers are memoized using **reference equality**. Therefore, if you have
@@ -26,6 +26,8 @@ then the `a` layer will be allocated only once.
 
 One important feature of an Effect application is that layers are shared by default. This means that if the same layer is used twice, and if we provide the layer globally, the layer will only be allocated a single time. For every layer in our dependency graph, there is only one instance of it that is shared between all the layers that depend on it.
 
+**Example**
+
 For example, assume we have the three services `A`, `B`, and `C`. The implementation of both `B` and `C` is dependent on the `A` service:
 
 ```ts twoslash
@@ -37,14 +39,14 @@ class B extends Context.Tag("B")<B, { readonly b: string }>() {}
 
 class C extends Context.Tag("C")<C, { readonly c: boolean }>() {}
 
-const a = Layer.effect(
+const ALive = Layer.effect(
   A,
   Effect.succeed({ a: 5 }).pipe(
     Effect.tap(() => Effect.log("initialized"))
   )
 )
 
-const b = Layer.effect(
+const BLive = Layer.effect(
   B,
   Effect.gen(function* () {
     const { a } = yield* A
@@ -52,7 +54,7 @@ const b = Layer.effect(
   })
 )
 
-const c = Layer.effect(
+const CLive = Layer.effect(
   C,
   Effect.gen(function* () {
     const { a } = yield* A
@@ -67,7 +69,7 @@ const program = Effect.gen(function* () {
 
 const runnable = Effect.provide(
   program,
-  Layer.merge(Layer.provide(b, a), Layer.provide(c, a))
+  Layer.merge(Layer.provide(BLive, ALive), Layer.provide(CLive, ALive))
 )
 
 Effect.runPromise(runnable)
@@ -77,13 +79,15 @@ timestamp=... level=INFO fiber=#2 message=initialized
 */
 ```
 
-Although both `b` and `c` layers require the `a` layer, the `a` layer is instantiated only once. It is shared with both `b` and `c`.
+Although both `BLive` and `CLive` layers require the `ALive` layer, the `ALive` layer is instantiated only once. It is shared with both `BLive` and `CLive`.
 
 ## Acquiring a Fresh Version
 
 If we don't want to share a module, we should create a fresh, non-shared version of it through `Layer.fresh`.
 
-```ts twoslash collapse={3-33}
+**Example**
+
+```ts twoslash
 import { Effect, Context, Layer } from "effect"
 
 class A extends Context.Tag("A")<A, { readonly a: number }>() {}
@@ -92,14 +96,14 @@ class B extends Context.Tag("B")<B, { readonly b: string }>() {}
 
 class C extends Context.Tag("C")<C, { readonly c: boolean }>() {}
 
-const a = Layer.effect(
+const ALive = Layer.effect(
   A,
   Effect.succeed({ a: 5 }).pipe(
     Effect.tap(() => Effect.log("initialized"))
   )
 )
 
-const b = Layer.effect(
+const BLive = Layer.effect(
   B,
   Effect.gen(function* () {
     const { a } = yield* A
@@ -107,7 +111,7 @@ const b = Layer.effect(
   })
 )
 
-const c = Layer.effect(
+const CLive = Layer.effect(
   C,
   Effect.gen(function* () {
     const { a } = yield* A
@@ -123,8 +127,8 @@ const program = Effect.gen(function* () {
 const runnable = Effect.provide(
   program,
   Layer.merge(
-    Layer.provide(b, Layer.fresh(a)),
-    Layer.provide(c, Layer.fresh(a))
+    Layer.provide(BLive, Layer.fresh(ALive)),
+    Layer.provide(CLive, Layer.fresh(ALive))
   )
 )
 
@@ -140,14 +144,17 @@ timestamp=... level=INFO fiber=#3 message=initialized
 
 If we don't provide a layer globally but instead provide them locally, that layer doesn't support memoization by default.
 
-In the following example, we provided the `a` layer two times locally, and Effect doesn't memoize the construction of the `a` layer. So, it will be initialized two times:
+**Example**
+
+In the following example, we provided the `ALive` layer two times locally, and Effect doesn't memoize the construction of the `ALive` layer.
+So, it will be initialized two times:
 
 ```ts twoslash
 import { Effect, Context, Layer } from "effect"
 
 class A extends Context.Tag("A")<A, { readonly a: number }>() {}
 
-const a = Layer.effect(
+const Alive = Layer.effect(
   A,
   Effect.succeed({ a: 5 }).pipe(
     Effect.tap(() => Effect.log("initialized"))
@@ -155,8 +162,8 @@ const a = Layer.effect(
 )
 
 const program = Effect.gen(function* () {
-  yield* Effect.provide(A, a)
-  yield* Effect.provide(A, a)
+  yield* Effect.provide(A, Alive)
+  yield* Effect.provide(A, Alive)
 })
 
 Effect.runPromise(program)
@@ -169,14 +176,17 @@ timestamp=... level=INFO fiber=#0 message=initialized
 
 ## Manual Memoization
 
-We can memoize the `a` layer manually using the `Layer.memoize` operator. It will return a scoped effect that, if evaluated, will return the lazily computed result of this layer:
+We can memoize a layer manually using the `Layer.memoize` function.
+It will return a scoped effect that, if evaluated, will return the lazily computed result of this layer.
+
+**Example**
 
 ```ts twoslash
 import { Effect, Context, Layer } from "effect"
 
 class A extends Context.Tag("A")<A, { readonly a: number }>() {}
 
-const a = Layer.effect(
+const ALive = Layer.effect(
   A,
   Effect.succeed({ a: 5 }).pipe(
     Effect.tap(() => Effect.log("initialized"))
@@ -184,7 +194,7 @@ const a = Layer.effect(
 )
 
 const program = Effect.scoped(
-  Layer.memoize(a).pipe(
+  Layer.memoize(ALive).pipe(
     Effect.andThen((memoized) =>
       Effect.gen(function* () {
         yield* Effect.provide(A, memoized)
