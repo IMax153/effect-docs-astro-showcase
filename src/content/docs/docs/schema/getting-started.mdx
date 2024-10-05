@@ -7,10 +7,86 @@ sidebar:
 
 import { Aside, Tabs, TabItem } from "@astrojs/starlight/components"
 
-<Aside type="caution" title="Pre-Release Notice">
-  This is a pre-release version. Expect possible breaking changes and
-  inconsistencies until the stable release (v1.0) is achieved.
-</Aside>
+## Requirements
+
+- TypeScript **5.0** or newer
+- The `strict` flag enabled in your `tsconfig.json` file
+- (Optional) The `exactOptionalPropertyTypes` flag enabled in your `tsconfig.json` file
+
+```json showLineNumbers=false
+{
+  "compilerOptions": {
+    "strict": true,
+    "exactOptionalPropertyTypes": true // optional
+  }
+}
+```
+
+### Understanding exactOptionalPropertyTypes
+
+The `@effect/schema` library takes advantage of the `exactOptionalPropertyTypes` option of `tsconfig.json`. This option affects how optional properties are typed (to learn more about this option, you can refer to the official [TypeScript documentation](https://www.typescriptlang.org/tsconfig#exactOptionalPropertyTypes)).
+
+**With exactOptionalPropertyTypes Enabled**
+
+```ts showLineNumbers=false
+import { Schema } from "@effect/schema"
+
+const Person = Schema.Struct({
+  name: Schema.optionalWith(Schema.String.pipe(Schema.nonEmptyString()), {
+    exact: true
+  })
+})
+
+type Type = Schema.Schema.Type<typeof Person>
+/*
+type Type = {
+    readonly name?: string;
+}
+*/
+
+// @ts-expect-error
+Schema.decodeSync(Person)({ name: undefined })
+/*
+Argument of type '{ name: undefined; }' is not assignable to parameter of type '{ readonly name?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'name' are incompatible.
+    Type 'undefined' is not assignable to type 'string'.ts(2379)
+*/
+```
+
+Here, notice that the type of `name` is "exact" (`string`), which means the type checker will catch any attempt to assign an invalid value (like `undefined`).
+
+**With exactOptionalPropertyTypes Disabled**
+
+If, for some reason, you can't enable the `exactOptionalPropertyTypes` option (perhaps due to conflicts with other third-party libraries), you can still use `@effect/schema`. However, there will be a mismatch between the types and the runtime behavior:
+
+```ts showLineNumbers=false
+import { Schema } from "@effect/schema"
+
+const Person = Schema.Struct({
+  name: Schema.optionalWith(Schema.String.pipe(Schema.nonEmptyString()), {
+    exact: true
+  })
+})
+
+type Type = Schema.Schema.Type<typeof Person>
+/*
+type Type = {
+    readonly name?: string | undefined;
+}
+*/
+
+// No type error, but a decoding failure occurs
+Schema.decodeSync(Person)({ name: undefined })
+/*
+Error: { name?: a non empty string }
+└─ ["name"]
+   └─ a non empty string
+      └─ From side refinement failure
+         └─ Expected a string, actual undefined
+*/
+```
+
+In this case, the type of `name` is widened to `string | undefined`, which means the type checker won't catch the invalid value (`undefined`). However, during decoding, you'll encounter an error, indicating that `undefined` is not allowed.
 
 ## Installation
 
@@ -52,7 +128,7 @@ bun add @effect/schema
 
 </Tabs>
 
-Additionally, make sure to install the `effect` package, as it's peer dependencies. Note that some package managers might not install peer dependencies by default, so you need to install them manually.
+Additionally, make sure to [install](/docs/getting-started/installation/) the `effect` package, as it's peer dependencies. Note that some package managers might not install peer dependencies by default, so you need to install them manually.
 
 Once you have installed the library, you can import the necessary types and functions from the `@effect/docs/schema/Schema` module.
 
