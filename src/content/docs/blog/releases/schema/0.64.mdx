@@ -64,7 +64,7 @@ const Name = S.string.pipe(S.annotations({ identifier: "Name" }))
 
 An "API Interface" is an `interface` specifically defined for a schema exported from `@effect/schema` or for a particular API exported from `@effect/schema`. Let's see an example with a simple schema:
 
-**Example** (an `Age` schema)
+**Example** (An `Age` schema)
 
 ```ts
 import * as S from "@effect/schema/Schema"
@@ -98,7 +98,7 @@ S.never
 
 Now let's see an example with a combinator that, given an input schema for a certain type `A`, returns the schema of the pair `readonly [A, A]`:
 
-**Example** (a `pair` combinator)
+**Example** (A `pair` combinator)
 
 ```ts
 import * as S from "@effect/schema/Schema"
@@ -194,7 +194,7 @@ const Person: S.Schema<
 
 The benefits of API interfaces don't end with better readability; in fact, the driving force behind the introduction of API interfaces arises more from the need to expose some important information about the schemas that users generate. Let's see some examples related to literals and structs:
 
-**Example** (exposed literals)
+**Example** (Exposed literals)
 
 Now when we define literals, we can retrieve them using the `literals` field exposed by the generated schema:
 
@@ -210,7 +210,7 @@ myliterals.literals
 console.log(myliterals.literals) // Output: [ 'A', 'B' ]
 ```
 
-**Example** (exposed fields)
+**Example** (Exposed fields)
 
 Similarly to what we've seen for literals, when we define a struct, we can retrieve its `fields`:
 
@@ -547,7 +547,14 @@ const Person = S.struct({
 Let's delve into the details of all the information contained in the type of a `PropertySignature`:
 
 ```ts
-age: PropertySignature<ToToken, ToType, FromKey, FromToken, FromType, Context>
+age: PropertySignature<
+  ToToken,
+  ToType,
+  FromKey,
+  FromToken,
+  FromType,
+  Context
+>
 ```
 
 - `age`: is the key of the "To" field
@@ -647,7 +654,9 @@ S.decodeUnknownSync(Name)("") // => throws "Invalid string"
 const result = S.decodeUnknownEither(Name)("").pipe(
   Either.mapLeft((error) =>
     TreeFormatter.formatErrorEffect(error).pipe(
-      Effect.provideService(Messages, { NonEmpty: "should be non empty" }),
+      Effect.provideService(Messages, {
+        NonEmpty: "should be non empty"
+      }),
       Effect.runSync
     )
   )

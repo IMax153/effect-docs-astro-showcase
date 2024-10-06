@@ -183,7 +183,7 @@ console.log(ctor(20))
 When constructing objects, it's common to want to assign default values to certain fields to simplify the creation of new instances.
 The `Schema.withConstructorDefault` function allows you to manage the optionality of a field in your default constructor.
 
-**Example: Without Default**
+**Example** (Without Default)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -197,7 +197,7 @@ const Person = Schema.Struct({
 Person.make({ name: "John", age: 30 })
 ```
 
-**Example: With Default**
+**Example** (With Default)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"

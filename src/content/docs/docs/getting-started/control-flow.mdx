@@ -286,7 +286,7 @@ In this example, the loop starts with an initial state of `1`. The loop continue
 
 You can also use the `discard` option if you're not interested in collecting the intermediate results. It discards all intermediate states and returns `undefined` as the final result.
 
-**Example: `discard: true`**
+**Example** (`discard: true`)
 
 ```ts twoslash "discard: true"
 import { Effect, Console } from "effect"
@@ -571,7 +571,7 @@ You can override this behavior by using the `mode` option.
 
 When you use the `{ mode: "either" }` option with `Effect.all`, it modifies the behavior of the API to handle errors differently. Instead of short-circuiting the entire computation on the first error, it continues to execute all effects, collecting both successes and failures. The result is an array of `Either` instances, representing either a successful outcome (`Right`) or a failure (`Left`) for each individual effect.
 
-**Example: `mode: "either"`**
+**Example** (`mode: "either"`)
 
 ```ts twoslash /{ mode: "either" }/
 import { Effect, Console } from "effect"
@@ -603,7 +603,7 @@ Task3
 
 On the other hand, when you use the `{ mode: "validate" }` option with `Effect.all`, it takes a similar approach to `{ mode: "either" }` but uses the `Option` type to represent the success or failure of each effect. The resulting array will contain `None` for successful effects and `Some` with the associated error message for failed effects.
 
-**Example: `mode: "validate"`**
+**Example** (`mode: "validate"`)
 
 ```ts twoslash /{ mode: "validate" }/
 import { Effect, Console } from "effect"

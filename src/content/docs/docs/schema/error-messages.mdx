@@ -10,7 +10,7 @@ sidebar:
 By default, when a parsing error occurs, the system automatically generates an informative message based on the schema's structure and the nature of the error (see [TreeFormatter](/docs/schema/error-formatters#treeformatter-default) for more informations).
 For example, if a required property is missing or a data type does not match, the error message will clearly state the expectation versus the actual input.
 
-**Example: Type Mismatch**
+**Example** (Type Mismatch)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -28,7 +28,7 @@ ParseError: Date
 */
 ```
 
-**Example: Missing Properties**
+**Example** (Missing Properties)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -49,7 +49,7 @@ ParseError: { readonly name: string; readonly age: number }
 */
 ```
 
-**Example: Incorrect Property Type**
+**Example** (Incorrect Property Type)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -582,7 +582,7 @@ Output:
 
 You can provide custom messages for missing fields or elements using the `missingMessage` annotation.
 
-**Example: missing property**
+**Example** (Missing property)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -602,7 +602,7 @@ ParseError: { readonly name: string }
 */
 ```
 
-**Example: missing element**
+**Example** (Missing element)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"

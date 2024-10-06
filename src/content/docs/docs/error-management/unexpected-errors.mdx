@@ -23,7 +23,7 @@ The following functions and combinators allow for termination of the effect and 
 
 The `Effect.die` function returns an effect that throws a specified error, while `Effect.dieMessage` throws a `RuntimeException` with a specified text message. These functions are useful for terminating a fiber when a defect, a critical and unexpected error, is detected in the code.
 
-**Example: `die`**
+**Example** (`die`)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -36,7 +36,7 @@ const divide = (a: number, b: number): Effect.Effect<number> =>
 Effect.runSync(divide(1, 0)) // throws Error: Cannot divide by zero
 ```
 
-**Example: `dieMessage`**
+**Example** (`dieMessage`)
 
 ```ts twoslash
 import { Effect } from "effect"

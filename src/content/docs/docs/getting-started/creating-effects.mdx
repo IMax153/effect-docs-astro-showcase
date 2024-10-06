@@ -82,7 +82,7 @@ const failure = Effect.fail(new NetworkError())
 
 With `Effect.succeed` and `Effect.fail`, you can explicitly handle success and failure cases and the type system will ensure that errors are tracked and accounted for.
 
-**Example: Rewriting a Division Function**
+**Example** (Rewriting a Division Function)
 
 Let's see an example of rewriting the [`divide`](#why-not-throw-errors) function using Effect to make the error handling explicit:
 
@@ -99,7 +99,7 @@ In this example, the `divide` function explicitly indicates that it can produce 
 
 The type signature makes it clear how errors are handled and ensures that callers are aware of the possible outcomes.
 
-**Example: Simulating a User Retrieval Operation**
+**Example** (Simulating a User Retrieval Operation)
 
 Let's imagine another scenario where we use `Effect.succeed` and `Effect.fail` to model a simple user retrieval operation where the user data is hardcoded, which could be useful in testing scenarios or when mocking data:
 
@@ -155,7 +155,7 @@ To model synchronous side effects, Effect provides the `Effect.sync` and `Effect
 When working with side effects that are synchronous — meaning they don't involve asynchronous operations like fetching data from the internet — you can use the `Effect.sync` function.
 This function is ideal when you are certain these operations **won't produce any errors**.
 
-**Example: Logging a Message**
+**Example** (Logging a Message)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -195,7 +195,7 @@ This feature ensures that even unexpected failures in your application are not l
 In situations where you need to perform synchronous operations that might fail, such as parsing JSON, you can use the `Effect.try` constructor from the Effect library.
 This constructor is designed to handle operations that could throw exceptions by capturing those exceptions and transforming them into manageable errors within the Effect framework.
 
-**Example: Safe JSON Parsing**
+**Example** (Safe JSON Parsing)
 
 Suppose you have a function that attempts to parse a JSON string. This operation can fail and throw an error if the input string is not properly formatted as JSON:
 
@@ -216,7 +216,7 @@ In this example:
 
 **Customizing Error Handling**. You might want to transform the caught exception into a more specific error or perform additional operations when catching an error. `Effect.try` supports an overload that allows you to specify how caught exceptions should be transformed:
 
-**Example: Custom Error Handling**
+**Example** (Custom Error Handling)
 
 ```ts {8}
 import { Effect } from "effect"
@@ -253,7 +253,7 @@ To overcome these limitations, Effect introduces dedicated constructors for crea
 This constructor is similar to a regular `Promise`, where you're confident that the asynchronous operation will **always succeed**.
 It allows you to create an `Effect` that represents successful completion without considering potential errors. However, it's essential to ensure that the underlying Promise never rejects.
 
-**Example: Delayed Message**
+**Example** (Delayed Message)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -290,7 +290,7 @@ Unlike `Effect.promise`, this constructor is suitable when the underlying `Promi
 It provides a way to catch errors and handle them appropriately.
 By default if an error occurs, it will be caught and propagated to the error channel as as an `UnknownException`.
 
-**Example: Fetching a TODO Item**
+**Example** (Fetching a TODO Item)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -329,7 +329,7 @@ const program = getTodo(1)
 Sometimes you have to work with APIs that don't support `async/await` or `Promise` and instead use the callback style.
 To handle callback-based APIs, Effect provides the `Effect.async` constructor.
 
-**Example: Reading a File**
+**Example** (Reading a File)
 
 For example, let's wrap the `readFile` async API from the Node.js `fs` module with Effect (ensure you have `@types/node` installed):
 

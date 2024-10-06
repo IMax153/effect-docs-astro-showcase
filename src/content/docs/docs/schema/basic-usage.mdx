@@ -223,7 +223,7 @@ Using the `Schema.filter` function, developers can define custom validation logi
   [filterEffect](/docs/schema/transformations#effectful-filters).
 </Aside>
 
-**Example: Simple Validation**
+**Example** (Simple Validation)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -1966,7 +1966,7 @@ console.log(encode({})) // Output: { name: '' }
 
 To rename a property directly during schema creation, you can utilize the `Schema.fromKey` function. This function is particularly useful when you want to map properties from the input object to different names in the resulting schema object.
 
-**Example: Renaming a Required Property**
+**Example** (Renaming a Required Property)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -1980,7 +1980,7 @@ console.log(Schema.decodeUnknownSync(schema)({ c: "c", b: 1 }))
 // Output: { a: "c", b: 1 }
 ```
 
-**Example: Renaming an Optional Property**
+**Example** (Renaming an Optional Property)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -2003,7 +2003,7 @@ Note that `Schema.optional` returns a `PropertySignature`, which simplifies the 
 
 For existing schemas, the `rename` API offers a way to systematically change property names across a schema, even within complex structures like unions.
 
-**Example: Renaming Properties in a Struct Schema**
+**Example** (Renaming Properties in a Struct Schema)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -2021,7 +2021,7 @@ console.log(Schema.decodeUnknownSync(renamedSchema)({ c: "c", b: 1 }))
 // Output: { a: "c", b: 1 }
 ```
 
-**Example: Renaming Properties in Union Schemas**
+**Example** (Renaming Properties in Union Schemas)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -2242,7 +2242,7 @@ const PickedSchema = MyStruct.pick("a", "c")
 The `Schema.pick` function can be applied more broadly beyond just `Struct` types, such as with unions of schemas.
 However it returns a generic `SchemaClass`.
 
-**Example: Picking from a Union**
+**Example** (Picking from a Union)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -2345,7 +2345,7 @@ const schema = Schema.required(
 
 Structs expose their fields through a `fields` property. This feature can be utilized to extend an existing struct with additional fields or to merge fields from another struct.
 
-**Example: Adding Fields**
+**Example** (Adding Fields)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -2363,7 +2363,7 @@ const Extended = Schema.Struct({
 })
 ```
 
-**Example: Integrating Additional Index Signatures**
+**Example** (Integrating Additional Index Signatures)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -2379,7 +2379,7 @@ const Extended = Schema.Struct(
 )
 ```
 
-**Example: Merging Fields from Two Structs**
+**Example** (Merging Fields from Two Structs)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -2420,7 +2420,7 @@ Possible extensions include:
 - A refinement of a struct with a supported schema
 - A suspend of a struct with a supported schema
 
-**Example: Extending a Struct with a Union of Structs**
+**Example** (Extending a Struct with a Union of Structs)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -2460,7 +2460,7 @@ details: cannot extend string with number
 */
 ```
 
-**Example: Extending a refinement of Schema.String with another refinement**
+**Example** (Extending a refinement of Schema.String with another refinement)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
