@@ -11,20 +11,49 @@ import { Aside } from "@astrojs/starlight/components"
 
 The `Schema` module provides built-in schemas for common primitive types.
 
+| Schema                  | Equivalent TypeScript Type |
+| ----------------------- | -------------------------- |
+| `Schema.String`         | `string`                   |
+| `Schema.Number`         | `number`                   |
+| `Schema.Boolean`        | `boolean`                  |
+| `Schema.BigIntFromSelf` | `BigInt`                   |
+| `Schema.SymbolFromSelf` | `symbol`                   |
+| `Schema.Object`         | `object`                   |
+| `Schema.Undefined`      | `undefined`                |
+| `Schema.Void`           | `void`                     |
+| `Schema.Any`            | `any`                      |
+| `Schema.Unknown`        | `unknown`                  |
+| `Schema.Never`          | `never`                    |
+
+**Example**
+
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
-Schema.String // Schema<string>
-Schema.Number // Schema<number>
-Schema.Boolean // Schema<boolean>
-Schema.BigIntFromSelf // Schema<BigInt>
-Schema.SymbolFromSelf // Schema<symbol>
-Schema.Object // Schema<object>
-Schema.Undefined // Schema<undefined>
-Schema.Void // Schema<void>
-Schema.Any // Schema<any>
-Schema.Unknown // Schema<unknown>
-Schema.Never // Schema<never>
+const schema = Schema.String
+
+// string
+type Type = typeof schema.Type
+```
+
+## asSchema
+
+To make it easier to work with schemas, built-in schemas are exposed with shorter, opaque types when possible.
+
+The `Schema.asSchema` function allows you to view any schema as `Schema<Type, Encoded, Context>`.
+
+**Example**
+
+For example, while `Schema.String` is defined as a class with a type of `typeof Schema.String`, using `Schema.asSchema` provides the schema in its extended form as `Schema<string, string, never>`.
+
+```ts twoslash
+import { Schema } from "@effect/schema"
+
+// The original schema type: typeof Schema.String
+const schema = Schema.String
+
+// Using asSchema to view it as Schema<string, string, never>
+const nomalized = Schema.asSchema(schema)
 ```
 
 ## Unique Symbols
@@ -36,8 +65,10 @@ import { Schema } from "@effect/schema"
 
 const mySymbol = Symbol.for("mySymbol")
 
-// const mySymbolSchema: S.Schema<typeof mySymbol>
-const mySymbolSchema = Schema.UniqueSymbolFromSelf(mySymbol)
+const schema = Schema.UniqueSymbolFromSelf(mySymbol)
+
+// typeof mySymbol
+type Type = typeof schema.Type
 ```
 
 ## Literals
@@ -62,8 +93,10 @@ You can create a union of multiple literals by passing them as arguments to the 
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
-// Schema<"a" | "b" | "c">
-Schema.Literal("a", "b", "c")
+const schema = Schema.Literal("a", "b", "c")
+
+// "a" | "b" | "c"
+type Type = typeof schema.Type
 ```
 
 ### Exposed Values
@@ -97,18 +130,17 @@ Sometimes, you may need to reuse a literal schema in other parts of your code. B
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
-const FruitId = Schema.Number
 // Define the source of truth for fruit categories
 const FruitCategory = Schema.Literal("sweet", "citrus", "tropical")
 
 const Fruit = Schema.Struct({
-  id: FruitId,
+  id: Schema.Number,
   category: FruitCategory
 })
 
 // Create a subtype of Fruit using a subset of FruitCategory
 const SweetAndCitrusFruit = Schema.Struct({
-  fruitId: FruitId,
+  id: Schema.Number,
   category: FruitCategory.pipe(Schema.pickLiteral("sweet", "citrus"))
 })
 ```
@@ -171,33 +203,35 @@ The `Schema.TemplateLiteral` constructor supports the following types of spans:
 
 ### TemplateLiteralParser
 
-The `Schema.TemplateLiteral` constructor, while useful as a simple validator, only verifies that an input conforms to a specific string pattern by converting template literal definitions into regular expressions. Similarly, `Schema.pattern` employs regular expressions directly for the same purpose. Post-validation, both methods require additional manual parsing to convert the validated string into a usable data format.
+The `Schema.TemplateLiteral` constructor, while useful as a simple validator, only verifies that an input conforms to a specific string pattern by converting template literal definitions into regular expressions. Similarly, [`Schema.pattern`](/docs/schema/filters#string-filters) employs regular expressions directly for the same purpose. Post-validation, both methods require additional manual parsing to convert the validated string into a usable data format.
 
-To address these limitations and eliminate the need for manual post-validation parsing, the new `TemplateLiteralParser` API has been developed. It not only validates the input format but also automatically parses it into a more structured and type-safe output, specifically into a **tuple** format.
-
-This new approach enhances developer productivity by reducing boilerplate code and simplifying the process of working with complex string inputs.
+To address these limitations and eliminate the need for manual post-validation parsing, the `Schema.TemplateLiteralParser` API has been developed. It not only validates the input format but also automatically parses it into a more structured and type-safe output, specifically into a **tuple** format.
 
 **Example**
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
-// const schema: Schema.Schema<readonly [number, "a", string], `${string}a${string}`, never>
+// Schema<readonly [number, "a", string], `${string}a${string}`>
 const schema = Schema.TemplateLiteralParser(
   Schema.NumberFromString,
   "a",
   Schema.NonEmptyString
 )
 
-console.log(Schema.decodeEither(schema)("100afoo"))
-// { _id: 'Either', _tag: 'Right', right: [ 100, 'a', 'foo' ] }
+console.log(Schema.decodeSync(schema)("100afoo"))
+// Output: [ 100, 'a', 'foo' ]
 
-console.log(Schema.encode(schema)([100, "a", "foo"]))
-// { _id: 'Either', _tag: 'Right', right: '100afoo' }
+console.log(Schema.encodeSync(schema)([100, "a", "foo"]))
+// Output: '100afoo'
 ```
 
 ## Native enums
 
+The `Schema` module provides support for native TypeScript enums. You can define a schema for an enum using `Schema.Enums`, allowing you to validate values that belong to the enum.
+
+**Example**
+
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
@@ -206,13 +240,15 @@ enum Fruits {
   Banana
 }
 
-// Schema.Enums<typeof Fruits>
 const schema = Schema.Enums(Fruits)
+
+// Fruits
+type Type = typeof schema.Type
 ```
 
 ### Exposed Values
 
-Enums are exposed under an `enums` property of the schema:
+Enums are accessible through the `enums` property of the schema. You can use this property to retrieve individual members or the entire set of enum values.
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -224,7 +260,6 @@ enum Fruits {
 
 const schema = Schema.Enums(Fruits)
 
-// Access the enum members
 schema.enums // Returns all enum members
 schema.enums.Apple // Access the Apple member
 schema.enums.Banana // Access the Banana member
@@ -232,17 +267,22 @@ schema.enums.Banana // Access the Banana member
 
 ## Unions
 
-The Schema module includes a built-in `Union` constructor for composing "OR" types.
+The `Schema` module includes a built-in `Schema.Union` constructor for creating "OR" types, allowing you to define schemas that can represent multiple types.
+
+**Example**
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
 const schema = Schema.Union(Schema.String, Schema.Number)
+
+// string | number
+type Type = typeof schema.Type
 ```
 
 ### Union of Literals
 
-While the following is perfectly acceptable:
+While you can create a union of literals by combining individual literal schemas:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -254,15 +294,20 @@ const schema = Schema.Union(
 )
 ```
 
-It is possible to use `Literal` and pass multiple literals, which is less cumbersome:
+You can simplify the process by passing multiple literals directly to the `Schema.Literal` constructor:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
 const schema = Schema.Literal("a", "b", "c")
+
+// "a" | "b" | "c"
+type Type = typeof schema.Type
 ```
 
 ### Nullables
+
+The `Schema` module provides utility functions to create schemas for nullable types:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -279,9 +324,7 @@ Schema.UndefinedOr(Schema.String)
 
 ### Discriminated unions
 
-TypeScript reference: https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions
-
-Discriminated unions in TypeScript are a way of modeling complex data structures that may take on different forms based on a specific set of conditions or properties. They allow you to define a type that represents multiple related shapes, where each shape is uniquely identified by a shared discriminant property.
+[Discriminated unions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions) in TypeScript are a way of modeling complex data structures that may take on different forms based on a specific set of conditions or properties. They allow you to define a type that represents multiple related shapes, where each shape is uniquely identified by a shared discriminant property.
 
 In a discriminated union, each variant of the union has a common property, called the discriminant. The discriminant is a literal type, which means it can only have a finite set of possible values. Based on the value of the discriminant property, TypeScript can infer which variant of the union is currently in use.
 
@@ -301,7 +344,7 @@ type Square = {
 type Shape = Circle | Square
 ```
 
-This code defines a discriminated union using the Schema module:
+This code defines a discriminated union using the `Schema` module:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -319,15 +362,14 @@ const Square = Schema.Struct({
 const Shape = Schema.Union(Circle, Square)
 ```
 
-The `Literal` constructor is used to define the discriminant property with a specific string literal value.
+In this example, the `Schema.Literal` constructor is used to define the discriminant property (`kind`) for each type. The `Shape` schema represents a discriminated union of `Circle` and `Square`.
 
-Two structs are defined for `Circle` and `Square`, each with their own properties. These structs represent the variants of the union.
+### Transforming a Simple Union into a Discriminated Union
 
-Finally, the `Union` constructor is used to create a schema for the discriminated union `Shape`, which is a union of `Circle` and `Square`.
+If you start with a simple union and want to transform it into a discriminated union, you can add a special property to each member. This allows TypeScript to automatically infer the correct type based on the value of the discriminant property.
 
-### How to transform a simple union into a discriminated union
+**Example**
 
-If you're working on a TypeScript project and you've defined a simple union to represent a particular input, you may find yourself in a situation where you're not entirely happy with how it's set up.
 For example, let's say you've defined a `Shape` union as a combination of `Circle` and `Square` without any special property:
 
 ```ts twoslash
@@ -363,32 +405,38 @@ const Square = Schema.Struct({
 const DiscriminatedShape = Schema.Union(
   Schema.transform(
     Circle,
-    Schema.Struct({ ...Circle.fields, kind: Schema.Literal("circle") }), // Add a "kind" property with the literal value "circle" to Circle
+    // Add a "kind" property with the literal value "circle" to Circle
+    Schema.Struct({ ...Circle.fields, kind: Schema.Literal("circle") }),
     {
       strict: true,
-      decode: (circle) => ({ ...circle, kind: "circle" as const }), // Add the discriminant property to Circle
-      encode: ({ kind: _kind, ...rest }) => rest // Remove the discriminant property
+      // Add the discriminant property to Circle
+      decode: (circle) => ({ ...circle, kind: "circle" as const }),
+      // Remove the discriminant property
+      encode: ({ kind: _kind, ...rest }) => rest
     }
   ),
 
   Schema.transform(
     Square,
-    Schema.Struct({ ...Square.fields, kind: Schema.Literal("square") }), // Add a "kind" property with the literal value "square" to Square
+    // Add a "kind" property with the literal value "square" to Square
+    Schema.Struct({ ...Square.fields, kind: Schema.Literal("square") }),
     {
       strict: true,
-      decode: (square) => ({ ...square, kind: "square" as const }), // Add the discriminant property to Square
-      encode: ({ kind: _kind, ...rest }) => rest // Remove the discriminant property
+      // Add the discriminant property to Square
+      decode: (square) => ({ ...square, kind: "square" as const }),
+      // Remove the discriminant property
+      encode: ({ kind: _kind, ...rest }) => rest
     }
   )
 )
 
 console.log(Schema.decodeUnknownSync(DiscriminatedShape)({ radius: 10 }))
-// Output: { kind: 'circle', radius: 10 }
+// Output: { radius: 10, kind: 'circle' }
 
 console.log(
   Schema.decodeUnknownSync(DiscriminatedShape)({ sideLength: 10 })
 )
-// Output: { kind: 'square', sideLength: 10 }
+// Output: { sideLength: 10, kind: 'square' }
 ```
 
 The previous solution works perfectly and shows how we can add properties to our schema at will, making it easier to consume the result within our domain model.
@@ -397,8 +445,14 @@ However, it requires a lot of boilerplate. Fortunately, there is an API called `
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
-const Circle = Schema.Struct({ radius: Schema.Number })
-const Square = Schema.Struct({ sideLength: Schema.Number })
+const Circle = Schema.Struct({
+  radius: Schema.Number
+})
+
+const Square = Schema.Struct({
+  sideLength: Schema.Number
+})
+
 const DiscriminatedShape = Schema.Union(
   Circle.pipe(Schema.attachPropertySignature("kind", "circle")),
   Square.pipe(Schema.attachPropertySignature("kind", "square"))
@@ -406,7 +460,7 @@ const DiscriminatedShape = Schema.Union(
 
 // decoding
 console.log(Schema.decodeUnknownSync(DiscriminatedShape)({ radius: 10 }))
-// Output: { kind: 'circle', radius: 10 }
+// Output: { radius: 10, kind: 'circle' }
 
 // encoding
 console.log(
@@ -434,6 +488,12 @@ const schema = Schema.Union(Schema.String, Schema.Number)
 
 // Accesses the members of the union
 const members = schema.members
+
+const firstMember = members[0]
+//    ^? const firstMember: typeof Schema.String
+
+const secondMember = members[1]
+//    ^? const secondMember: typeof Schema.Number
 ```
 
 ## Tuples
