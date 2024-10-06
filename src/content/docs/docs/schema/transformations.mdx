@@ -3,7 +3,7 @@ title: Schema Transformations
 description: Transformations
 sidebar:
   label: Transformations
-  order: 5
+  order: 7
 ---
 
 import { Aside } from "@astrojs/starlight/components"
@@ -416,6 +416,49 @@ Output:
   }
 }
 */
+```
+
+## Composition
+
+Combining and reusing schemas is a common requirement, the `Schema.compose` combinator allows you to do just that.
+It enables you to combine two schemas, `Schema<B, A, R1>` and `Schema<C, B, R2>`, into a single schema `Schema<C, A, R1 | R2>`:
+
+```ts twoslash
+import { Schema } from "@effect/schema"
+
+// Schema<readonly string[], string>
+const schema1 = Schema.split(",")
+
+// Schema<readonly number[], readonly string[]>
+const schema2 = Schema.Array(Schema.NumberFromString)
+
+// Schema<readonly number[], string>
+const ComposedSchema = Schema.compose(schema1, schema2)
+```
+
+In this example, we have two schemas, `schema1` and `schema2`. The first schema, `schema1`, takes a string and splits it into an array using a comma as the delimiter. The second schema, `schema2`, transforms an array of strings into an array of numbers.
+
+Now, by using the `compose` combinator, we can create a new schema, `ComposedSchema`, that combines the functionality of both `schema1` and `schema2`. This allows us to parse a string and directly obtain an array of numbers as a result.
+
+### Non-strict Option
+
+If you need to be less restrictive when composing your schemas, i.e., when you have something like `Schema<R1, A, B>` and `Schema<R2, C, D>` where `C` is different from `B`, you can make use of the `{ strict: false }` option:
+
+```ts twoslash
+import { Schema } from "@effect/schema"
+
+Schema.compose(
+  // @ts-expect-error
+  Schema.Union(Schema.Null, Schema.Literal("0")),
+  Schema.NumberFromString
+)
+
+// ok
+Schema.compose(
+  Schema.Union(Schema.Null, Schema.Literal("0")),
+  Schema.NumberFromString,
+  { strict: false }
+)
 ```
 
 ## Effectful Filters
