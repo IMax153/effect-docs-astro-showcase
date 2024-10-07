@@ -298,7 +298,7 @@ const result2 = pipe(
 Effect.runPromise(result2).then(console.log) // Output: 190
 ```
 
-It's worth noting that [Option](/docs/data-types/option#interop-with-effect) and [Either](/docs/data-types/either#interop-with-effect), types commonly used to handle optional values and simple error scenarios, are also compatible with `Effect.andThen`.
+It's worth noting that [Option](/docs/data-types/option/#interop-with-effect) and [Either](/docs/data-types/either/#interop-with-effect), types commonly used to handle optional values and simple error scenarios, are also compatible with `Effect.andThen`.
 However, it is important to understand that when these types are used, the operations are categorized under scenarios 5 and 6 as described previously, as both `Option` and `Either` operate as `Effect`s in this context.
 
 **Example with Option**
@@ -405,7 +405,7 @@ const combinedEffect = Effect.all([effect1, effect2, ...])
 
 The `Effect.all` function will execute all these effects in **sequence** (to explore options for
 managing concurrency and controlling how these effects are executed, you can
-refer to the [Concurrency Options](/docs/concurrency/concurrency-options)
+refer to the [Concurrency Options](/docs/concurrency/concurrency-options/)
 documentation).
 
 It will return a new effect that produces a tuple containing the results of each individual effect.
@@ -445,7 +445,7 @@ DB Status: Connected to Database
   The `Effect.all` function not only combines tuples but also works with
   iterables, structs, and records. To explore the full potential of
   `Effect.all` head over to the [Introduction to Effect's Control Flow
-  Operators](/docs/getting-started/control-flow#all) documentation.
+  Operators](/docs/getting-started/control-flow/#all) documentation.
 </Aside>
 
 ## Build your first pipeline

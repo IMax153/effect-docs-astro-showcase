@@ -9,7 +9,7 @@ import { Aside } from "@astrojs/starlight/components"
 
 ## Interop With Data
 
-The [Data](/docs/data-types/data) module in the Effect ecosystem serves as a utility module that simplifies the process of comparing values for equality without the need for explicit implementations of the [Equal](/docs/trait/equal) and [Hash](/docs/trait/hash) traits.
+The [Data](/docs/data-types/data/) module in the Effect ecosystem serves as a utility module that simplifies the process of comparing values for equality without the need for explicit implementations of the [Equal](/docs/trait/equal/) and [Hash](/docs/trait/hash/) traits.
 It provides convenient APIs that automatically generate default implementations for equality checks, making it easier for developers to perform equality comparisons in their applications:
 
 ```ts twoslash
@@ -21,7 +21,7 @@ const person2 = Data.struct({ name: "Alice", age: 30 })
 console.log(Equal.equals(person1, person2)) // true
 ```
 
-You can use the `Schema.Data(schema)` combinator to build a schema from an existing schema that can decode a value `A` to a value with [Equal](/docs/trait/equal) and [Hash](/docs/trait/hash) traits added:
+You can use the `Schema.Data(schema)` combinator to build a schema from an existing schema that can decode a value `A` to a value with [Equal](/docs/trait/equal/) and [Hash](/docs/trait/hash/) traits added:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -58,7 +58,7 @@ This function requires two parameters:
 - **name**: The identifier for the configuration setting.
 - **schema**: A schema object that describes the expected data type and structure.
 
-The function returns a [Config](/docs/configuration) object that is directly integrated with your application's configuration management system.
+The function returns a [Config](/docs/configuration/) object that is directly integrated with your application's configuration management system.
 
 The `Schema.Config` function operates through the following steps:
 
@@ -798,7 +798,7 @@ console.log(decode(Duration.decode("11 seconds"))) // { _id: 'Duration', _tag: '
 
 ### Redacted
 
-The `Schema.Redacted` functionis specifically designed to handle sensitive information by converting a `string` into a [Redacted](/docs/data-types/redacted) object.
+The `Schema.Redacted` functionis specifically designed to handle sensitive information by converting a `string` into a [Redacted](/docs/data-types/redacted/) object.
 This transformation ensures that the sensitive data is not exposed in the application's output.
 
 **Example**

@@ -7,14 +7,14 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-When working with schemas, you have a choice beyond the [Schema.Struct](/docs/schema/basic-usage#structs) constructor.
+When working with schemas, you have a choice beyond the [Schema.Struct](/docs/schema/basic-usage/#structs) constructor.
 You can leverage the power of classes through the `Schema.Class` utility, which comes with its own set of advantages tailored to common use cases:
 
 Classes offer several features that simplify the schema creation process:
 
 - **All-in-One Definition**: With classes, you can define both a schema and an opaque type simultaneously.
 - **Shared Functionality**: You can incorporate shared functionality using class methods or getters.
-- **Value Hashing and Equality**: Utilize the built-in capability for checking value equality and applying hashing (thanks to `Class` implementing [Data.Class](/docs/data-types/data#class)).
+- **Value Hashing and Equality**: Utilize the built-in capability for checking value equality and applying hashing (thanks to `Class` implementing [Data.Class](/docs/data-types/data/#class)).
 
 ## Definition
 
@@ -141,7 +141,7 @@ new Person({ id: 1, name: "" }, { disableValidation: true })
 
 ## Hashing and Equality
 
-Thanks to the implementation of [Data.Class](/docs/data-types/data#class), instances of your classes automatically support the [Equal](/docs/trait/equal) trait, which allows for easy comparison:
+Thanks to the implementation of [Data.Class](/docs/data-types/data/#class), instances of your classes automatically support the [Equal](/docs/trait/equal/) trait, which allows for easy comparison:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -468,7 +468,7 @@ class Category extends Schema.Class<Category>("Category")({
 
 ## Tagged Class variants
 
-You can also create classes that extend [TaggedClass](/docs/data-types/data#taggedclass) and [TaggedError](/docs/data-types/data#taggederror) from the `effect/Data` module.
+You can also create classes that extend [TaggedClass](/docs/data-types/data/#taggedclass) and [TaggedError](/docs/data-types/data/#taggederror) from the `effect/Data` module.
 
 **Example**
 

@@ -11,7 +11,7 @@ Using the `Schema.filter` function, developers can define custom validation logi
 
 <Aside type="tip" title="Effectful Filters">
   For effectful filters, see
-  [Schema.filterEffect](/docs/schema/transformations#effectful-filters).
+  [Schema.filterEffect](/docs/schema/transformations/#effectful-filters).
 </Aside>
 
 **Example** (Simple Validation)
@@ -41,7 +41,7 @@ ParseError: { string | filter }
   Please note that the use of filters do not alter the `Type` of the
   schema. They only serve to add additional constraints to the parsing
   process. If you intend to modify the `Type`, consider using [Branded
-  types](#branded-types).
+  types](/docs/schema/advanced-usage/#branded-types).
 </Aside>
 
 ## Predicate Function Structure
@@ -174,7 +174,7 @@ This allows the error to be directly associated with the `confirm_password` fiel
 <Aside type="note">
   The use of `ArrayFormatter` translates the error details into a more
   comprehensible format. For further details, see
-  [ArrayFormatter](/docs/schema/error-formatters#arrayformatter).
+  [ArrayFormatter](/docs/schema/error-formatters/#arrayformatter).
 </Aside>
 
 ## Multiple Error Reporting
@@ -255,7 +255,7 @@ console.log(
 <Aside type="note">
   The use of `ArrayFormatter` translates the error details into a more
   comprehensible format. For further details, see
-  [ArrayFormatter](/docs/schema/error-formatters#arrayformatter).
+  [ArrayFormatter](/docs/schema/error-formatters/#arrayformatter).
 </Aside>
 
 ## Exposed Values

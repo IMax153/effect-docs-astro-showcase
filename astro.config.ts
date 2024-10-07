@@ -10,9 +10,14 @@ import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
 import pluginTwoslash from "./src/plugins/twoslash/plugin"
 
-const VERCEL_PREVIEW_DOMAIN = process.env.PUBLIC_VERCEL_ENV !== "production" && process.env.PUBLIC_VERCEL_BRANCH_URL
+const VERCEL_PREVIEW_DOMAIN =
+  process.env.PUBLIC_VERCEL_ENV !== "production" &&
+  process.env.PUBLIC_VERCEL_BRANCH_URL
 
-const domain = VERCEL_PREVIEW_DOMAIN || process.env.PUBLIC_VERCEL_PROJECT_PRODUCTION_URL || "effect.website"
+const domain =
+  VERCEL_PREVIEW_DOMAIN ||
+  process.env.PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ||
+  "effect.website"
 
 const site = `https://${domain}`
 
@@ -23,6 +28,7 @@ const rehypeMermaidOptions: RehypeMermaidOptions = {
 
 export default defineConfig({
   site,
+  trailingSlash: "always",
   markdown: {
     rehypePlugins: [
       [rehypeMermaid, rehypeMermaidOptions],
@@ -61,8 +67,8 @@ export default defineConfig({
         "./src/styles/tailwind.docs.css",
         // fixes styles for astro-tweet
         "./src/styles/tweet.css",
-        // the styles required for twoslash 
-        "./src/styles/twoslash.css",
+        // the styles required for twoslash
+        "./src/styles/twoslash.css"
       ],
       editLink: {
         baseUrl: "https://github.com/Effect-TS/website/edit/main/docs/"
@@ -85,7 +91,7 @@ export default defineConfig({
         discord: "https://discord.gg/effect-ts",
         github: "https://github.com/Effect-TS",
         "x.com": "https://x.com/EffectTS_",
-        youtube: "https://youtube.com/@effect-ts",
+        youtube: "https://youtube.com/@effect-ts"
       },
       plugins: [
         starlightBlog({

@@ -203,7 +203,7 @@ The `Schema.TemplateLiteral` constructor supports the following types of spans:
 
 ### TemplateLiteralParser
 
-The `Schema.TemplateLiteral` constructor, while useful as a simple validator, only verifies that an input conforms to a specific string pattern by converting template literal definitions into regular expressions. Similarly, [`Schema.pattern`](/docs/schema/filters#string-filters) employs regular expressions directly for the same purpose. Post-validation, both methods require additional manual parsing to convert the validated string into a usable data format.
+The `Schema.TemplateLiteral` constructor, while useful as a simple validator, only verifies that an input conforms to a specific string pattern by converting template literal definitions into regular expressions. Similarly, [`Schema.pattern`](/docs/schema/filters/#string-filters) employs regular expressions directly for the same purpose. Post-validation, both methods require additional manual parsing to convert the validated string into a usable data format.
 
 To address these limitations and eliminate the need for manual post-validation parsing, the `Schema.TemplateLiteralParser` API has been developed. It not only validates the input format but also automatically parses it into a more structured and type-safe output, specifically into a **tuple** format.
 
@@ -389,7 +389,7 @@ const Shape = Schema.Union(Circle, Square)
 To make your code more manageable, you may want to transform the simple union into a discriminated union. This way, TypeScript will be able to automatically determine which member of the union you're working with based on the value of a specific property.
 
 To achieve this, you can add a special property to each member of the union, which will allow TypeScript to know which type it's dealing with at runtime.
-Here's how you can [transform](/docs/schema/transformations#transform) the `Shape` schema into another schema that represents a discriminated union:
+Here's how you can [transform](/docs/schema/transformations/#transform) the `Shape` schema into another schema that represents a discriminated union:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -1067,7 +1067,7 @@ ParseError: Expected MyData, actual {"name":"name"}
 */
 ```
 
-The `Schema.instanceOf` constructor is just a lightweight wrapper of the [Schema.declare](/docs/schema/advanced-usage#declaring-new-data-types) API, which is the primitive in `@effect/schema` for declaring new custom data types.
+The `Schema.instanceOf` constructor is just a lightweight wrapper of the [Schema.declare](/docs/schema/advanced-usage/#declaring-new-data-types) API, which is the primitive in `@effect/schema` for declaring new custom data types.
 
 However, note that `Schema.instanceOf` can only be used for classes that expose a **public constructor**.
 If you try to use it with classes that, for some reason, have marked the constructor as `private`, you'll receive a TypeScript error:
@@ -1088,7 +1088,7 @@ Argument of type 'typeof MyData' is not assignable to parameter of type 'abstrac
 */
 ```
 
-In such cases, you cannot use `Schema.instanceOf`, and you must rely on [Schema.declare](/docs/schema/advanced-usage#declaring-new-data-types) like this:
+In such cases, you cannot use `Schema.instanceOf`, and you must rely on [Schema.declare](/docs/schema/advanced-usage/#declaring-new-data-types) like this:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"

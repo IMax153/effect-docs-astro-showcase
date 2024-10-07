@@ -48,7 +48,7 @@ which mirror those of the `Effect` type.
 
 ### MicroExit
 
-The `MicroExit` type is a streamlined version of the [Exit](/docs/data-types/exit) type, designed to capture the outcome of a `Micro` computation. It uses the [Either](/docs/data-types/either) data type to distinguish between successful outcomes and failures:
+The `MicroExit` type is a streamlined version of the [Exit](/docs/data-types/exit/) type, designed to capture the outcome of a `Micro` computation. It uses the [Either](/docs/data-types/either/) data type to distinguish between successful outcomes and failures:
 
 ```ts showLineNumbers=false
 type MicroExit<A, E = never> = Either<A, MicroCause<E>>
@@ -56,7 +56,7 @@ type MicroExit<A, E = never> = Either<A, MicroCause<E>>
 
 ### MicroCause
 
-The `MicroCause` type is a streamlined version of the [Cause](/docs/data-types/cause) type.
+The `MicroCause` type is a streamlined version of the [Cause](/docs/data-types/cause/) type.
 
 Similar to how `Cause` is a union of types, `MicroCause` consists of three specific types:
 
@@ -72,7 +72,7 @@ type MicroCause<E> = Die | Fail<E> | Interrupt
 
 ### MicroSchedule
 
-The `MicroSchedule` type is a streamlined version of the [Schedule](/docs/scheduling/introduction) type.
+The `MicroSchedule` type is a streamlined version of the [Schedule](/docs/scheduling/introduction/) type.
 
 ```ts showLineNumbers=false
 type MicroSchedule = (attempt: number, elapsed: number) => Option<number>

@@ -11,7 +11,7 @@ There are situations where you may encounter unexpected errors, and you need to 
 
 ## Creating Unrecoverable Errors
 
-In the same way it is possible to leverage combinators such as [Effect.fail](/docs/getting-started/creating-effects#fail) to create values of type `Effect<never, E, never>` the Effect library provides tools to create defects.
+In the same way it is possible to leverage combinators such as [Effect.fail](/docs/getting-started/creating-effects/#fail) to create values of type `Effect<never, E, never>` the Effect library provides tools to create defects.
 
 Creating defects is a common necessity when dealing with errors from which it is not possible to recover from a business logic perspective, such as attempting to establish a connection that is refused after multiple retries.
 
@@ -104,7 +104,7 @@ or explanatory purposes.
 
 ### exit
 
-The `Effect.exit` function transforms an `Effect<A, E, R>` into an effect that encapsulates both potential failure and success within an [Exit](/docs/data-types/exit) data type:
+The `Effect.exit` function transforms an `Effect<A, E, R>` into an effect that encapsulates both potential failure and success within an [Exit](/docs/data-types/exit/) data type:
 
 ```ts showLineNumbers=false
 Effect<A, E, R> -> Effect<Exit<A, E>, never, R>
@@ -187,7 +187,7 @@ RuntimeException defect caught: Boom!
 */
 ```
 
-It's important to understand that `catchAllDefect` can only handle defects, , not [expected errors](/docs/error-management/expected-errors) (such as those caused by `Effect.fail`) or [interruptions](/docs/concurrency/interruption-model) in execution (such as when using `Effect.interrupt`).
+It's important to understand that `catchAllDefect` can only handle defects, , not [expected errors](/docs/error-management/expected-errors/) (such as those caused by `Effect.fail`) or [interruptions](/docs/concurrency/interruption-model/) in execution (such as when using `Effect.interrupt`).
 
 A defect refers to an error that cannot be anticipated in advance, and there is no reliable way to respond to it. As a general rule, it's recommended to let defects crash the application, as they often indicate serious issues that need to be addressed.
 
@@ -233,4 +233,4 @@ Output:
 */
 ```
 
-It's important to understand that `catchSomeDefect` can only handle defects, not [expected errors](/docs/error-management/expected-errors) (such as those caused by `Effect.fail`) or [interruptions](/docs/concurrency/interruption-model) in execution (such as when using `Effect.interrupt`).
+It's important to understand that `catchSomeDefect` can only handle defects, not [expected errors](/docs/error-management/expected-errors/) (such as those caused by `Effect.fail`) or [interruptions](/docs/concurrency/interruption-model/) in execution (such as when using `Effect.interrupt`).

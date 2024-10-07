@@ -89,17 +89,17 @@ Application started: localhost:8080
 
 Effect offers these basic types out of the box:
 
-| Type       | Description                                                                         |
-| ---------- | ----------------------------------------------------------------------------------- |
-| `string`   | Constructs a config for a string value.                                             |
-| `number`   | Constructs a config for a float value.                                              |
-| `boolean`  | Constructs a config for a boolean value.                                            |
-| `integer`  | Constructs a config for an integer value.                                           |
-| `date`     | Constructs a config for a date value.                                               |
-| `literal`  | Constructs a config for a literal (\*) value.                                       |
-| `logLevel` | Constructs a config for a [LogLevel](/docs/observability/logging#log-levels) value. |
-| `duration` | Constructs a config for a duration value.                                           |
-| `redacted` | Constructs a config for a secret value.                                             |
+| Type       | Description                                                                          |
+| ---------- | ------------------------------------------------------------------------------------ |
+| `string`   | Constructs a config for a string value.                                              |
+| `number`   | Constructs a config for a float value.                                               |
+| `boolean`  | Constructs a config for a boolean value.                                             |
+| `integer`  | Constructs a config for an integer value.                                            |
+| `date`     | Constructs a config for a date value.                                                |
+| `literal`  | Constructs a config for a literal (\*) value.                                        |
+| `logLevel` | Constructs a config for a [LogLevel](/docs/observability/logging/#log-levels) value. |
+| `duration` | Constructs a config for a duration value.                                            |
+| `redacted` | Constructs a config for a secret value.                                              |
 
 (\*) `string | number | boolean | null | bigint`
 
@@ -510,7 +510,7 @@ By using this approach, we can easily mock the configuration data and test our s
 ## Redacted
 
 What sets `Config.redacted` apart from `Config.string` is its handling of sensitive information.
-It parses the config value and wraps it in a `Redacted<string>`, a [data type](/docs/data-types/redacted) designed for holding secrets.
+It parses the config value and wraps it in a `Redacted<string>`, a [data type](/docs/data-types/redacted/) designed for holding secrets.
 
 When you use `Console.log` on a redacted, the actual value remains hidden, providing an added layer of security.
 The only way to access the value is by using `Redacted.value`.

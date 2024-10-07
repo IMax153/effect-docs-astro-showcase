@@ -68,7 +68,7 @@ The type of `failure` is `Effect<never, Error, never>`, which means
 
 While you can use `Error` objects with `Effect.fail`, it also supports strings, numbers, or more complex objects, depending on your error management strategy.
 
-However, using "tagged" errors, which are objects with a `_tag` field, helps identify error types and integrates well with standard Effect functions like [Effect.catchTag](/docs/error-management/expected-errors#catchtag).
+However, using "tagged" errors, which are objects with a `_tag` field, helps identify error types and integrates well with standard Effect functions like [Effect.catchTag](/docs/error-management/expected-errors/#catchtag).
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -135,7 +135,7 @@ const exampleUserEffect = getUser(1)
 
 In this example `exampleUserEffect` can result in either a `User` object or an `Error`, depending on whether the user exists in the simulated database
 
-To dive deeper into handling and managing errors effectively in your applications using Effect, you might want to explore the guide on [Error Management](/docs/error-management/expected-errors). This guide provides detailed insights and strategies for robust error handling in TypeScript applications using Effect.
+To dive deeper into handling and managing errors effectively in your applications using Effect, you might want to explore the guide on [Error Management](/docs/error-management/expected-errors/). This guide provides detailed insights and strategies for robust error handling in TypeScript applications using Effect.
 
 ## Modeling Synchronous Effects
 
@@ -178,7 +178,7 @@ The `program` has the type `Effect<void, never, never>`, indicating that:
 
 Important Notes:
 
-- **Execution**: The side effect (logging to the console) encapsulated within `program` won't occur until the effect is explicitly [run](/docs/getting-started/running-effects). This allows you to define side effects at one point in your code and control when they are activated, improving manageability and predictability of side effects in larger applications.
+- **Execution**: The side effect (logging to the console) encapsulated within `program` won't occur until the effect is explicitly [run](/docs/getting-started/running-effects/). This allows you to define side effects at one point in your code and control when they are activated, improving manageability and predictability of side effects in larger applications.
 - **Error Handling**: It's crucial that the function you pass to `Effect.sync` does not throw any errors. If you anticipate potential errors, consider using [try](#try) instead, which handles errors gracefully.
 
 <Aside type="danger" title="Do Not Throw">
@@ -187,7 +187,7 @@ Important Notes:
 
 **Handling Unexpected Errors**. Despite your best efforts to avoid errors in the function passed to `Effect.sync`, if an error does occur, it results in a "defect".
 This defect is not a standard error but indicates a flaw in the logic that was expected to be error-free.
-You can think of it similar to an unexpected crash in the program, which can be further managed or logged using tools like [Effect.catchAllDefect](/docs/error-management/unexpected-errors#catchalldefect).
+You can think of it similar to an unexpected crash in the program, which can be further managed or logged using tools like [Effect.catchAllDefect](/docs/error-management/unexpected-errors/#catchalldefect).
 This feature ensures that even unexpected failures in your application are not lost and can be handled appropriately.
 
 ### try
@@ -282,7 +282,7 @@ The `program` value has the type `Effect<string, never, never>` and can be inter
   reject.
 </Aside>
 
-**Handling Unexpected Errors**. If, despite precautions, the thunk passed to `Effect.promise` does reject, an `Effect` containing a ["defect"](/docs/error-management/unexpected-errors) is created, similar to what happens when using the [Effect.die](/docs/error-management/unexpected-errors#die--diemessage) function.
+**Handling Unexpected Errors**. If, despite precautions, the thunk passed to `Effect.promise` does reject, an `Effect` containing a ["defect"](/docs/error-management/unexpected-errors/) is created, similar to what happens when using the [Effect.die](/docs/error-management/unexpected-errors/#die--diemessage) function.
 
 ### tryPromise
 
@@ -397,7 +397,7 @@ console.log(Effect.runSync(good)) // Output: 2
 <Aside type="note" title="Running Effects">
   This example utilizes `Effect.runSync` to execute effects and display
   their results (refer to [Running
-  Effects](/docs/getting-started/running-effects#runsync) for more
+  Effects](/docs/getting-started/running-effects/#runsync) for more
   details).
 </Aside>
 
@@ -434,7 +434,8 @@ console.log(Effect.runSync(allGood(32))) // Output: 3524578
 <Aside type="note" title="Running Effects">
   This example utilizes `Effect.zipWith` to combine the results of two
   effects (refer to the documentation on
-  [zipping](/docs/getting-started/control-flow#zipwith) for more details).
+  [zipping](/docs/getting-started/control-flow/#zipwith) for more
+  details).
 </Aside>
 
 The `blowsUp` function creates a recursive Fibonacci sequence without deferring execution. Each call to `blowsUp` triggers further immediate recursive calls, rapidly increasing the JavaScript call stack size.
@@ -481,4 +482,4 @@ The table provides a summary of the available constructors, along with their inp
 You can find the complete list of constructors [here](https://effect-ts.github.io/effect/effect/Effect.ts.html#constructors).
 
 Now that we know how to create effects, it's time to learn how to run them.
-Check out the next guide on [Running Effects](/docs/getting-started/running-effects) to find out more.
+Check out the next guide on [Running Effects](/docs/getting-started/running-effects/) to find out more.

@@ -1,6 +1,6 @@
 ---
 title: Equal
-description: The Equal module provides a solution for value-based equality checks, addressing issues with JavaScript's native reference-based equality operators. Developers can define custom equality checks, ensuring data integrity and promoting predictable behavior. To implement custom equality, developers can either implement the `Equal` interface or leverage the simpler solution offered by the [Data](/docs/data-types/data) module, which automatically generates default implementations for both `Equal` and `Hash`. This excerpt also explores working with collections like `HashSet` and `HashMap` to handle value-based equality checks effectively.
+description: The Equal module provides a solution for value-based equality checks, addressing issues with JavaScript's native reference-based equality operators. Developers can define custom equality checks, ensuring data integrity and promoting predictable behavior. To implement custom equality, developers can either implement the `Equal` interface or leverage the simpler solution offered by the [Data](/docs/data-types/data/) module, which automatically generates default implementations for both `Equal` and `Hash`. This excerpt also explores working with collections like `HashSet` and `HashMap` to handle value-based equality checks effectively.
 sidebar:
   order: 0
 ---
@@ -21,7 +21,7 @@ Here are some key reasons why Effect exports an Equal module:
 
 In Effect it's advisable to **stop using** JavaScript's `===` and `==` operators and instead rely on the `Equal.equals` function.
 This function can work with any data type that implements the `Equal` trait.
-Some examples of such data types include [Option](/docs/data-types/option), [Either](/docs/data-types/either), [HashSet](https://effect-ts.github.io/effect/effect/HashSet.ts.html), and [HashMap](https://effect-ts.github.io/effect/effect/HashMap.ts.html).
+Some examples of such data types include [Option](/docs/data-types/option/), [Either](/docs/data-types/either/), [HashSet](https://effect-ts.github.io/effect/effect/HashSet.ts.html), and [HashMap](https://effect-ts.github.io/effect/effect/HashMap.ts.html).
 
 When you use `Equal.equals` and your objects do not implement the `Equal` trait, it defaults to using the `===` operator for object comparison:
 
@@ -40,13 +40,13 @@ However, you can configure your models to ensure that `Equal.equals` behaves con
 
 1. **Implementing the `Equal` Interface**: This method is useful when you need to define your custom equality check.
 
-2. **Using the Data Module**: For simple value equality, the [Data](/docs/data-types/data) module provides a more straightforward solution by automatically generating default implementations for `Equal`.
+2. **Using the Data Module**: For simple value equality, the [Data](/docs/data-types/data/) module provides a more straightforward solution by automatically generating default implementations for `Equal`.
 
 Let's delve into both solutions.
 
 ### Implementing the Equal Interface
 
-To create custom equality behavior, you can implement the `Equal` interface in your models. This interface extends the `Hash` interface from the [Hash](/docs/trait/hash) module.
+To create custom equality behavior, you can implement the `Equal` interface in your models. This interface extends the `Hash` interface from the [Hash](/docs/trait/hash/) module.
 
 Here's an example of implementing the `Equal` interface for a `Person` class:
 
@@ -124,7 +124,7 @@ In this code, the equality check returns `true` when comparing `alice` to a new 
 
 ### Simplifying Equality with the Data Module
 
-Implementing both `Equal` and `Hash` can become cumbersome when all you need is straightforward value equality checks. Luckily, the [Data](/docs/data-types/data) module provides a simpler solution. It offers APIs that automatically generate default implementations for both `Equal` and `Hash`.
+Implementing both `Equal` and `Hash` can become cumbersome when all you need is straightforward value equality checks. Luckily, the [Data](/docs/data-types/data/) module provides a simpler solution. It offers APIs that automatically generate default implementations for both `Equal` and `Hash`.
 
 Let's see how it works:
 
@@ -148,9 +148,9 @@ console.log(Equal.equals(alice, bob))
 // Output: false
 ```
 
-In this example, we use the `Data.struct` function to create structured data objects and check their equality using `Equal.equals`. The [Data](/docs/data-types/data) module simplifies the process by providing a default implementation for both `Equal` and `Hash`, allowing you to focus on comparing values without the need for explicit implementations.
+In this example, we use the `Data.struct` function to create structured data objects and check their equality using `Equal.equals`. The [Data](/docs/data-types/data/) module simplifies the process by providing a default implementation for both `Equal` and `Hash`, allowing you to focus on comparing values without the need for explicit implementations.
 
-The Data module isn't limited to just structs. It can handle various data types, including tuples, arrays, and records. If you're curious about how to leverage its full range of features, you can explore the [Data module documentation](/docs/data-types/data).
+The Data module isn't limited to just structs. It can handle various data types, including tuples, arrays, and records. If you're curious about how to leverage its full range of features, you can explore the [Data module documentation](/docs/data-types/data/).
 
 ## Working with Collections
 

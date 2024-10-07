@@ -15,7 +15,7 @@ Alternatively, it provides mechanisms for defining **constructors** for your dat
 
 If you need to compare **existing values** for equality without the need for explicit
 implementations, consider using the Data module. It provides convenient APIs
-that generate default implementations for [Equal](/docs/trait/equal) and [Hash](/docs/trait/hash), making equality
+that generate default implementations for [Equal](/docs/trait/equal/) and [Hash](/docs/trait/hash/), making equality
 checks a breeze.
 
 ### struct
@@ -36,7 +36,7 @@ console.log(Equal.equals(alice, { name: "Alice", age: 30 })) // Output: false
 console.log(Equal.equals(alice, bob)) // Output: false
 ```
 
-The `Data` module simplifies the process by providing a default implementation for both [Equal](/docs/trait/equal) and [Hash](/docs/trait/hash),
+The `Data` module simplifies the process by providing a default implementation for both [Equal](/docs/trait/equal/) and [Hash](/docs/trait/hash/),
 allowing you to focus on comparing values without the need for explicit implementations.
 
 ### tuple
