@@ -23,7 +23,6 @@
 
 /** @type {import("tailwindcss").Config} */
 export default {
-  // content: ["src/components/{*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue},!(overrides)/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}}"],
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   corePlugins: {
     preflight: false
