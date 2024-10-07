@@ -18,6 +18,10 @@
       "destination": "https://effect-docs-astro-showcase.vercel.app/docs/getting-started/introduction"
     },
     {
+      "source": "/_astro/:match*",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/_astro/:match*"
+    },
+    {
       "source": "/",
       "destination": "https://website-eight-rho-75.vercel.app/"
     }
