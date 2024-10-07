@@ -38,12 +38,6 @@ export default defineConfig({
       [rehypeAutolinkHeadings, { behavior: "wrap" }]
     ]
   },
-  redirects: {
-    "/docs": {
-      destination: "/docs/getting-started/introduction",
-      status: 308
-    }
-  },
   integrations: [
     tailwind({
       applyBaseStyles: false
