@@ -2,20 +2,20 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/blog/",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/blog/"
+    },
+    {
       "source": "/blog/:match*",
       "destination": "https://effect-docs-astro-showcase.vercel.app/blog/:match*"
     },
     {
-      "source": "/blog",
-      "destination": "https://effect-docs-astro-showcase.vercel.app/blog/"
+      "source": "/docs/",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/getting-started/introduction/"
     },
     {
       "source": "/docs/:match*",
       "destination": "https://effect-docs-astro-showcase.vercel.app/docs/:match*"
-    },
-    {
-      "source": "/docs",
-      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/getting-started/introduction"
     },
     {
       "source": "/authors/:match*",
@@ -28,6 +28,10 @@
     {
       "source": "/pagefind/:match*",
       "destination": "https://effect-docs-astro-showcase.vercel.app/pagefind/:match*"
+    },
+    {
+      "source": "/play/",
+      "destination": "https://website-eight-rho-75.vercel.app/play/"
     },
     {
       "source": "/play",
@@ -52,6 +56,10 @@
     {
       "source": "/",
       "destination": "https://website-eight-rho-75.vercel.app/"
+    },
+    {
+      "source": "/:match*",
+      "destination": "https://website-eight-rho-75.vercel.app/:match*"
     }
   ]
 }
