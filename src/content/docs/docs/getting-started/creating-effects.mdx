@@ -68,7 +68,7 @@ The type of `failure` is `Effect<never, Error, never>`, which means
 
 While you can use `Error` objects with `Effect.fail`, it also supports strings, numbers, or more complex objects, depending on your error management strategy.
 
-However, using "tagged" errors, which are objects with a `_tag` field, helps identify error types and integrates well with standard Effect functions like [Effect.catchTag](/docs/error-management/expected-errors#catchtag).
+However, using "tagged" errors, which are objects with a `_tag` field, helps identify error types and integrates well with standard Effect functions like [Effect.catchTag](/docs/error-management/expected-errors/#catchtag).
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -82,7 +82,7 @@ const failure = Effect.fail(new NetworkError())
 
 With `Effect.succeed` and `Effect.fail`, you can explicitly handle success and failure cases and the type system will ensure that errors are tracked and accounted for.
 
-**Example: Rewriting a Division Function**
+**Example** (Rewriting a Division Function)
 
 Let's see an example of rewriting the [`divide`](#why-not-throw-errors) function using Effect to make the error handling explicit:
 
@@ -99,7 +99,7 @@ In this example, the `divide` function explicitly indicates that it can produce 
 
 The type signature makes it clear how errors are handled and ensures that callers are aware of the possible outcomes.
 
-**Example: Simulating a User Retrieval Operation**
+**Example** (Simulating a User Retrieval Operation)
 
 Let's imagine another scenario where we use `Effect.succeed` and `Effect.fail` to model a simple user retrieval operation where the user data is hardcoded, which could be useful in testing scenarios or when mocking data:
 
@@ -135,7 +135,7 @@ const exampleUserEffect = getUser(1)
 
 In this example `exampleUserEffect` can result in either a `User` object or an `Error`, depending on whether the user exists in the simulated database
 
-To dive deeper into handling and managing errors effectively in your applications using Effect, you might want to explore the guide on [Error Management](/docs/error-management/expected-errors). This guide provides detailed insights and strategies for robust error handling in TypeScript applications using Effect.
+To dive deeper into handling and managing errors effectively in your applications using Effect, you might want to explore the guide on [Error Management](/docs/error-management/expected-errors/). This guide provides detailed insights and strategies for robust error handling in TypeScript applications using Effect.
 
 ## Modeling Synchronous Effects
 
@@ -155,7 +155,7 @@ To model synchronous side effects, Effect provides the `Effect.sync` and `Effect
 When working with side effects that are synchronous — meaning they don't involve asynchronous operations like fetching data from the internet — you can use the `Effect.sync` function.
 This function is ideal when you are certain these operations **won't produce any errors**.
 
-**Example: Logging a Message**
+**Example** (Logging a Message)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -178,7 +178,7 @@ The `program` has the type `Effect<void, never, never>`, indicating that:
 
 Important Notes:
 
-- **Execution**: The side effect (logging to the console) encapsulated within `program` won't occur until the effect is explicitly [run](/docs/getting-started/running-effects). This allows you to define side effects at one point in your code and control when they are activated, improving manageability and predictability of side effects in larger applications.
+- **Execution**: The side effect (logging to the console) encapsulated within `program` won't occur until the effect is explicitly [run](/docs/getting-started/running-effects/). This allows you to define side effects at one point in your code and control when they are activated, improving manageability and predictability of side effects in larger applications.
 - **Error Handling**: It's crucial that the function you pass to `Effect.sync` does not throw any errors. If you anticipate potential errors, consider using [try](#try) instead, which handles errors gracefully.
 
 <Aside type="danger" title="Do Not Throw">
@@ -187,7 +187,7 @@ Important Notes:
 
 **Handling Unexpected Errors**. Despite your best efforts to avoid errors in the function passed to `Effect.sync`, if an error does occur, it results in a "defect".
 This defect is not a standard error but indicates a flaw in the logic that was expected to be error-free.
-You can think of it similar to an unexpected crash in the program, which can be further managed or logged using tools like [Effect.catchAllDefect](/docs/error-management/unexpected-errors#catchalldefect).
+You can think of it similar to an unexpected crash in the program, which can be further managed or logged using tools like [Effect.catchAllDefect](/docs/error-management/unexpected-errors/#catchalldefect).
 This feature ensures that even unexpected failures in your application are not lost and can be handled appropriately.
 
 ### try
@@ -195,7 +195,7 @@ This feature ensures that even unexpected failures in your application are not l
 In situations where you need to perform synchronous operations that might fail, such as parsing JSON, you can use the `Effect.try` constructor from the Effect library.
 This constructor is designed to handle operations that could throw exceptions by capturing those exceptions and transforming them into manageable errors within the Effect framework.
 
-**Example: Safe JSON Parsing**
+**Example** (Safe JSON Parsing)
 
 Suppose you have a function that attempts to parse a JSON string. This operation can fail and throw an error if the input string is not properly formatted as JSON:
 
@@ -216,7 +216,7 @@ In this example:
 
 **Customizing Error Handling**. You might want to transform the caught exception into a more specific error or perform additional operations when catching an error. `Effect.try` supports an overload that allows you to specify how caught exceptions should be transformed:
 
-**Example: Custom Error Handling**
+**Example** (Custom Error Handling)
 
 ```ts {8}
 import { Effect } from "effect"
@@ -253,7 +253,7 @@ To overcome these limitations, Effect introduces dedicated constructors for crea
 This constructor is similar to a regular `Promise`, where you're confident that the asynchronous operation will **always succeed**.
 It allows you to create an `Effect` that represents successful completion without considering potential errors. However, it's essential to ensure that the underlying Promise never rejects.
 
-**Example: Delayed Message**
+**Example** (Delayed Message)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -282,7 +282,7 @@ The `program` value has the type `Effect<string, never, never>` and can be inter
   reject.
 </Aside>
 
-**Handling Unexpected Errors**. If, despite precautions, the thunk passed to `Effect.promise` does reject, an `Effect` containing a ["defect"](/docs/error-management/unexpected-errors) is created, similar to what happens when using the [Effect.die](/docs/error-management/unexpected-errors#die--diemessage) function.
+**Handling Unexpected Errors**. If, despite precautions, the thunk passed to `Effect.promise` does reject, an `Effect` containing a ["defect"](/docs/error-management/unexpected-errors/) is created, similar to what happens when using the [Effect.die](/docs/error-management/unexpected-errors/#die--diemessage) function.
 
 ### tryPromise
 
@@ -290,7 +290,7 @@ Unlike `Effect.promise`, this constructor is suitable when the underlying `Promi
 It provides a way to catch errors and handle them appropriately.
 By default if an error occurs, it will be caught and propagated to the error channel as as an `UnknownException`.
 
-**Example: Fetching a TODO Item**
+**Example** (Fetching a TODO Item)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -329,7 +329,7 @@ const program = getTodo(1)
 Sometimes you have to work with APIs that don't support `async/await` or `Promise` and instead use the callback style.
 To handle callback-based APIs, Effect provides the `Effect.async` constructor.
 
-**Example: Reading a File**
+**Example** (Reading a File)
 
 For example, let's wrap the `readFile` async API from the Node.js `fs` module with Effect (ensure you have `@types/node` installed):
 
@@ -397,7 +397,7 @@ console.log(Effect.runSync(good)) // Output: 2
 <Aside type="note" title="Running Effects">
   This example utilizes `Effect.runSync` to execute effects and display
   their results (refer to [Running
-  Effects](/docs/getting-started/running-effects#runsync) for more
+  Effects](/docs/getting-started/running-effects/#runsync) for more
   details).
 </Aside>
 
@@ -434,7 +434,8 @@ console.log(Effect.runSync(allGood(32))) // Output: 3524578
 <Aside type="note" title="Running Effects">
   This example utilizes `Effect.zipWith` to combine the results of two
   effects (refer to the documentation on
-  [zipping](/docs/getting-started/control-flow#zipwith) for more details).
+  [zipping](/docs/getting-started/control-flow/#zipwith) for more
+  details).
 </Aside>
 
 The `blowsUp` function creates a recursive Fibonacci sequence without deferring execution. Each call to `blowsUp` triggers further immediate recursive calls, rapidly increasing the JavaScript call stack size.
@@ -481,4 +482,4 @@ The table provides a summary of the available constructors, along with their inp
 You can find the complete list of constructors [here](https://effect-ts.github.io/effect/effect/Effect.ts.html#constructors).
 
 Now that we know how to create effects, it's time to learn how to run them.
-Check out the next guide on [Running Effects](/docs/getting-started/running-effects) to find out more.
+Check out the next guide on [Running Effects](/docs/getting-started/running-effects/) to find out more.

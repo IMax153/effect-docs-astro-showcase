@@ -470,7 +470,7 @@ const struct = Option.all({ name: maybeName, age: maybeAge })
 
 ## gen
 
-Similar to [Effect.gen](/docs/getting-started/using-generators), there's also `Option.gen`, which provides a convenient syntax, akin to async/await, for writing code involving `Option` and using generators.
+Similar to [Effect.gen](/docs/getting-started/using-generators/), there's also `Option.gen`, which provides a convenient syntax, akin to async/await, for writing code involving `Option` and using generators.
 
 Let's revisit the previous example, this time using `Option.gen` instead of `Option.zipWith`:
 
@@ -519,7 +519,7 @@ Output:
 You can compare `Option` values using the `Option.getEquivalence` function.
 This function lets you define rules for comparing the contents of `Option` types by providing an `Equivalence` for the type of value they might contain.
 
-**Example: Checking Equivalence of Optional Numbers**
+**Example** (Checking Equivalence of Optional Numbers)
 
 Imagine you have optional numbers and you want to check if they are equivalent. Here’s how you can do it:
 
@@ -538,7 +538,7 @@ console.log(myEquivalence(Option.some(1), Option.none())) // Output: false, beca
 Sorting a collection of `Option` values can be done using the `Option.getOrder` function.
 This function helps you sort `Option` values by providing a custom sorting rule for the type of value they might contain.
 
-**Example: Sorting Optional Numbers**
+**Example** (Sorting Optional Numbers)
 
 Suppose you have a list of optional numbers and you want to sort them in ascending order, considering empty values as the lowest:
 

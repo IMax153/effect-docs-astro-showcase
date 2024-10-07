@@ -85,7 +85,7 @@ Effect.runPromise(program) // 55
 
 ### Awaiting Fibers
 
-Another useful function for fibers is `Fiber.await`. This function returns an effect containing an [Exit](/docs/data-types/exit) value, which provides detailed information about how the fiber completed.
+Another useful function for fibers is `Fiber.await`. This function returns an effect containing an [Exit](/docs/data-types/exit/) value, which provides detailed information about how the fiber completed.
 
 ```ts twoslash
 import { Effect, Fiber } from "effect"
@@ -113,7 +113,7 @@ Effect.runPromise(program) // { _id: 'Exit', _tag: 'Success', value: 55 }
 
 If a fiber's result is no longer needed, it can be interrupted, which immediately terminates the fiber and safely releases all resources by running all finalizers.
 
-Similar to `Fiber.await`, `Fiber.interrupt` returns an [Exit](/docs/data-types/exit) value describing how the fiber completed.
+Similar to `Fiber.await`, `Fiber.interrupt` returns an [Exit](/docs/data-types/exit/) value describing how the fiber completed.
 
 ```ts twoslash
 import { Effect, Fiber } from "effect"
@@ -168,7 +168,7 @@ const program = Effect.gen(function* () {
 })
 ```
 
-**Note**: It is also possible to perform interruptions using the high-level API `Effect.interrupt`. For more information, see [Effect.interrupt](/docs/concurrency/interruption-model#calling-effectinterrupt).
+**Note**: It is also possible to perform interruptions using the high-level API `Effect.interrupt`. For more information, see [Effect.interrupt](/docs/concurrency/interruption-model/#calling-effectinterrupt).
 
 ### Composing Fibers
 
@@ -218,7 +218,7 @@ Hurray!
 
 ## Concurrency Options
 
-Effect provides many functions that accept [Concurrency Options](/docs/concurrency/concurrency-options) to help you identify opportunities to parallelize your code.
+Effect provides many functions that accept [Concurrency Options](/docs/concurrency/concurrency-options/) to help you identify opportunities to parallelize your code.
 
 For example, the standard `Effect.zip` function combines two effects sequentially. However, there is also a concurrent version, `Effect.zip({_, _, { concurrent: true })`, which combines two effects concurrently.
 
@@ -285,7 +285,7 @@ task2
 
 In this example, `task1` is set to fail after 1 second, while `task2` is set to succeed after 2 seconds. The `Effect.race` function runs both tasks concurrently, and since `task2` is the first to succeed, its result is returned.
 
-If you need to handle the first effect to complete, whether it succeeds or fails, you can use the `Effect.either` function. This function wraps the result in an [Either](/docs/data-types/either) type, allowing you to see if the outcome was a success (`Right`) or a failure (`Left`):
+If you need to handle the first effect to complete, whether it succeeds or fails, you can use the `Effect.either` function. This function wraps the result in an [Either](/docs/data-types/either/) type, allowing you to see if the outcome was a success (`Right`) or a failure (`Left`):
 
 ```ts twoslash
 import { Effect } from "effect"

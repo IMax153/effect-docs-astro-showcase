@@ -16,7 +16,7 @@ It allows us to put a time constraint on an operation, ensuring that it doesn't 
 
 ### timeout
 
-The `Effect.timeout` function employs a [Duration](/docs/data-types/duration) parameter to establish a time limit on an operation. If the operation exceeds this limit, a `TimeoutException` is triggered, indicating a timeout has occurred.
+The `Effect.timeout` function employs a [Duration](/docs/data-types/duration/) parameter to establish a time limit on an operation. If the operation exceeds this limit, a `TimeoutException` is triggered, indicating a timeout has occurred.
 
 **Example**
 
@@ -111,7 +111,7 @@ Start processing...
 ```
 
 In this example, the first effect completes within the specified duration, while the second effect times out.
-The result of the timed-out effect is wrapped in an [Option](/docs/data-types/option) type, allowing you to handle the timeout as a regular result.
+The result of the timed-out effect is wrapped in an [Option](/docs/data-types/option/) type, allowing you to handle the timeout as a regular result.
 
 ## Handling Timeouts
 

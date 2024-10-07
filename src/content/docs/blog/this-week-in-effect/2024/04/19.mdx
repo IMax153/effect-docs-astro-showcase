@@ -21,8 +21,8 @@ If it’s your first time here, Effect is a powerful TypeScript library designed
 
 To get started, below you’ll find links to our documentation as well as our guide for installing Effect. Enjoy!
 
-- [Effect Documentation](/docs/getting-started/introduction)
-- [Installing Effect](/docs/getting-started/installation)
+- [Effect Documentation](/docs/getting-started/introduction/)
+- [Installing Effect](/docs/getting-started/installation/)
 
 ## Overview of TWIE
 
@@ -42,6 +42,7 @@ We want to make it easy for you to find all the info you need to fully enjoy you
 Now, back to business!
 
 ## Technology
+
 We can't beat around the bush, so let's get straight to the big news of the week: we have released Effect 3.0, and the core package of Effect is now stable. This release is the result of five years of hard work by our team, with the support of the community.
 
 <YouTube
@@ -51,9 +52,9 @@ We can't beat around the bush, so let's get straight to the big news of the week
 
 Starting with 3.0 the main package `effect` will follow semantic versioning:
 
-1) major releases will include breaking changes
-2) minor releases will include new features and new modules
-3) patch releases will include bug fixes
+1. major releases will include breaking changes
+2. minor releases will include new features and new modules
+3. patch releases will include bug fixes
 
 Our commitment for the future is to also make the other Effect Ecosystem libraries stable.
 
@@ -62,94 +63,106 @@ Read the full [Effect 3.0 announcement](https://effect.website/blog/effect-3.0).
 Now, let's take a look to all the changes that occurred last week.
 
 ### Effect Core
-+ [Ensure correct value is passed to mapping function in mapAccum loop](https://github.com/Effect-TS/effect/pull/2507) (Bug Fix)
-+ [Change return type of Fiber.joinAll to return an array](https://github.com/Effect-TS/effect/pull/2521) (Bug Fix)
-+ [Fix UrlParams.makeUrl when globalThis.location is set to undefined](https://github.com/Effect-TS/effect/pull/2514) (Bug Fix)
-+ [Add FiberHandle module, for holding a reference to a running fiber](https://github.com/Effect-TS/effect/pull/2524) (Feature, next-minor)
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Skip running effects in FiberHandle/Map if not required](https://github.com/Effect-TS/effect/pull/2539) (Improvement)
-+ [Improve the typings of Array.isArray](https://github.com/Effect-TS/effect/pull/2552) (Refactor)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
-+ [Added Stream.fromEventListener](https://github.com/Effect-TS/effect/pull/2513) (Feature, next-minor)
-+ [Add Effect.timeoutOption](https://github.com/Effect-TS/effect/pull/2541) (Feature, next-minor)
-+ [Add Match.withReturnType api](https://github.com/Effect-TS/effect/pull/2568) (Feature)
+
+- [Ensure correct value is passed to mapping function in mapAccum loop](https://github.com/Effect-TS/effect/pull/2507) (Bug Fix)
+- [Change return type of Fiber.joinAll to return an array](https://github.com/Effect-TS/effect/pull/2521) (Bug Fix)
+- [Fix UrlParams.makeUrl when globalThis.location is set to undefined](https://github.com/Effect-TS/effect/pull/2514) (Bug Fix)
+- [Add FiberHandle module, for holding a reference to a running fiber](https://github.com/Effect-TS/effect/pull/2524) (Feature, next-minor)
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Skip running effects in FiberHandle/Map if not required](https://github.com/Effect-TS/effect/pull/2539) (Improvement)
+- [Improve the typings of Array.isArray](https://github.com/Effect-TS/effect/pull/2552) (Refactor)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+- [Added Stream.fromEventListener](https://github.com/Effect-TS/effect/pull/2513) (Feature, next-minor)
+- [Add Effect.timeoutOption](https://github.com/Effect-TS/effect/pull/2541) (Feature, next-minor)
+- [Add Match.withReturnType api](https://github.com/Effect-TS/effect/pull/2568) (Feature)
 
 ### Effect SQL
-+ [Move sqlfx/sql into the @effect/sql package](https://github.com/Effect-TS/effect/pull/2104) (Feature)
-+ [Disable provenance for sql packages](https://github.com/Effect-TS/effect/pull/2528) (Bug Fix)
-+ [Clean up sql Migrator modules](https://github.com/Effect-TS/effect/pull/2530) (Refactor)
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Add sqlfx migration notes to /sql](https://github.com/Effect-TS/effect/pull/2544) (Improvement)
-+ [Update sql.in examples in README](https://github.com/Effect-TS/effect/pull/2545) (Documentation Update)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
-+ [Use op-sqlite for sqlite react native](https://github.com/Effect-TS/effect/pull/2569) (Feature)
+
+- [Move sqlfx/sql into the @effect/sql package](https://github.com/Effect-TS/effect/pull/2104) (Feature)
+- [Disable provenance for sql packages](https://github.com/Effect-TS/effect/pull/2528) (Bug Fix)
+- [Clean up sql Migrator modules](https://github.com/Effect-TS/effect/pull/2530) (Refactor)
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Add sqlfx migration notes to /sql](https://github.com/Effect-TS/effect/pull/2544) (Improvement)
+- [Update sql.in examples in README](https://github.com/Effect-TS/effect/pull/2545) (Documentation Update)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+- [Use op-sqlite for sqlite react native](https://github.com/Effect-TS/effect/pull/2569) (Feature)
 
 ### Effect Platform
-+ [Allow http handlers to be uninterruptible](https://github.com/Effect-TS/effect/pull/2515) (Feature)
-+ [Move uninterruptible to route option](https://github.com/Effect-TS/effect/pull/2517) (Feature)
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Allow fs.watch backend to be customized](https://github.com/Effect-TS/effect/pull/2542) (Feature)
-+ [Fix Command stdin being closed too early](https://github.com/Effect-TS/effect/pull/2556) (Bug Fix)
-+ [Add no-op FileSystem constructor for testing](https://github.com/Effect-TS/effect/pull/2558) (Feature)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
-+ [Added Stream.fromEventListener](https://github.com/Effect-TS/effect/pull/2513) (Feature, next-minor)
-+ [Add Http.response.void helper, for creating an http request that returns void](https://github.com/Effect-TS/effect/pull/2565) (Feature)
-+ [Add more span attributes to http traces](https://github.com/Effect-TS/effect/pull/2567) (Feature)
+
+- [Allow http handlers to be uninterruptible](https://github.com/Effect-TS/effect/pull/2515) (Feature)
+- [Move uninterruptible to route option](https://github.com/Effect-TS/effect/pull/2517) (Feature)
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Allow fs.watch backend to be customized](https://github.com/Effect-TS/effect/pull/2542) (Feature)
+- [Fix Command stdin being closed too early](https://github.com/Effect-TS/effect/pull/2556) (Bug Fix)
+- [Add no-op FileSystem constructor for testing](https://github.com/Effect-TS/effect/pull/2558) (Feature)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+- [Added Stream.fromEventListener](https://github.com/Effect-TS/effect/pull/2513) (Feature, next-minor)
+- [Add Http.response.void helper, for creating an http request that returns void](https://github.com/Effect-TS/effect/pull/2565) (Feature)
+- [Add more span attributes to http traces](https://github.com/Effect-TS/effect/pull/2567) (Feature)
 
 ### Effect RPC
-+ [Ensure context is available in rpc http stream](https://github.com/Effect-TS/effect/pull/2516) (Feature)
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+
+- [Ensure context is available in rpc http stream](https://github.com/Effect-TS/effect/pull/2516) (Feature)
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
 
 ### Effect Typeclass
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
-+ [Update README for the typeclass package](https://github.com/Effect-TS/effect/pull/2571) (Documentation Update)
+
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+- [Update README for the typeclass package](https://github.com/Effect-TS/effect/pull/2571) (Documentation Update)
 
 ### Effect Opentelemetry
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
-+ [Update @opentelemetry/* peer dependencies to ensure allowed versions include used import](https://github.com/Effect-TS/effect/pull/2572) (Bug Fix)
-+ [Add otel Resource.layerFromEnv, for constructing a resource from env variables](https://github.com/Effect-TS/effect/pull/2575) (Feature)
+
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+- [Update @opentelemetry/\* peer dependencies to ensure allowed versions include used import](https://github.com/Effect-TS/effect/pull/2572) (Bug Fix)
+- [Add otel Resource.layerFromEnv, for constructing a resource from env variables](https://github.com/Effect-TS/effect/pull/2575) (Feature)
 
 ### Effect Experimental
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
 
 ### Effect Printer
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
 
 ### Effect Schema
-+ [Re-export FastCheck](https://github.com/Effect-TS/effect/pull/2505) (Bug Fix)
-+ [Introduce LazyArbitrary and new make](https://github.com/Effect-TS/effect/pull/2508) (Feature)
-+ [Make AST.pick correctly handle key renames](https://github.com/Effect-TS/effect/pull/2511) (Bug Fix)
-+ [Schema: consolidate schema names](https://github.com/Effect-TS/effect/pull/2497) (Refactor)
-+ [Add instructions for running the codemod](https://github.com/Effect-TS/effect/pull/2519) (Documentation Update)
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Schema: add compose overloads to enable a subtyping relationship in both directions between C and B](https://github.com/Effect-TS/effect/pull/2531) (Feature)
-+ [Fix transformOrFail and transformOrFailFrom signatures in the exported Class interface by adding the missing annotations optional argument](https://github.com/Effect-TS/effect/pull/2550) (Bug Fix)
-+ [Schema: refactor test filenames to align with new naming conventions](https://github.com/Effect-TS/effect/pull/2560) (Refactor)
-+ [Schema: expand the Zod comparison section to include a list of code comparisons that can serve as a useful migration guide](https://github.com/Effect-TS/effect/pull/2563) (Documentation Update)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
-+ [Schema: partial / required: add support for renaming property keys in property signature transformations](https://github.com/Effect-TS/effect/pull/2577) (Bug Fix)
+
+- [Re-export FastCheck](https://github.com/Effect-TS/effect/pull/2505) (Bug Fix)
+- [Introduce LazyArbitrary and new make](https://github.com/Effect-TS/effect/pull/2508) (Feature)
+- [Make AST.pick correctly handle key renames](https://github.com/Effect-TS/effect/pull/2511) (Bug Fix)
+- [Schema: consolidate schema names](https://github.com/Effect-TS/effect/pull/2497) (Refactor)
+- [Add instructions for running the codemod](https://github.com/Effect-TS/effect/pull/2519) (Documentation Update)
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Schema: add compose overloads to enable a subtyping relationship in both directions between C and B](https://github.com/Effect-TS/effect/pull/2531) (Feature)
+- [Fix transformOrFail and transformOrFailFrom signatures in the exported Class interface by adding the missing annotations optional argument](https://github.com/Effect-TS/effect/pull/2550) (Bug Fix)
+- [Schema: refactor test filenames to align with new naming conventions](https://github.com/Effect-TS/effect/pull/2560) (Refactor)
+- [Schema: expand the Zod comparison section to include a list of code comparisons that can serve as a useful migration guide](https://github.com/Effect-TS/effect/pull/2563) (Documentation Update)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+- [Schema: partial / required: add support for renaming property keys in property signature transformations](https://github.com/Effect-TS/effect/pull/2577) (Bug Fix)
 
 ### Effect Vitest
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
 
 ### Effect CLI
-+ [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
-+ [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
+
+- [Rename ReadonlyArray and ReadonlyRecord modules](https://github.com/Effect-TS/effect/pull/2529) (Refactor)
+- [Re-enable provenance publishing](https://github.com/Effect-TS/effect/pull/2562) (Feature)
 
 ### General Chores
-+ [Add Effect 3.0 changeset](https://github.com/Effect-TS/effect/pull/2526)
-+ [Refine package descriptions](https://github.com/Effect-TS/effect/pull/2532)
-+ [Fix typo in AsyncFiberException](https://github.com/Effect-TS/effect/pull/2533)
-+ [Update devDependencies](https://github.com/Effect-TS/effect/pull/2534)
-+ [Remove leftovers](https://github.com/Effect-TS/effect/pull/2536)
-+ [Update intro video](https://github.com/Effect-TS/effect/pull/2549)
-+ [Use JSONC for code example language](https://github.com/Effect-TS/effect/pull/2554)
-+ [Bump pnpm version](https://github.com/Effect-TS/effect/pull/2574)
+
+- [Add Effect 3.0 changeset](https://github.com/Effect-TS/effect/pull/2526)
+- [Refine package descriptions](https://github.com/Effect-TS/effect/pull/2532)
+- [Fix typo in AsyncFiberException](https://github.com/Effect-TS/effect/pull/2533)
+- [Update devDependencies](https://github.com/Effect-TS/effect/pull/2534)
+- [Remove leftovers](https://github.com/Effect-TS/effect/pull/2536)
+- [Update intro video](https://github.com/Effect-TS/effect/pull/2549)
+- [Use JSONC for code example language](https://github.com/Effect-TS/effect/pull/2554)
+- [Bump pnpm version](https://github.com/Effect-TS/effect/pull/2574)
 
 ## Community
 

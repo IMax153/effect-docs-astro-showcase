@@ -21,8 +21,8 @@ If it’s your first time here, Effect is a powerful TypeScript library designed
 
 To get started, below you’ll find links to our documentation as well as our guide for installing Effect. Enjoy!
 
-- [Effect Documentation](/docs/getting-started/introduction)
-- [Installing Effect](/docs/getting-started/installation)
+- [Effect Documentation](/docs/getting-started/introduction/)
+- [Installing Effect](/docs/getting-started/installation/)
 
 ## Overview of TWIE
 
@@ -31,7 +31,7 @@ If you're new to TWIE, here are a few words on what TWIE is and what it aims for
 We’re happy to see the community growing so fast, with more and more people adopting Effect. At the same time, we understand that it might not be easy keeping up with everything that is going on in the Effect Ecosystem:
 
 - Our Discord server reached **2130+ members** a few days ago and the engagement is at an all-time high.
-- We just had our very first **[Effect Days Conference](/events/effect-days)** in Vienna on February 23, 2024. It's been an amazing experience connecting with our community in person. If you couldn't join us in Vienna, we've got plenty of exciting updates and content coming your way, so stay tuned!
+- We just had our very first **[Effect Days Conference](/events/effect-days/)** in Vienna on February 23, 2024. It's been an amazing experience connecting with our community in person. If you couldn't join us in Vienna, we've got plenty of exciting updates and content coming your way, so stay tuned!
 - All projects around Effect are receiving **key updates** and there has been a lot of activity on GitHub!
 
 We want to make it easy for you to find all the info you need to fully enjoy your Effect journey and actively engage with our community!
@@ -45,40 +45,46 @@ Now, back to business!
 Below you may find the list of all changes that occurred last week.
 
 ### Effect Core
-+ [Add Duration.subtract api](https://github.com/Effect-TS/effect/pull/2402) (Feature)
-+ [Add BigInt.fromString and BigInt.fromNumber](https://github.com/Effect-TS/effect/pull/2399) (Feature)
-+ [Fix interruption of parked requests](https://github.com/Effect-TS/effect/pull/2404) (Bug Fix)
-+ [Collect exits on forEach interrupt of residual requests](https://github.com/Effect-TS/effect/pull/2416) (Bug Fix)
-+ [Add Config duration](https://github.com/Effect-TS/effect/pull/2407) (Feature)
+
+- [Add Duration.subtract api](https://github.com/Effect-TS/effect/pull/2402) (Feature)
+- [Add BigInt.fromString and BigInt.fromNumber](https://github.com/Effect-TS/effect/pull/2399) (Feature)
+- [Fix interruption of parked requests](https://github.com/Effect-TS/effect/pull/2404) (Bug Fix)
+- [Collect exits on forEach interrupt of residual requests](https://github.com/Effect-TS/effect/pull/2416) (Bug Fix)
+- [Add Config duration](https://github.com/Effect-TS/effect/pull/2407) (Feature)
 
 ### Effect Vitest
-+ [Fix helper signatures](https://github.com/Effect-TS/effect/pull/2394) (Bug Fix)
+
+- [Fix helper signatures](https://github.com/Effect-TS/effect/pull/2394) (Bug Fix)
 
 ### Effect Printer
-+ [Remove the Render module from printer](https://github.com/Effect-TS/effect/pull/2378) (Bug Fix, Feature)
+
+- [Remove the Render module from printer](https://github.com/Effect-TS/effect/pull/2378) (Bug Fix, Feature)
 
 ### Effect Experimental
-+ [Don't persist items with a TimeToLive of zero](https://github.com/Effect-TS/effect/pull/2421) (Bug Fix)
+
+- [Don't persist items with a TimeToLive of zero](https://github.com/Effect-TS/effect/pull/2421) (Bug Fix)
 
 ### Effect Platform
-+ [Add Cookies module to /platform http](https://github.com/Effect-TS/effect/pull/2387) (Feature)
-+ [Expose Schema ParseOptions in /platform schema apis](https://github.com/Effect-TS/effect/pull/2400) (Feature)
-+ [Add set-cookie headers in Http.response.toWeb](https://github.com/Effect-TS/effect/pull/2403) (Feature)
-+ [Readme: add HTTP Client section](https://github.com/Effect-TS/effect/pull/2405) (Documentation Update)
-+ [Add undici http client to @effect/platform-node](https://github.com/Effect-TS/effect/pull/2410) (Feature)
-+ [Fix broken imports in /platform](https://github.com/Effect-TS/effect/pull/2411) (Bug Fix)
-+ [Make /platform ClientRequest implement Effect](https://github.com/Effect-TS/effect/pull/2413) (Feature)
+
+- [Add Cookies module to /platform http](https://github.com/Effect-TS/effect/pull/2387) (Feature)
+- [Expose Schema ParseOptions in /platform schema apis](https://github.com/Effect-TS/effect/pull/2400) (Feature)
+- [Add set-cookie headers in Http.response.toWeb](https://github.com/Effect-TS/effect/pull/2403) (Feature)
+- [Readme: add HTTP Client section](https://github.com/Effect-TS/effect/pull/2405) (Documentation Update)
+- [Add undici http client to @effect/platform-node](https://github.com/Effect-TS/effect/pull/2410) (Feature)
+- [Fix broken imports in /platform](https://github.com/Effect-TS/effect/pull/2411) (Bug Fix)
+- [Make /platform ClientRequest implement Effect](https://github.com/Effect-TS/effect/pull/2413) (Feature)
 
 ### Effect Schema
-+ [Fix Schema.extend with nested union](https://github.com/Effect-TS/effect/pull/2396) (Bug Fix)
-+ [Extend should un-nest sub-unions](https://github.com/Effect-TS/effect/pull/2398) (Bug Fix)
-+ [Use BigInt.fromString and BigInt.fromNumber for BigInt Schemas](https://github.com/Effect-TS/effect/pull/2409) (Refactor)
-+ [Update schema readme](https://github.com/Effect-TS/effect/pull/2422) (Documentation Update)
-+ [Readme: pattern to simplify recursive schema definition](https://github.com/Effect-TS/effect/pull/2420) (Documentation Update)
-+ [Readme: add guidelines for messages](https://github.com/Effect-TS/effect/pull/2423) (Documentation Update)
-+ [Corrected the optional signature to exclude invalid options](https://github.com/Effect-TS/effect/pull/2424) (Bug Fix)
-+ [Export null from the AST module](https://github.com/Effect-TS/effect/pull/2428) (Refactor)
-+ [Fix ts 5.4 build errors](https://github.com/Effect-TS/effect/pull/2439) (Bug Fix)
+
+- [Fix Schema.extend with nested union](https://github.com/Effect-TS/effect/pull/2396) (Bug Fix)
+- [Extend should un-nest sub-unions](https://github.com/Effect-TS/effect/pull/2398) (Bug Fix)
+- [Use BigInt.fromString and BigInt.fromNumber for BigInt Schemas](https://github.com/Effect-TS/effect/pull/2409) (Refactor)
+- [Update schema readme](https://github.com/Effect-TS/effect/pull/2422) (Documentation Update)
+- [Readme: pattern to simplify recursive schema definition](https://github.com/Effect-TS/effect/pull/2420) (Documentation Update)
+- [Readme: add guidelines for messages](https://github.com/Effect-TS/effect/pull/2423) (Documentation Update)
+- [Corrected the optional signature to exclude invalid options](https://github.com/Effect-TS/effect/pull/2424) (Bug Fix)
+- [Export null from the AST module](https://github.com/Effect-TS/effect/pull/2428) (Refactor)
+- [Fix ts 5.4 build errors](https://github.com/Effect-TS/effect/pull/2439) (Bug Fix)
 
 ## Community
 

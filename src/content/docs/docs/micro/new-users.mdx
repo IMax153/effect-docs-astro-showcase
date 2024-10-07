@@ -97,7 +97,7 @@ which mirror those of the `Effect` type:
 
 ## The MicroExit Type
 
-The `MicroExit` type is designed to capture the outcome of a `Micro` computation. It uses the [Either](/docs/data-types/either) data type to distinguish between successful outcomes and failures:
+The `MicroExit` type is designed to capture the outcome of a `Micro` computation. It uses the [Either](/docs/data-types/either/) data type to distinguish between successful outcomes and failures:
 
 ```ts showLineNumbers=false
 type MicroExit<A, E = never> = Either<A, MicroCause<E>>
@@ -292,7 +292,7 @@ Expected errors **are tracked** at the type level by the `Micro` data type in th
 
 ### either
 
-The `Micro.either` function transforms an `Micro<A, E, R>` into an effect that encapsulates both potential failure and success within an [Either](/docs/data-types/either) data type.
+The `Micro.either` function transforms an `Micro<A, E, R>` into an effect that encapsulates both potential failure and success within an [Either](/docs/data-types/either/) data type.
 
 The resulting effect cannot fail because the potential failure is now represented within the `Either`'s `Left` type.
 The error type of the returned `Micro` is specified as `never`, confirming that the effect is structured to not fail.

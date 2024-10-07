@@ -43,7 +43,7 @@ When you use the default logger with `Effect.log`, it incorporates several impor
 
 - `timestamp`: The timestamp when the log message was generated.
 - `level`: The log level at which the message is logged.
-- `fiber`: The identifier of the [fiber](/docs/concurrency/fibers) executing the program.
+- `fiber`: The identifier of the [fiber](/docs/concurrency/fibers/) executing the program.
 - `message`: The log content, which can include multiple items.
 - `span`: (Optional) The duration of the span in milliseconds.
 
@@ -68,7 +68,7 @@ timestamp=... level=INFO fiber=#0 message=message1 message=message2 message=mess
 */
 ```
 
-For added context, you can also include one or more [Cause](/docs/data-types/cause) instances in your logs,
+For added context, you can also include one or more [Cause](/docs/data-types/cause/) instances in your logs,
 which provide detailed error information under an additional `cause` annotation:
 
 ```ts twoslash
@@ -276,7 +276,7 @@ timestamp=... level=INFO fiber=#0 message=message2 key2=value2 key1=value1
 ```
 
 Annotations can also be applied with a scoped lifetime using `Effect.annotateLogsScoped`.
-This method confines the application of annotations to logs within a specific [Scope](/docs/resource-management/scope) of your effect computation:
+This method confines the application of annotations to logs within a specific [Scope](/docs/resource-management/scope/) of your effect computation:
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -407,7 +407,7 @@ In this approach, you create a custom runtime that incorporates the configuratio
 
 ## Loading the Log Level from Configuration
 
-To retrieve the log level from a [configuration](/docs/configuration) and incorporate it into your program, utilize the layer produced by `Logger.minimumLogLevel`:
+To retrieve the log level from a [configuration](/docs/configuration/) and incorporate it into your program, utilize the layer produced by `Logger.minimumLogLevel`:
 
 ```ts twoslash
 import {
@@ -454,7 +454,7 @@ Output:
 */
 ```
 
-To evaluate the configured program, you can utilize `ConfigProvider.fromMap` for testing (refer to [Testing Services](/docs/configuration#testing-services) for more details).
+To evaluate the configured program, you can utilize `ConfigProvider.fromMap` for testing (refer to [Testing Services](/docs/configuration/#testing-services) for more details).
 
 ## Custom loggers
 

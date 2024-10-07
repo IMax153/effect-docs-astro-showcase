@@ -10,7 +10,7 @@ It supports asynchronous operations, ensuring data integrity and consistency, an
 
 ## Basic Usage
 
-The module provides a single `KeyValueStore` [tag](/docs/requirements-management/services), which acts as the gateway for interacting with the store.
+The module provides a single `KeyValueStore` [tag](/docs/requirements-management/services/), which acts as the gateway for interacting with the store.
 
 ```ts twoslash
 import { KeyValueStore } from "@effect/platform"
@@ -71,7 +71,7 @@ Effect.runPromise(program.pipe(Effect.provide(layerMemory)))
 
 ## Built-in Implementations
 
-The module provides several built-in implementations of the `KeyValueStore` interface, available as [layers](/docs/requirements-management/layers), to suit different needs:
+The module provides several built-in implementations of the `KeyValueStore` interface, available as [layers](/docs/requirements-management/layers/), to suit different needs:
 
 | **Implementation**    | **Description**                                                                                           |
 | --------------------- | --------------------------------------------------------------------------------------------------------- |
@@ -81,7 +81,7 @@ The module provides several built-in implementations of the `KeyValueStore` inte
 
 ## SchemaStore
 
-The `SchemaStore` interface allows you to validate and parse values according to a defined [schema](/docs/schema/introduction).
+The `SchemaStore` interface allows you to validate and parse values according to a defined [schema](/docs/schema/introduction/).
 This ensures that all data stored in the key-value store adheres to the specified structure, enhancing data integrity and type safety.
 
 **Example**
