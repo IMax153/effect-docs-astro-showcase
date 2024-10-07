@@ -6,7 +6,7 @@
       "destination": "https://effect-docs-astro-showcase.vercel.app/blog/:match*"
     },
     {
-      "source": "/blog/",
+      "source": "/blog",
       "destination": "https://effect-docs-astro-showcase.vercel.app/blog/"
     },
     {
@@ -14,8 +14,12 @@
       "destination": "https://effect-docs-astro-showcase.vercel.app/docs/:match*"
     },
     {
-      "source": "/docs/",
+      "source": "/docs",
       "destination": "https://effect-docs-astro-showcase.vercel.app/docs/getting-started/introduction"
+    },
+    {
+      "source": "/authors/:match*",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/authors/:match*"
     },
     {
       "source": "/_astro/:match*",
