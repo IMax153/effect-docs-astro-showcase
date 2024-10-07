@@ -159,8 +159,8 @@ export default defineConfig({
           autogenerate: { directory: "docs/observability" },
           collapsed: false
         },
-        { label: "Configuration", slug: "docs/configuration/" },
-        { label: "Runtime", slug: "docs/runtime/" },
+        { label: "Configuration", slug: "docs/configuration" },
+        { label: "Runtime", slug: "docs/runtime" },
         {
           label: "Scheduling",
           autogenerate: { directory: "docs/scheduling" },
@@ -171,7 +171,7 @@ export default defineConfig({
           autogenerate: { directory: "docs/state-management" },
           collapsed: false
         },
-        { label: "Batching", slug: "docs/batching/" },
+        { label: "Batching", slug: "docs/batching" },
         {
           label: "Caching",
           autogenerate: { directory: "docs/caching" },
