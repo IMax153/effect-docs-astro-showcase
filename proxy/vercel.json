@@ -22,8 +22,32 @@
       "destination": "https://effect-docs-astro-showcase.vercel.app/authors/:match*"
     },
     {
+      "source": "/open-graph/:match*",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/open-graph/:match*"
+    },
+    {
+      "source": "/pagefind/:match*",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/pagefind/:match*"
+    },
+    {
+      "source": "/play",
+      "destination": "https://website-eight-rho-75.vercel.app/play"
+    },
+    {
+      "source": "/vendor/:match*",
+      "destination": "https://website-eight-rho-75.vercel.app/vendor/:match*"
+    },
+    {
+      "source": "/videos/:match*",
+      "destination": "https://website-eight-rho-75.vercel.app/videos/:match*"
+    },
+    {
       "source": "/_astro/:match*",
       "destination": "https://effect-docs-astro-showcase.vercel.app/_astro/:match*"
+    },
+    {
+      "source": "/_next/:match*",
+      "destination": "https://website-eight-rho-75.vercel.app/_next/:match*"
     },
     {
       "source": "/",
