@@ -7,20 +7,22 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-Using the `Schema.filter` function, developers can define custom validation logic that goes beyond basic type checks, allowing for in-depth control over the data conformity process. This function applies a predicate to data, and if the data fails the predicate's condition, a custom error message can be returned.
+Developers can define custom validation logic beyond basic type checks, giving more control over how data is validated.
 
-<Aside type="tip" title="Effectful Filters">
-  For effectful filters, see
-  [Schema.filterEffect](/docs/schema/transformations/#effectful-filters).
-</Aside>
+## Declaring Filters
 
-**Example** (Simple Validation)
+Filters are declared using the `Schema.filter` function. This function requires two arguments: the schema to be validated and a predicate function. The predicate function is user-defined and determines whether the data satisfies the condition. If the data fails the validation, an error message can be provided.
+
+**Example**
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
+// Define a string schema with a filter to ensure the string
+// is at least 10 characters long
 const LongString = Schema.String.pipe(
   Schema.filter(
+    // Custom error message for strings shorter than 10 characters
     (s) => s.length >= 10 || "a string at least 10 characters long"
   )
 )
@@ -37,16 +39,23 @@ ParseError: { string | filter }
 */
 ```
 
-<Aside type="note" title="Filters and Schema Type">
-  Please note that the use of filters do not alter the `Type` of the
-  schema. They only serve to add additional constraints to the parsing
-  process. If you intend to modify the `Type`, consider using [Branded
+Note that the filter does not modify the schema's `Type`:
+
+```ts showLineNumbers=false
+// string
+type LongString = typeof LongString.Type
+```
+
+Filters add additional validation constraints but do not alter the schema's underlying type.
+
+<Aside type="tip">
+  If you need to modify the `Type`, consider using [Branded
   types](/docs/schema/advanced-usage/#branded-types).
 </Aside>
 
-## Predicate Function Structure
+## The Predicate Function
 
-The predicate for a filter is defined as follows:
+The predicate function in a filter follows this structure:
 
 ```ts
 type Predicate = (
@@ -74,15 +83,23 @@ type FilterOutput =
 type FilterReturnType = FilterOutput | ReadonlyArray<FilterOutput>
 ```
 
-Filter predicates can return several types of values, each with specific implications:
+The filter's predicate can return several types of values, each affecting validation in a different way:
 
-- `true`: The data satisfies the filter's condition.
-- `false` or `undefined`: The filter is not satisfied, and no specific error message is provided.
-- `string`: The filter fails, and the provided string is used as the default error message.
-- `ParseResult.ParseIssue`: The filter fails with a detailed error structure.
-- `FilterIssue`: Allows specifying detailed error paths and messages, enhancing error specificity.
+| **Return Type**               | **Behavior**                                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------------------------ |
+| `true`                        | The data satisfies the filter's condition and passes validation.                                 |
+| `false` or `undefined`        | The data does not meet the condition, and no specific error message is provided.                 |
+| `string`                      | The validation fails, and the provided string is used as the error message.                      |
+| `ParseResult.ParseIssue`      | The validation fails with a detailed error structure, specifying where and why it failed.        |
+| `FilterIssue`                 | Allows for more detailed error messages with specific paths, providing enhanced error reporting. |
+| `ReadonlyArray<FilterOutput>` | An array of issues can be returned if multiple validation errors need to be reported.            |
 
-An array can be returned if multiple issues need to be reported, allowing for complex validations that may have multiple points of failure.
+<Aside type="tip" title="Effectful Filters">
+  Normal filters only handle synchronous, non-effectful validations. If
+  you need filters that involve asynchronous logic or side effects,
+  consider using
+  [Schema.filterEffect](/docs/schema/transformations/#effectful-filters).
+</Aside>
 
 ## Annotations
 
@@ -91,7 +108,7 @@ It's beneficial to embed as much metadata as possible within the schema. This me
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema, JSONSchema } from "@effect/schema"
 
 const LongString = Schema.String.pipe(
   Schema.filter(
@@ -100,8 +117,7 @@ const LongString = Schema.String.pipe(
     {
       identifier: "LongString",
       jsonSchema: { minLength: 10 },
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+      description: "Lorem ipsum dolor sit amet, ..."
     }
   )
 )
@@ -109,30 +125,44 @@ const LongString = Schema.String.pipe(
 console.log(Schema.decodeUnknownSync(LongString)("a"))
 /*
 throws:
-ParseError: { string | filter }
+ParseError: LongString
 └─ Predicate refinement failure
    └─ a string at least 10 characters long
+*/
+
+console.log(JSONSchema.make(LongString))
+/*
+Output:
+{
+  '$schema': 'http://json-schema.org/draft-07/schema#',
+  type: 'string',
+  description: 'Lorem ipsum dolor sit amet, ...',
+  minLength: 10
+}
 */
 ```
 
 ## Specifying Error Paths
 
-It's possible to specify an error path along with the message, which enhances error specificity and is particularly beneficial for integration with tools like [react-hook-form](https://react-hook-form.com/).
+When validating forms or structured data, it's possible to associate specific error messages with particular fields or paths. This enhances error reporting and is especially useful when integrating with libraries like [react-hook-form](https://react-hook-form.com/).
 
-**Example**
+**Example** (Match Passwords)
 
 ```ts twoslash
 import { ArrayFormatter, Schema } from "@effect/schema"
 import { Either } from "effect"
 
-const Password = Schema.Trim.pipe(Schema.minLength(1))
+const Password = Schema.Trim.pipe(Schema.minLength(2))
 
 const MyForm = Schema.Struct({
   password: Password,
   confirm_password: Password
 }).pipe(
+  // Add a filter to ensure that passwords match
   Schema.filter((input) => {
     if (input.password !== input.confirm_password) {
+      // Return an error message associated
+      // with the "confirm_password" field
       return {
         path: ["confirm_password"],
         message: "Passwords do not match"
@@ -145,7 +175,7 @@ console.log(
   JSON.stringify(
     Schema.decodeUnknownEither(MyForm)({
       password: "abc",
-      confirm_password: "d"
+      confirm_password: "d" // Confirm password does not match
     }).pipe(
       Either.mapLeft((error) => ArrayFormatter.formatErrorSync(error))
     ),
@@ -169,25 +199,28 @@ console.log(
 */
 ```
 
-This allows the error to be directly associated with the `confirm_password` field, improving clarity for the end-user.
+In this example, we define a `MyForm` schema with two password fields (`password` and `confirm_password`). We use `Schema.filter` to check that both passwords match. If they don't, an error message is returned, specifically associated with the `confirm_password` field. This makes it easier to pinpoint the exact location of the validation failure.
 
-<Aside type="note">
-  The use of `ArrayFormatter` translates the error details into a more
-  comprehensible format. For further details, see
+The error is formatted in a structured way using `ArrayFormatter`, allowing for easier post-processing and integration with form libraries.
+
+<Aside type="tip" title="Using ArrayFormatter for Structured Errors">
+  The `ArrayFormatter` provides a detailed and structured error format
+  rather than a simple error string. This is especially useful when
+  handling complex forms or structured data. For more information, see
   [ArrayFormatter](/docs/schema/error-formatters/#arrayformatter).
 </Aside>
 
 ## Multiple Error Reporting
 
-The `Schema.filter` API also supports reporting multiple issues at once, which is useful in forms where several validation checks might fail simultaneously.
+The `Schema.filter` API supports reporting multiple validation issues at once, which is especially useful in scenarios like form validation where several checks might fail simultaneously.
 
-**Example**
+**Example** (Reporting Multiple Validation Errors)
 
 ```ts twoslash
 import { ArrayFormatter, Schema } from "@effect/schema"
 import { Either } from "effect"
 
-const Password = Schema.Trim.pipe(Schema.minLength(1))
+const Password = Schema.Trim.pipe(Schema.minLength(2))
 const OptionalString = Schema.optional(Schema.String)
 
 const MyForm = Schema.Struct({
@@ -198,14 +231,16 @@ const MyForm = Schema.Struct({
 }).pipe(
   Schema.filter((input) => {
     const issues: Array<Schema.FilterIssue> = []
-    // passwords must match
+
+    // Check if passwords match
     if (input.password !== input.confirm_password) {
       issues.push({
         path: ["confirm_password"],
         message: "Passwords do not match"
       })
     }
-    // either name or surname must be present
+
+    // Ensure either name or surname is present
     if (!input.name && !input.surname) {
       issues.push({
         path: ["surname"],
@@ -220,7 +255,7 @@ console.log(
   JSON.stringify(
     Schema.decodeUnknownEither(MyForm)({
       password: "abc",
-      confirm_password: "d"
+      confirm_password: "d" // Confirm password does not match
     }).pipe(
       Either.mapLeft((error) => ArrayFormatter.formatErrorSync(error))
     ),
@@ -252,15 +287,18 @@ console.log(
 */
 ```
 
-<Aside type="note">
-  The use of `ArrayFormatter` translates the error details into a more
-  comprehensible format. For further details, see
+In this example, we define a `MyForm` schema with fields for password validation and optional name/surname fields. The `Schema.filter` function checks if the passwords match and ensures that either a name or surname is provided. If either validation fails, the corresponding error message is associated with the relevant field and both errors are returned in a structured format.
+
+<Aside type="tip" title="Using ArrayFormatter for Structured Errors">
+  The `ArrayFormatter` provides a detailed and structured error format
+  rather than a simple error string. This is especially useful when
+  handling complex forms or structured data. For more information, see
   [ArrayFormatter](/docs/schema/error-formatters/#arrayformatter).
 </Aside>
 
 ## Exposed Values
 
-You can access the base schema for which the filter has been defined:
+When working with schemas that have filters, you can access the base schema (the schema before the filter was applied) using the `from` property:
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -269,11 +307,11 @@ const LongString = Schema.String.pipe(
   Schema.filter((s) => s.length >= 10)
 )
 
-// const From: typeof Schema.String
+// Access the base schema, which is the string schema
+// before the filter was applied
 const From = LongString.from
+//    ^? const From: typeof Schema.String
 ```
-
-In this example, you're able to access the original schema (`Schema.String`) for which the filter (`LongString`) has been defined. The `from` property provides access to this base schema.
 
 ## String Filters
 
@@ -312,6 +350,15 @@ Schema.String.pipe(Schema.trimmed())
 
 // Validates that a string is entirely in lowercase
 Schema.String.pipe(Schema.lowercased())
+
+// Validates that a string is entirely in uppercase
+Schema.String.pipe(Schema.uppercased())
+
+// Validates that a string is capitalized
+Schema.String.pipe(Schema.capitalized())
+
+// Validates that a string is uncapitalized
+Schema.String.pipe(Schema.uncapitalized())
 ```
 
 <Aside type="tip" title="Trim vs Trimmed">
@@ -365,10 +412,24 @@ Schema.Number.pipe(Schema.nonPositive())
 Schema.Number.pipe(Schema.multipleOf(5))
 ```
 
+## Array Filters
+
+```ts twoslash
+import { Schema } from "@effect/schema"
+
+// Specifies the maximum number of items in the array
+Schema.Array(Schema.Number).pipe(Schema.maxItems(2))
+
+// Specifies the minimum number of items in the array
+Schema.Array(Schema.Number).pipe(Schema.minItems(2))
+
+// Specifies the exact number of items in the array
+Schema.Array(Schema.Number).pipe(Schema.itemsCount(2))
+```
+
 ## BigInt Filters
 
 ```ts twoslash
-// @target: ES2020
 import { Schema } from "@effect/schema"
 
 // Specifies a BigInt greater than 5
@@ -464,19 +525,4 @@ Schema.Duration.pipe(Schema.lessThanOrEqualToDuration("5 seconds"))
 
 // Specifies a duration between 5 seconds and 10 seconds, inclusive
 Schema.Duration.pipe(Schema.betweenDuration("5 seconds", "10 seconds"))
-```
-
-## Array Filters
-
-```ts twoslash
-import { Schema } from "@effect/schema"
-
-// Specifies the maximum number of items in the array
-Schema.Array(Schema.Number).pipe(Schema.maxItems(2))
-
-// Specifies the minimum number of items in the array
-Schema.Array(Schema.Number).pipe(Schema.minItems(2))
-
-// Specifies the exact number of items in the array
-Schema.Array(Schema.Number).pipe(Schema.itemsCount(2))
 ```
