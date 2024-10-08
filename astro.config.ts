@@ -273,11 +273,6 @@ export default defineConfig({
           collapsed: false
         },
         {
-          label: "Integrations",
-          autogenerate: { directory: "docs/integrations" },
-          collapsed: false
-        },
-        {
           label: "Additional Resources",
           autogenerate: { directory: "docs/additional-resources" },
           collapsed: false
