@@ -10,6 +10,10 @@
       "destination": "https://effect-docs-astro-showcase.vercel.app/blog/"
     },
     {
+      "source": "/blog/:match*/",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/blog/:match*/"
+    },
+    {
       "source": "/blog/:match*",
       "destination": "https://effect-docs-astro-showcase.vercel.app/blog/:match*"
     },
