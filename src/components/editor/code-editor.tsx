@@ -1,14 +1,27 @@
 import { useCallback, Fragment, Suspense } from "react";
 import * as Hash from "effect/Hash"
 import { useRxSet } from "@effect-rx/rx-react";
-import { FileEditor } from "./components/file-editor";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
+import { Toaster } from "@/components/ui/toaster"
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { FileEditor } from "./components/file-editor"
+import { FileExplorer } from "./components/file-explorer"
 import {
   useWorkspaceHandle,
   useWorkspaceShells,
   WorkspaceProvider
-} from "./context/workspace";
-import { makeDirectory, makeFile, Workspace, WorkspaceShell } from "./domain/workspace";
-import { Terminal } from "./components/terminal";
+} from "./context/workspace"
+import {
+  makeDirectory,
+  makeFile,
+  Workspace,
+  WorkspaceShell
+} from "./domain/workspace"
+import { Terminal } from "./components/terminal"
 
 const defaultWorkspace = new Workspace({
   name: "playground",
@@ -24,25 +37,19 @@ const defaultWorkspace = new Workspace({
   },
   shells: [new WorkspaceShell({ command: "../run src/main.ts" })],
   initialFilePath: "src/main.ts",
+  snapshots: Array.from({ length: 10 }, (_, i) => `snapshot-${i}`),
   tree: [
-    // TODO: Revert this back to the old program
     makeDirectory("src", [
       makeFile(
         "main.ts",
         `import { NodeRuntime } from "@effect/platform-node"
 import { Effect } from "effect"
-import { DevToolsLive } from "./DevTools"
 
 const program = Effect.gen(function*() {
   yield* Effect.log("Welcome to the Effect Playground!")
-}).pipe(Effect.withSpan("program", {
-  attributes: { source: "Playground" }
-}))
+})
 
-program.pipe(
-  Effect.provide(DevToolsLive),
-  NodeRuntime.runMain
-)
+program.pipe(NodeRuntime.runMain)
 `),
     ])
   ]
@@ -52,7 +59,7 @@ export function CodeEditor({ workspace = defaultWorkspace }: {
   readonly workspace?: Workspace
 }) {
   return (
-    <Suspense fallback="Loading...">
+    <Suspense fallback="Loading">
       <WorkspaceProvider workspace={workspace}>
         <CodeEditorSuspended />
       </WorkspaceProvider>
@@ -61,27 +68,37 @@ export function CodeEditor({ workspace = defaultWorkspace }: {
 }
 
 function CodeEditorSuspended() {
-  const handle = useWorkspaceHandle()
-  const setSize = useRxSet(handle.terminalSize)
-  const onResize = useCallback(
-    function(..._: any) {
-      setSize()
-    },
-    [setSize]
-  )
-
   return (
-    <>
-      <FileEditor />
-      <WorkspaceShells />
-    </>
+    <TooltipProvider>
+      <ResizablePanelGroup autoSaveId="editor" direction="vertical">
+        <ResizablePanel>
+          <ResizablePanelGroup autoSaveId="sidebar" direction="horizontal">
+            <ResizablePanel
+              defaultSize={20}
+              className="bg-gray-50 dark:bg-neutral-900 min-w-[200px] flex flex-col"
+            >
+              <FileExplorer />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel>
+              <FileEditor />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+
+        <ResizableHandle />
+
+        <WorkspaceShells />
+      </ResizablePanelGroup>
+      <Toaster />
+    </TooltipProvider>
   )
 }
 
 function WorkspaceShells() {
-  const handle = useWorkspaceHandle()
+  const { terminalSize } = useWorkspaceHandle()
   const shells = useWorkspaceShells()
-  const setSize = useRxSet(handle.terminalSize)
+  const setSize = useRxSet(terminalSize)
   const onResize = useCallback(
     function(..._: any) {
       setSize()
@@ -89,14 +106,25 @@ function WorkspaceShells() {
     [setSize]
   )
   return (
-    <>
-      {shells.map((shell, index) => (
-        <Fragment key={Hash.hash(shell)}>
-          <Terminal shell={shell} />
-        </Fragment >
-      ))
-      }
-    </>
+    <ResizablePanel defaultSize={30} onResize={onResize}>
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="border-y border-neutral-300 dark:border-neutral-700"
+      >
+        {shells.map((shell, index) => {
+          const hash = Hash.hash(shell).toString()
+          return (
+            <Fragment key={hash}>
+              {index > 0 && <ResizableHandle id={hash} />}
+              <ResizablePanel id={hash} className="h-full" order={index} onResize={onResize}>
+                <Terminal shell={shell} />
+              </ResizablePanel>
+            </Fragment>
+          )
+        })
+        }
+      </ResizablePanelGroup>
+    </ResizablePanel>
   )
 }
 

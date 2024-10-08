@@ -1,26 +1,45 @@
 import { Result, useRxSet, useRxValue } from "@effect-rx/rx-react"
-import { useEffect, useMemo, useRef } from "react"
+import { useCallback, useMemo } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import * as Option from "effect/Option"
-import { cn } from "@/lib/css/utils"
+import { useWorkspaceHandle } from "../context/workspace"
 import { editorRx } from "../rx/editor"
+import { LoadingOverlay } from "./loading-overlay"
 
 export function FileEditor() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { editor, element } = useMemo(() => editorRx(), [])
+  const handle = useWorkspaceHandle()
+  const { editor, element } = useMemo(() => editorRx(handle), [handle])
   const setElement = useRxSet(element)
   const result = useRxValue(editor)
   const isReady = Result.isSuccess(result)
 
-  useEffect(() => {
-    if (containerRef.current) {
-      setElement(Option.some(containerRef.current))
+  const containerRef = useCallback((node: HTMLDivElement) => {
+    if (node !== null) {
+      setElement(Option.some(node))
     }
-  }, [containerRef, setElement])
+  }, [])
 
   return (
     <section className="h-full flex flex-col">
-      {!isReady && <div>Loading...</div>}
-      <div ref={containerRef} className={cn("h-full", !isReady && "hidden")} />
+      <AnimatePresence>
+        {!isReady && (
+          <motion.div
+            className="absolute inset-0 z-10"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <LoadingOverlay />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <motion.div
+        ref={containerRef}
+        className="w-full h-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: !isReady ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+      ></motion.div>
     </section>
   )
 }

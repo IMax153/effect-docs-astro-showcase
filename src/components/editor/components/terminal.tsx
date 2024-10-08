@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, Suspense } from "react"
 import { useRxSuspenseSuccess } from "@effect-rx/rx-react"
-import { WorkspaceShell } from "../domain/workspace"
 import { useWorkspaceHandle } from "../context/workspace"
+import type { WorkspaceShell } from "../domain/workspace"
 
 import "@xterm/xterm/css/xterm.css"
+import "./terminal.css"
 
 export function Terminal({ shell }: {
   readonly shell: WorkspaceShell
@@ -24,7 +25,7 @@ function Shell({ shell }: {
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const handle = useWorkspaceHandle()
-  const rx = useMemo(() => handle.terminal(shell), [handle, shell])
+  const rx = useMemo(() => handle.makeTerminal(shell), [handle, shell])
   const terminal = useRxSuspenseSuccess(rx).value
 
   useEffect(() => {

@@ -6,8 +6,6 @@ const CANNOT_FIND_NAME_DID_YOU_MEAN_CODE = 2552;
 // https://github.com/microsoft/TypeScript/blob/1aac3555f7ebbfc10515d2ba28f041e03e75d885/src/compiler/diagnosticMessages.json#L7110-L7113
 const NO_VALUE_EXISTS_IN_SCOPE_FOR_THE_SHORTHAND_PROPERTY_CODE = 18004;
 
-const uniq = (arr) => Array.from(new Set(arr));
-
 // eslint-disable-next-line no-restricted-globals
 self.customTSWorkerFactory = (TypeScriptWorker) => {
   return class extends TypeScriptWorker {

@@ -6,15 +6,16 @@ Astro.response.headers.set("Cross-Origin-Embedder-Policy", "require-corp")
 Astro.response.headers.set("Cross-Origin-Opener-Policy", "same-origin")
 ---
 
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.png" type="image/png">
   </head>
-  <body>
+  <body class="m-0">
     <main class="h-screen flex flex-col">
       <CodeEditor client:only="react" />
     </main>
   </body>
 </html>
+

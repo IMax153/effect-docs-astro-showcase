@@ -1,4 +1,3 @@
-import type { WebContainerProcess } from "@webcontainer/api"
 import * as Schema from "@effect/schema/Schema"
 import * as Brand from "effect/Brand"
 import * as Data from "effect/Data"
@@ -8,11 +7,18 @@ import * as Hash from "effect/Hash"
 import * as Iterable from "effect/Iterable"
 import * as Option from "effect/Option"
 import type { Scope } from "effect/Scope"
-import type { Stream } from "effect/Stream"
-import type { SubscriptionRef } from "effect/SubscriptionRef"
+import type { RxWorkspaceHandle } from "../rx/workspace"
+import type { Monaco } from "../services/monaco"
+import type { WebContainer } from "../services/webcontainer"
 
 export type FullPath = Brand.Branded<string, "FullPath">
 export const FullPath = Brand.nominal<FullPath>()
+
+export declare namespace Workspace {
+  export interface Plugin {
+    (handle: RxWorkspaceHandle): Effect.Effect<void, never, Monaco | WebContainer | Scope>
+  }
+}
 
 export class WorkspaceShell extends Schema.Class<WorkspaceShell>("WorkspaceShell")({
   command: Schema.optional(Schema.String),
@@ -217,6 +223,9 @@ export class Workspace extends Schema.Class<Workspace>("Workspace")({
       Option.map((path) => FullPath(`${this.name}/${path}`))
     )
   }
+  relativePath(path: string) {
+    return `${this.name}/${path}`
+  }
   updateFiles<E, R>(
     f: (item: File, path: string) => Effect.Effect<File, E, R>
   ) {
@@ -262,23 +271,21 @@ export class Workspace extends Schema.Class<Workspace>("Workspace")({
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export declare namespace Workspace {
-  export interface Handle {
-    readonly workspace: SubscriptionRef<Workspace>
-    readonly makeShell: Effect.Effect<WebContainerProcess, never, Scope>
-    readonly run: (command: string) => Effect.Effect<number>
-    readonly createFile: (parentDirectory: Option.Option<Directory>, name: string, type: "File" | "Directory") => Effect.Effect<File | Directory, FileValidationError>
-    readonly renameFile: (node: File | Directory, newName: string) => Effect.Effect<File | Directory, FileValidationError>
-    readonly removeFile: (node: File | Directory) => Effect.Effect<void>
-    readonly readFile: (file: string) => Effect.Effect<string, FileNotFoundError>
-    readonly watchFile: (file: string) => Stream<string, FileNotFoundError>
+export class FileAlreadyExistsError extends Data.TaggedError("FileAlreadyExistsError")<{
+  readonly path: string
+}> {
+  override get message(): string {
+    return `The file at path '${this.path}' already exists`
   }
 }
 
 export class FileNotFoundError extends Data.TaggedError("FileNotFoundError")<{
-  readonly file: string
-}> { }
+  readonly path: string
+}> {
+  override get message(): string {
+    return `The file at path '${this.path}' was not found`
+  }
+}
 
 export class FileValidationError extends Data.TaggedError("FileValidationError")<{
   readonly reason: "InvalidName" | "UnsupportedType"
@@ -329,8 +336,8 @@ export const defaultFiles = [
           "arrowFunction.useParentheses": "force"
         },
         plugins: [
-          "/vendor/dprint/plugins/json-0.19.2.wasm",
-          "/vendor/dprint/plugins/typescript-0.91.0.wasm"
+          "/vendor/dprint/plugins/json-0.19.3.wasm",
+          "/vendor/dprint/plugins/typescript-0.93.0.wasm"
         ]
       },
       undefined,

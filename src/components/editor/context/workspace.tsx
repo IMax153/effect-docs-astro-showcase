@@ -1,7 +1,7 @@
 import React from "react"
-import { type RxWorkspaceHandle, workspaceHandleRx } from "../rx/workspace"
 import { useRxSet, useRxSuspenseSuccess, useRxValue } from "@effect-rx/rx-react"
 import { Workspace } from "../domain/workspace"
+import { type RxWorkspaceHandle, workspaceHandleRx } from "../rx/workspace"
 
 export const WorkspaceContext = React.createContext<RxWorkspaceHandle>(
   null as any
