@@ -79,6 +79,9 @@ importers:
       effect:
         specifier: ^3.8.4
         version: 3.8.4
+      hastscript:
+        specifier: ^9.0.0
+        version: 9.0.0
       playwright:
         specifier: ^1.47.2
         version: 1.47.2

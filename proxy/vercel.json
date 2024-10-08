@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/blog",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/blog/"
+    },
+    {
       "source": "/blog/",
       "destination": "https://effect-docs-astro-showcase.vercel.app/blog/"
     },
@@ -10,28 +14,64 @@
       "destination": "https://effect-docs-astro-showcase.vercel.app/blog/:match*"
     },
     {
+      "source": "/docs",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/getting-started/introduction/"
+    },
+    {
       "source": "/docs/",
-      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/getting-started/introduction"
+      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/getting-started/introduction/"
+    },
+    {
+      "source": "/docs/:match*/",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/:match*/"
     },
     {
       "source": "/docs/:match*",
       "destination": "https://effect-docs-astro-showcase.vercel.app/docs/:match*"
     },
     {
-      "source": "/events/:match*",
-      "destination": "https://website-eight-rho-75.vercel.app/:match*"
+      "source": "/authors/:match*",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/authors/:match*"
+    },
+    {
+      "source": "/open-graph/:match*",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/open-graph/:match*"
+    },
+    {
+      "source": "/pagefind/:match*",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/pagefind/:match*"
+    },
+    {
+      "source": "/play",
+      "destination": "https://website-eight-rho-75.vercel.app/play"
     },
     {
       "source": "/play/",
       "destination": "https://website-eight-rho-75.vercel.app/play/"
     },
     {
-      "source": "/play/:match*",
-      "destination": "https://website-eight-rho-75.vercel.app/play/:match*"
+      "source": "/vendor/:match*",
+      "destination": "https://website-eight-rho-75.vercel.app/vendor/:match*"
+    },
+    {
+      "source": "/videos/:match*",
+      "destination": "https://website-eight-rho-75.vercel.app/videos/:match*"
+    },
+    {
+      "source": "/_astro/:match*",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/_astro/:match*"
+    },
+    {
+      "source": "/_next/:match*",
+      "destination": "https://website-eight-rho-75.vercel.app/_next/:match*"
     },
     {
       "source": "/",
       "destination": "https://website-eight-rho-75.vercel.app/"
+    },
+    {
+      "source": "/:match*",
+      "destination": "https://website-eight-rho-75.vercel.app/:match*"
     }
   ]
 }
