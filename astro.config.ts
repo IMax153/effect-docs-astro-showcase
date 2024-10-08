@@ -4,6 +4,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import starlightBlog from "starlight-blog"
 import starlightLinksValidator from "starlight-links-validator"
 import { rehypeHeadingIds } from "@astrojs/markdown-remark"
+import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
 import tailwind from "@astrojs/tailwind"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
@@ -39,6 +40,7 @@ export default defineConfig({
     ]
   },
   integrations: [
+    react(),
     tailwind({
       applyBaseStyles: false
     }),
