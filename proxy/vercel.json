@@ -22,6 +22,10 @@
       "destination": "https://effect-docs-astro-showcase.vercel.app/docs/getting-started/introduction/"
     },
     {
+      "source": "/docs/:match*/",
+      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/:match*/"
+    },
+    {
       "source": "/docs/:match*",
       "destination": "https://effect-docs-astro-showcase.vercel.app/docs/:match*"
     },
