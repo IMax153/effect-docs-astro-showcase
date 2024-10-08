@@ -7,6 +7,11 @@ import * as Stream from "effect/Stream"
 import { WebContainer } from "./webcontainer"
 import { FileNotFoundError } from "../domain/workspace"
 import type ts from "typescript"
+import {
+  FileSystemProviderCapabilities,
+  registerFileSystemOverlay,
+  type IFileSystemProviderWithFileReadWriteCapability
+} from "@codingame/monaco-vscode-files-service-override"
 
 export type MonacoApi = typeof monaco
 
@@ -35,10 +40,10 @@ const loadApi = GlobalValue.globalValue("app/Monaco/loadApi", () =>
         ignoreDuplicateModules: ["vs/editor/editor.main"]
       })
 
-      require(["vs/editor/editor.main", "vs/language/typescript/tsWorker"], (
-        monaco: MonacoApi,
-        _tsWorker: any
-      ) => {
+      require([
+        "vs/editor/editor.main",
+        "vs/language/typescript/tsWorker"
+      ], (monaco: MonacoApi, _tsWorker: any) => {
         const isOK = monaco && (window as any).ts
         if (!isOK) {
           resume(
@@ -56,7 +61,7 @@ const loadApi = GlobalValue.globalValue("app/Monaco/loadApi", () =>
   }).pipe(Effect.cached, Effect.runSync)
 )
 
-const make = Effect.gen(function*() {
+const make = Effect.gen(function* () {
   const monaco = yield* loadApi
   const container = yield* WebContainer
 
@@ -65,7 +70,9 @@ const make = Effect.gen(function*() {
   monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
 
   monaco.languages.typescript.typescriptDefaults.setWorkerOptions({
-    customWorkerPath: `${new URL(window.location.origin)}vendor/monaco/ts.worker.js`
+    customWorkerPath: `${new URL(
+      window.location.origin
+    )}vendor/monaco/ts.worker.js`
   })
 
   monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -74,14 +81,51 @@ const make = Effect.gen(function*() {
     module: ts.ModuleKind.NodeNext as any,
     moduleResolution: ts.ModuleResolutionKind.NodeNext as any,
     strict: true,
-    target: ts.ScriptTarget.ESNext as any,
+    target: ts.ScriptTarget.ESNext as any
   })
 
   setupCompletionItemProviders(monaco)
   setupTwoslash(monaco)
+  registerFileSystemOverlay(1, {
+    capabilities: 2,
+    onDidChangeCapabilities: new monaco.Emitter().event,
+    onDidChangeFile: new monaco.Emitter().event,
+    delete(resource, opts) {
+      console.log("delete", resource, opts)
+      return new Promise(() => {})
+    },
+    mkdir(resource) {
+      console.log("mkdir", resource)
+      return new Promise(() => {})
+    },
+    readdir(resource) {
+      console.log("readdir", resource)
+      return new Promise(() => {})
+    },
+    readFile(resource) {
+      console.log("readFile", resource)
+      return new Promise(() => {})
+    },
+    rename(from, to, opts) {
+      console.log("rename", from, to, opts)
+      return new Promise(() => {})
+    },
+    stat(resource) {
+      console.log("stat", resource)
+      return new Promise(() => {})
+    },
+    writeFile(resource, content) {
+      console.log("writeFile", resource, content)
+      return new Promise(() => {})
+    },
+    watch(resource, opts) {
+      console.log("watch", resource, opts)
+      return { dispose() {} }
+    }
+  })
 
   function makeEditor(element: HTMLElement) {
-    return Effect.gen(function*() {
+    return Effect.gen(function* () {
       const editor = yield* Effect.acquireRelease(
         Effect.sync(() =>
           monaco.editor.create(element, {
@@ -96,14 +140,15 @@ const make = Effect.gen(function*() {
             }
           })
         ),
-        (editor) => Effect.sync(() => {
-          monaco.editor.getModels().forEach((model) => model.dispose())
-          editor.dispose()
-        })
+        (editor) =>
+          Effect.sync(() => {
+            monaco.editor.getModels().forEach((model) => model.dispose())
+            editor.dispose()
+          })
       )
 
       function getModel(path: string) {
-        return Effect.gen(function*() {
+        return Effect.gen(function* () {
           const uri = monaco.Uri.file(path)
           const model = monaco.editor.getModel(uri)
           if (model === null) {
@@ -113,19 +158,26 @@ const make = Effect.gen(function*() {
         })
       }
 
-      function createModel(path: string, content: string, language: string) {
+      function createModel(
+        path: string,
+        content: string,
+        language: string
+      ) {
         return Effect.sync(() => {
           const uri = monaco.Uri.file(path)
           return monaco.editor.createModel(content, language, uri)
         })
       }
 
-      const viewStates = new Map<string, monaco.editor.ICodeEditorViewState | null>()
+      const viewStates = new Map<
+        string,
+        monaco.editor.ICodeEditorViewState | null
+      >()
 
       function loadModel(model: monaco.editor.ITextModel) {
         return Effect.sync(() => {
           const current = editor.getModel()
-          // If the current model matches the model to load, there is no further 
+          // If the current model matches the model to load, there is no further
           // work to do and we can return the model directly
           if (current !== null && current === model) {
             return model
@@ -146,7 +198,7 @@ const make = Effect.gen(function*() {
       }
 
       function readFile(path: string) {
-        return Effect.gen(function*() {
+        return Effect.gen(function* () {
           const model = yield* getModel(path)
           const content = yield* container.readFile(path)
           // Prevent constantly re-triggerring `IModelContentChanged` events
@@ -157,7 +209,11 @@ const make = Effect.gen(function*() {
         })
       }
 
-      function writeFile(path: string, content: string, language: string) {
+      function writeFile(
+        path: string,
+        content: string,
+        language: string
+      ) {
         return getModel(path).pipe(
           Effect.tap((model) => {
             // Prevent constantly re-triggerring `IModelContentChanged` events
@@ -166,7 +222,7 @@ const make = Effect.gen(function*() {
             }
           }),
           Effect.orElse(() => createModel(path, content, language)),
-          Effect.zipLeft(container.writeFile(path, content)),
+          Effect.zipLeft(container.writeFile(path, content))
         )
       }
 
@@ -184,14 +240,14 @@ const make = Effect.gen(function*() {
         writeFile,
         content
       } as const
-    })
+    }).pipe(Effect.tapErrorCause(Effect.log))
   }
 
   return {
     monaco,
     makeEditor
   } as const
-})
+}).pipe(Effect.tapErrorCause(Effect.log))
 
 export class Monaco extends Effect.Tag("app/Monaco")<
   Monaco,
@@ -226,7 +282,7 @@ function setupTwoslash(monaco: MonacoApi) {
         if (model.isDisposed()) {
           return {
             hints: [],
-            dispose: () => { }
+            dispose: () => {}
           }
         }
         let match
@@ -243,7 +299,7 @@ function setupTwoslash(monaco: MonacoApi) {
           if (cancellationToken.isCancellationRequested) {
             return {
               hints: [],
-              dispose: () => { }
+              dispose: () => {}
             }
           }
 
@@ -279,7 +335,7 @@ function setupTwoslash(monaco: MonacoApi) {
         }
         return {
           hints: results,
-          dispose: () => { }
+          dispose: () => {}
         }
       }
     }
@@ -290,7 +346,7 @@ function setupCompletionItemProviders(monaco: MonacoApi) {
   const previousRegistrationProvider =
     monaco.languages.registerCompletionItemProvider
 
-  monaco.languages.registerCompletionItemProvider = function(
+  monaco.languages.registerCompletionItemProvider = function (
     language: monaco.languages.LanguageSelector,
     provider: monaco.languages.CompletionItemProvider
   ): monaco.IDisposable {
@@ -310,7 +366,7 @@ function setupCompletionItemProviders(monaco: MonacoApi) {
     ) {
       // Hack required for converting a `ts.TextChange` to a `ts.TextEdit` - see
       // toTextEdit function defined below
-      (this as any).__model = model
+      ;(this as any).__model = model
 
       const wordInfo = model.getWordUntilPosition(position)
       const wordRange = new monaco.Range(
@@ -329,7 +385,11 @@ function setupCompletionItemProviders(monaco: MonacoApi) {
       }
 
       const info: ts.CompletionInfo | undefined =
-        await worker.getCompletionsAtPosition(resource.toString(), offset, {})
+        await worker.getCompletionsAtPosition(
+          resource.toString(),
+          offset,
+          {}
+        )
 
       if (!info || model.isDisposed()) {
         return
@@ -376,7 +436,8 @@ function setupCompletionItemProviders(monaco: MonacoApi) {
       return { suggestions }
     }
 
-    interface CustomCompletionItem extends monaco.languages.CompletionItem {
+    interface CustomCompletionItem
+      extends monaco.languages.CompletionItem {
       readonly label: string
       readonly uri: monaco.Uri
       readonly position: monaco.Position
@@ -419,7 +480,9 @@ function setupCompletionItemProviders(monaco: MonacoApi) {
           displayPartsToString(details.displayParts),
         additionalTextEdits: autoImports?.textEdits,
         documentation: {
-          value: (this.constructor as any).createDocumentationString(details)
+          value: (this.constructor as any).createDocumentationString(
+            details
+          )
         }
       } as CustomCompletionItem
     }
@@ -464,8 +527,11 @@ function getAutoImports(
   // If the newly entered text does not start with `import ...`, then it will be
   // potentially added to an existing import and can most likely be accepted
   // without modification
-  if (textChanges.every((textChange) => !/import/.test(textChange.newText))) {
-    const specifier = codeAction.description.match(/from ["'](.+)["']/)![1]
+  if (
+    textChanges.every((textChange) => !/import/.test(textChange.newText))
+  ) {
+    const specifier =
+      codeAction.description.match(/from ["'](.+)["']/)![1]
     return {
       detailText: `Auto import from '${specifier}'`,
       textEdits: textChanges.map((textChange) =>

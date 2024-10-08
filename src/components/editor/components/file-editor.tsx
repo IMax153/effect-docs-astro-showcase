@@ -1,10 +1,9 @@
 import { Result, useRxSet, useRxValue } from "@effect-rx/rx-react"
 import { useCallback, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import * as Option from "effect/Option"
 import { useWorkspaceHandle } from "../context/workspace"
 import { editorRx } from "../rx/editor"
-import { LoadingOverlay } from "./loading-overlay"
 
 export function FileEditor() {
   const handle = useWorkspaceHandle()
@@ -21,18 +20,6 @@ export function FileEditor() {
 
   return (
     <section className="h-full flex flex-col">
-      <AnimatePresence>
-        {!isReady && (
-          <motion.div
-            className="absolute inset-0 z-10"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <LoadingOverlay />
-          </motion.div>
-        )}
-      </AnimatePresence>
       <motion.div
         ref={containerRef}
         className="w-full h-full"
