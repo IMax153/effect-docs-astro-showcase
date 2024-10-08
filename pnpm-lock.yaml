@@ -31,6 +31,12 @@ importers:
       '@astrojs/tailwind':
         specifier: ^5.1.1
         version: 5.1.1(astro@4.15.11(@types/node@22.7.4)(rollup@4.24.0)(typescript@5.6.2))(tailwindcss@3.4.13)
+      '@codingame/monaco-vscode-api':
+        specifier: ^10.0.0
+        version: 10.0.0
+      '@codingame/monaco-vscode-files-service-override':
+        specifier: ^10.0.0
+        version: 10.0.0
       '@dprint/formatter':
         specifier: ^0.4.1
         version: 0.4.1
@@ -379,6 +385,30 @@ packages:
 
   '@braintree/sanitize-url@6.0.4':
     resolution: {integrity: sha512-s3jaWicZd0pkP0jf5ysyHUI/RE7MHos6qlToFcGWXVp+ykHOy77OUMrfbgJ9it2C5bow7OIQwYYaHjk9XlBQ2A==}
+
+  '@codingame/monaco-vscode-api@10.0.0':
+    resolution: {integrity: sha512-Xf572hepF8RplsuXgYe2i5CCKRFav5YWCP2AwvzAdAS6YIi0sc0JrgH+mgoqg/DcuVxzmP6QxWqn5O8R/GR9qw==}
+
+  '@codingame/monaco-vscode-base-service-override@10.0.0':
+    resolution: {integrity: sha512-En8wPWX2SmewFt0LzWchVVdeNhi9AXHA5u6SswHV/SUGpzxUhajvmBUUmAbe2twk5WG5fEbd0xYc+OwodgPqxQ==}
+
+  '@codingame/monaco-vscode-environment-service-override@10.0.0':
+    resolution: {integrity: sha512-gnzC9Z9wvPGu4mqGrunhJbqOTx51iez0tQk7Km2Q6Xg+F26kGNoAGFHXhaFsvSsZWOHzDlBzNhPHNN7y0D3CPw==}
+
+  '@codingame/monaco-vscode-extensions-service-override@10.0.0':
+    resolution: {integrity: sha512-kW4RgSXYkfbRwUsvmj7N8wgsUuod6pDJoujZkXJ+sJQ3dFb2XMMvgpn3dGOwIO4hXRXC73N7cGAtNETZF9HarA==}
+
+  '@codingame/monaco-vscode-files-service-override@10.0.0':
+    resolution: {integrity: sha512-uUfiHtieIHfMN4ZGgFqVqUaYGrQqg11ROuRHMbItZANr+eeDFKI8GgFAgInE0adeZzK/KPYLhFmrGTZ4ng7TSw==}
+
+  '@codingame/monaco-vscode-host-service-override@10.0.0':
+    resolution: {integrity: sha512-TtTzA3mG/y+XZL/dp/oeBnOlHIeK91ecu1npPC2PNq7ngFnD7cIMVPRIviiFNYSA9/i3m+HbaJy4Taq61/tH5w==}
+
+  '@codingame/monaco-vscode-layout-service-override@10.0.0':
+    resolution: {integrity: sha512-4YPj9REoHKu6Yp/iRCQgHBX1wx2TaOlvyWJcOO2bFthYQ5FkfVoPfK0S4yDm76APS6xXZneG0W9YJtFZO1Tieg==}
+
+  '@codingame/monaco-vscode-quickaccess-service-override@10.0.0':
+    resolution: {integrity: sha512-C1x1x3eIIxCIutQKbE1vvhVs+SF3uHeIcHMtmSU3mxoPIyMXWn1nOygT/LR19Amdz1jArMwzoj10WG7kclPq/Q==}
 
   '@ctrl/tinycolor@4.1.0':
     resolution: {integrity: sha512-WyOx8cJQ+FQus4Mm4uPIZA64gbk3Wxh0so5Lcii0aJifqwoVOlfFtorjLE0Hen4OYyHZMXDWqMmaQemBhgxFRQ==}
@@ -1520,6 +1550,9 @@ packages:
   '@vscode/emmet-helper@2.9.3':
     resolution: {integrity: sha512-rB39LHWWPQYYlYfpv9qCoZOVioPCftKXXqrsyqN1mTWZM6dTnONT63Db+03vgrBbHzJN45IrgS/AGxw9iiqfEw==}
 
+  '@vscode/iconv-lite-umd@0.7.0':
+    resolution: {integrity: sha512-bRRFxLfg5dtAyl5XyiVWz/ZBPahpOpPrNYnnHpOpUZvam4tKH35wdhP4Kj6PbM0+KdliOsPzbGWpkxcdpNB/sg==}
+
   '@vscode/l10n@0.0.18':
     resolution: {integrity: sha512-KYSIHVmslkaCDyw013pphY+d7x1qV8IZupYfeIfzNA+nsaWHbn5uPuQRvdRFsa9zFzGeudPuoGoZ1Op4jrJXIQ==}
 
@@ -1533,13 +1566,46 @@ packages:
   '@webgpu/types@0.1.21':
     resolution: {integrity: sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==}
 
+  '@xterm/addon-clipboard@0.2.0-beta.49':
+    resolution: {integrity: sha512-rjYGvWOdv4chQ0J8r25iR1nAv9F2LGAy0VMUaz4jGAXPHC5JvLZdtN5Se+Hv6rNHGHS4FjiAZF2fJRY6YtQgAg==}
+    peerDependencies:
+      '@xterm/xterm': ^5.6.0-beta.66
+
   '@xterm/addon-fit@0.10.0':
     resolution: {integrity: sha512-UFYkDm4HUahf2lnEyHvio51TNGiLK66mqP2JoATy7hRZeXaGMRDr00JiSF7m63vR5WKATF605yEggJKsw0JpMQ==}
     peerDependencies:
       '@xterm/xterm': ^5.0.0
 
+  '@xterm/addon-image@0.9.0-beta.66':
+    resolution: {integrity: sha512-BFpdJiIs3LnirhZwVAzadS9H/vgjhZEixCFxjY7B864hZZs6BrY4peFo2N33l59RHhuDd5pq6m9daTTd9k76/g==}
+    peerDependencies:
+      '@xterm/xterm': ^5.6.0-beta.66
+
+  '@xterm/addon-search@0.16.0-beta.66':
+    resolution: {integrity: sha512-L1eDMOEa34/UGk+3arW6toDa3szz9afGqr51x9arnP5hqtDwEE5m9pYyBaDjO4OQy8I/gNqRT3BVwIZySrA88g==}
+    peerDependencies:
+      '@xterm/xterm': ^5.6.0-beta.66
+
+  '@xterm/addon-serialize@0.14.0-beta.66':
+    resolution: {integrity: sha512-t/hwjeosl0JljMR83hNY3BmwEj82AcMxXXWKzwa7B3C464EMY/UJS8VcJIJ1OMXzEHNMTrsRBOrI8PYbDDfETw==}
+    peerDependencies:
+      '@xterm/xterm': ^5.6.0-beta.66
+
+  '@xterm/addon-unicode11@0.9.0-beta.66':
+    resolution: {integrity: sha512-yaOw8kzW8lB40j5aU+vKN5kSm7UXOr6jXMWbCRDSn0yjk+3rXzihPZRH4jVDgdN2x1ASsiNvpBtnM443speOLw==}
+    peerDependencies:
+      '@xterm/xterm': ^5.6.0-beta.66
+
+  '@xterm/addon-webgl@0.19.0-beta.66':
+    resolution: {integrity: sha512-HVLxYbZ5GbH6DSB7/gVfTraCXOLyO1YU1WOj7CuEvwaosZugb/TIm6AJWfWMMU72brVFg3qGuXlCzuldZTnboA==}
+    peerDependencies:
+      '@xterm/xterm': ^5.6.0-beta.66
+
   '@xterm/xterm@5.5.0':
     resolution: {integrity: sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A==}
+
+  '@xterm/xterm@5.6.0-beta.66':
+    resolution: {integrity: sha512-hmvS0e4sa6xBmeKIwxZE+RDTKpeLqJ3VSOlMUzvi5utV3xa7gwt5M60eRlSn+0qi8cRMuUCTvJhDFW1pP62+lw==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -2461,6 +2527,9 @@ packages:
     resolution: {integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==}
     hasBin: true
 
+  js-base64@3.7.7:
+    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
+
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -2471,6 +2540,10 @@ packages:
   js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
+
+  jschardet@3.1.3:
+    resolution: {integrity: sha512-Q1PKVMK/uu+yjdlobgWIYkUOCR1SqUmW9m/eUJNNj4zI2N12i25v8fYpVf+zCakQeaTdBdhnZTFbVIAVZIVVOg==}
+    engines: {node: '>=0.1.90'}
 
   jsesc@3.0.2:
     resolution: {integrity: sha512-xKqzzWXDttJuOcawBt4KnKHHIf5oQ/Cxax+0PWFG+DFDgHNAdi+TXECADI+RYiFUMmx8792xsMbbgXj4CwnP4g==}
@@ -2596,6 +2669,11 @@ packages:
 
   marked@12.0.2:
     resolution: {integrity: sha512-qXUm7e/YKFoqFPYPa3Ukg9xlI5cyAtGmyEIzMfW//m6kXwCy2Ps9DYf5ioijFKQ8qyuscrHoY04iJGctu2Kg0Q==}
+    engines: {node: '>= 18'}
+    hasBin: true
+
+  marked@14.0.0:
+    resolution: {integrity: sha512-uIj4+faQ+MgHgwUW1l2PsPglZLOLOT1uErt06dAPtx2kjteLAkbsd/0FiYg/MGS+i7ZKLb7w2WClxHkzOOuryQ==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -4196,6 +4274,55 @@ snapshots:
 
   '@braintree/sanitize-url@6.0.4': {}
 
+  '@codingame/monaco-vscode-api@10.0.0':
+    dependencies:
+      '@codingame/monaco-vscode-base-service-override': 10.0.0
+      '@codingame/monaco-vscode-environment-service-override': 10.0.0
+      '@codingame/monaco-vscode-extensions-service-override': 10.0.0
+      '@codingame/monaco-vscode-files-service-override': 10.0.0
+      '@codingame/monaco-vscode-host-service-override': 10.0.0
+      '@codingame/monaco-vscode-layout-service-override': 10.0.0
+      '@codingame/monaco-vscode-quickaccess-service-override': 10.0.0
+      '@vscode/iconv-lite-umd': 0.7.0
+      '@xterm/addon-clipboard': 0.2.0-beta.49(@xterm/xterm@5.6.0-beta.66)
+      '@xterm/addon-image': 0.9.0-beta.66(@xterm/xterm@5.6.0-beta.66)
+      '@xterm/addon-search': 0.16.0-beta.66(@xterm/xterm@5.6.0-beta.66)
+      '@xterm/addon-serialize': 0.14.0-beta.66(@xterm/xterm@5.6.0-beta.66)
+      '@xterm/addon-unicode11': 0.9.0-beta.66(@xterm/xterm@5.6.0-beta.66)
+      '@xterm/addon-webgl': 0.19.0-beta.66(@xterm/xterm@5.6.0-beta.66)
+      '@xterm/xterm': 5.6.0-beta.66
+      jschardet: 3.1.3
+      marked: 14.0.0
+
+  '@codingame/monaco-vscode-base-service-override@10.0.0':
+    dependencies:
+      vscode: '@codingame/monaco-vscode-api@10.0.0'
+
+  '@codingame/monaco-vscode-environment-service-override@10.0.0':
+    dependencies:
+      vscode: '@codingame/monaco-vscode-api@10.0.0'
+
+  '@codingame/monaco-vscode-extensions-service-override@10.0.0':
+    dependencies:
+      '@codingame/monaco-vscode-files-service-override': 10.0.0
+      vscode: '@codingame/monaco-vscode-api@10.0.0'
+
+  '@codingame/monaco-vscode-files-service-override@10.0.0':
+    dependencies:
+      vscode: '@codingame/monaco-vscode-api@10.0.0'
+
+  '@codingame/monaco-vscode-host-service-override@10.0.0':
+    dependencies:
+      vscode: '@codingame/monaco-vscode-api@10.0.0'
+
+  '@codingame/monaco-vscode-layout-service-override@10.0.0':
+    dependencies:
+      vscode: '@codingame/monaco-vscode-api@10.0.0'
+
+  '@codingame/monaco-vscode-quickaccess-service-override@10.0.0':
+    dependencies:
+      vscode: '@codingame/monaco-vscode-api@10.0.0'
+
   '@ctrl/tinycolor@4.1.0': {}
 
   '@dprint/formatter@0.4.1': {}
@@ -5249,6 +5376,8 @@ snapshots:
       vscode-languageserver-types: 3.17.5
       vscode-uri: 2.1.2
 
+  '@vscode/iconv-lite-umd@0.7.0': {}
+
   '@vscode/l10n@0.0.18': {}
 
   '@webcontainer/api@1.3.0': {}
@@ -5259,11 +5388,38 @@ snapshots:
 
   '@webgpu/types@0.1.21': {}
 
+  '@xterm/addon-clipboard@0.2.0-beta.49(@xterm/xterm@5.6.0-beta.66)':
+    dependencies:
+      '@xterm/xterm': 5.6.0-beta.66
+      js-base64: 3.7.7
+
   '@xterm/addon-fit@0.10.0(@xterm/xterm@5.5.0)':
     dependencies:
       '@xterm/xterm': 5.5.0
 
+  '@xterm/addon-image@0.9.0-beta.66(@xterm/xterm@5.6.0-beta.66)':
+    dependencies:
+      '@xterm/xterm': 5.6.0-beta.66
+
+  '@xterm/addon-search@0.16.0-beta.66(@xterm/xterm@5.6.0-beta.66)':
+    dependencies:
+      '@xterm/xterm': 5.6.0-beta.66
+
+  '@xterm/addon-serialize@0.14.0-beta.66(@xterm/xterm@5.6.0-beta.66)':
+    dependencies:
+      '@xterm/xterm': 5.6.0-beta.66
+
+  '@xterm/addon-unicode11@0.9.0-beta.66(@xterm/xterm@5.6.0-beta.66)':
+    dependencies:
+      '@xterm/xterm': 5.6.0-beta.66
+
+  '@xterm/addon-webgl@0.19.0-beta.66(@xterm/xterm@5.6.0-beta.66)':
+    dependencies:
+      '@xterm/xterm': 5.6.0-beta.66
+
   '@xterm/xterm@5.5.0': {}
+
+  '@xterm/xterm@5.6.0-beta.66': {}
 
   acorn-jsx@5.3.2(acorn@8.12.1):
     dependencies:
@@ -6372,6 +6528,8 @@ snapshots:
 
   jiti@1.21.6: {}
 
+  js-base64@3.7.7: {}
+
   js-tokens@4.0.0: {}
 
   js-yaml@3.14.1:
@@ -6382,6 +6540,8 @@ snapshots:
   js-yaml@4.1.0:
     dependencies:
       argparse: 2.0.1
+
+  jschardet@3.1.3: {}
 
   jsesc@3.0.2: {}
 
@@ -6481,6 +6641,8 @@ snapshots:
       smartypants: 0.2.2
 
   marked@12.0.2: {}
+
+  marked@14.0.0: {}
 
   mdast-util-definitions@6.0.0:
     dependencies:

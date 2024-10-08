@@ -16,6 +16,8 @@
     "@astrojs/react": "^3.6.2",
     "@astrojs/starlight": "^0.28.2",
     "@astrojs/tailwind": "^5.1.1",
+    "@codingame/monaco-vscode-api": "^10.0.0",
+    "@codingame/monaco-vscode-files-service-override": "^10.0.0",
     "@dprint/formatter": "^0.4.1",
     "@effect-rx/rx-react": "^0.31.0",
     "@effect/opentelemetry": "^0.37.5",
