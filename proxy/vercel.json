@@ -2,6 +2,230 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/blog/effect-3.9",
+      "destination": "/blog/releases/effect/39/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-10-04",
+      "destination": "/blog/this-week-in-effect/2024/10/04/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-09-27",
+      "destination": "/blog/this-week-in-effect/2024/09/27/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-09-20",
+      "destination": "/blog/this-week-in-effect/2024/09/20/"
+    },
+    {
+      "source": "/blog/effect-3.8",
+      "destination": "/blog/releases/effect/38/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-09-13",
+      "destination": "/blog/this-week-in-effect/2024/09/13/"
+    },
+    {
+      "source": "/blog/create-effect-app-release",
+      "destination": "/blog/releases/create-effect-app/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-09-06",
+      "destination": "/blog/this-week-in-effect/2024/09/06/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-08-30",
+      "destination": "/blog/this-week-in-effect/2024/08/30/"
+    },
+    {
+      "source": "/blog/effect-3.7",
+      "destination": "/blog/releases/effect/37/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-08-23",
+      "destination": "/blog/this-week-in-effect/2024/08/23/"
+    },
+    {
+      "source": "/blog/from-react-to-effect",
+      "destination": "/blog/from-react-to-effect/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-08-16",
+      "destination": "/blog/this-week-in-effect/2024/08/16/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-08-09",
+      "destination": "/blog/this-week-in-effect/2024/08/09/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-08-02",
+      "destination": "/blog/this-week-in-effect/2024/08/02/"
+    },
+    {
+      "source": "/blog/effect-3.6",
+      "destination": "/blog/releases/effect/36/"
+    },
+    {
+      "source": "/blog/playground-release",
+      "destination": "/blog/releases/playground/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-07-26",
+      "destination": "/blog/this-week-in-effect/2024/07/26/"
+    },
+    {
+      "source": "/blog/schema-release-0.69",
+      "destination": "/blog/releases/schema/069/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-07-19",
+      "destination": "/blog/this-week-in-effect/2024/07/19/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-07-12",
+      "destination": "/blog/this-week-in-effect/2024/07/12/"
+    },
+    {
+      "source": "/blog/effect-3.5",
+      "destination": "/blog/releases/effect/35/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-07-05",
+      "destination": "/blog/this-week-in-effect/2024/07/05/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-06-28",
+      "destination": "/blog/this-week-in-effect/2024/06/28/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-06-21",
+      "destination": "/blog/this-week-in-effect/2024/06/21/"
+    },
+    {
+      "source": "/blog/effect-3.4",
+      "destination": "/blog/releases/effect/34/"
+    },
+    {
+      "source": "/blog/schema-release-0.68",
+      "destination": "/blog/releases/schema/068/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-06-14",
+      "destination": "/blog/this-week-in-effect/2024/06/14/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-06-07",
+      "destination": "/blog/this-week-in-effect/2024/06/07/"
+    },
+    {
+      "source": "/blog/effect-3.3",
+      "destination": "/blog/releases/effect/33/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-05-31",
+      "destination": "/blog/this-week-in-effect/2024/05/31/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-05-24",
+      "destination": "/blog/this-week-in-effect/2024/05/24/"
+    },
+    {
+      "source": "/blog/effect-3.2",
+      "destination": "/blog/releases/effect/32/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-05-17",
+      "destination": "/blog/this-week-in-effect/2024/05/17/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-05-10",
+      "destination": "/blog/this-week-in-effect/2024/05/10/"
+    },
+    {
+      "source": "/blog/schema-release-0.67",
+      "destination": "/blog/releases/schema/067/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-05-03",
+      "destination": "/blog/this-week-in-effect/2024/05/03/"
+    },
+    {
+      "source": "/blog/effect-3.1",
+      "destination": "/blog/releases/effect/31/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-04-26",
+      "destination": "/blog/this-week-in-effect/2024/04/26/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-04-19",
+      "destination": "/blog/this-week-in-effect/2024/04/19/"
+    },
+    {
+      "source": "/blog/effect-3.0",
+      "destination": "/blog/releases/effect/30/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-04-12",
+      "destination": "/blog/this-week-in-effect/2024/04/12/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-04-05",
+      "destination": "/blog/this-week-in-effect/2024/04/05/"
+    },
+    {
+      "source": "/blog/effect-community-update-march-2024",
+      "destination": "/blog/effect-community-update-march-2024/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-03-29",
+      "destination": "/blog/this-week-in-effect/2024/03/29/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-03-22",
+      "destination": "/blog/this-week-in-effect/2024/03/22/"
+    },
+    {
+      "source": "/blog/schema-release-0.64",
+      "destination": "/blog/releases/schema/064/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-03-15",
+      "destination": "/blog/this-week-in-effect/2024/03/15/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-03-08",
+      "destination": "/blog/this-week-in-effect/2024/03/08/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-03-01",
+      "destination": "/blog/this-week-in-effect/2024/03/01/"
+    },
+    {
+      "source": "/blog/release-2.4",
+      "destination": "/blog/releases/effect/24/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-02-16",
+      "destination": "/blog/this-week-in-effect/2024/02/16/"
+    },
+    {
+      "source": "/blog/trip-to-the-us-2023",
+      "destination": "/blog/trip-to-the-us-2023/"
+    },
+    {
+      "source": "/blog/release-2.3",
+      "destination": "/blog/releases/effect/23/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-02-09",
+      "destination": "/blog/this-week-in-effect/2024/02/09/"
+    },
+    {
+      "source": "/blog/this-week-in-effect-2024-02-02",
+      "destination": "/blog/this-week-in-effect/2024/02/02/"
+    },
+    {
       "source": "/blog",
       "destination": "https://effect-docs-astro-showcase.vercel.app/blog/"
     },
