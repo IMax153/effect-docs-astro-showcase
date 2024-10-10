@@ -143,10 +143,10 @@ export default defineConfig({
               picture: "/authors/davide_scognamiglio.png",
               url: "https://twitter.com/DadeSkoTV"
             },
-            guilio_canti: {
-              name: "Guilio Canti",
+            giulio_canti: {
+              name: "Giulio Canti",
               title: "Founding Engineer",
-              picture: "/authors/guilio_canti.png",
+              picture: "/authors/giulio_canti.png",
               url: "https://github.com/gcanti"
             },
             maxwell_brown: {
