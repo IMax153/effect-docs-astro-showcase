@@ -7,11 +7,11 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-Logging is a crucial aspect of software development, especially when it comes to debugging and monitoring the behavior of your applications. In this section, we'll delve into Effect's logging utilities and explore their advantages over traditional methods.
+Logging is an important aspect of software development, especially for debugging and monitoring the behavior of your applications. In this section, we'll explore Effect's logging utilities and see how they compare to traditional logging methods.
 
 ## Advantages Over Traditional Logging
 
-Effect's logging utilities offer several advantages over traditional logging methods:
+Effect's logging utilities provide several benefits over conventional logging approaches:
 
 1. **Dynamic Log Level Control**: With Effect's logging, you have the ability to change the log level dynamically. This means you can control which log messages get displayed based on their severity. For example, you can configure your application to log only warnings or errors, which can be extremely helpful in production environments to reduce noise.
 
@@ -25,7 +25,9 @@ Effect's logging utilities offer several advantages over traditional logging met
 
 ## log
 
-The `Effect.log` function outputs a log message at the default `INFO` level.
+The `Effect.log` function allows you to log a message at the default `INFO` level.
+
+**Example** (Logging a Simple Message)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -39,22 +41,26 @@ timestamp=... level=INFO fiber=#0 message="Application started"
 */
 ```
 
-When you use the default logger with `Effect.log`, it incorporates several important details into each log entry:
+The default logger in Effect adds several useful details to each log entry:
 
-- `timestamp`: The timestamp when the log message was generated.
-- `level`: The log level at which the message is logged.
-- `fiber`: The identifier of the [fiber](/docs/concurrency/fibers/) executing the program.
-- `message`: The log content, which can include multiple items.
-- `span`: (Optional) The duration of the span in milliseconds.
+| **Annotation** | **Description**                                                                                     |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| `timestamp`    | The timestamp when the log message was generated.                                                   |
+| `level`        | The log level at which the message is logged (e.g., `INFO`, `ERROR`).                               |
+| `fiber`        | The identifier of the [fiber](/docs/concurrency/fibers/) executing the program.                     |
+| `message`      | The log message content, which can include multiple strings or values.                              |
+| `span`         | (Optional) The duration of a span in milliseconds, providing insight into the timing of operations. |
 
 <Aside type="tip" title="Customizing Loggers">
   For information on how to tailor the logging setup to meet specific
   needs, such as integrating a custom logging framework or adjusting log
-  formats, please consult the section on [customizing
-  loggers](#custom-loggers)
+  formats, please consult the section on [Custom
+  Loggers](#custom-loggers).
 </Aside>
 
-You can log multiple messages simultaneously:
+You can also log multiple messages at once.
+
+**Example** (Logging Multiple Messages)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -71,7 +77,9 @@ timestamp=... level=INFO fiber=#0 message=message1 message=message2 message=mess
 For added context, you can also include one or more [Cause](/docs/data-types/cause/) instances in your logs,
 which provide detailed error information under an additional `cause` annotation:
 
-```ts twoslash
+**Example** (Logging with Causes)
+
+```ts twoslash "cause"
 import { Effect, Cause } from "effect"
 
 const program = Effect.log(
@@ -93,23 +101,21 @@ Error: Oh uh!"
 
 ### logDebug
 
-By default, `DEBUG` messages are **not** printed.
+By default, `DEBUG` messages **are not displayed**. To enable `DEBUG` logs, you can adjust the logging configuration using `Logger.withMinimumLogLevel`, setting the minimum level to `LogLevel.Debug`.
 
-However, you can configure the default logger to enable them using `Logger.withMinimumLogLevel` and setting the minimum log level to `LogLevel.Debug`.
-
-Here's an example that demonstrates how to enable `DEBUG` messages for a specific task (`task1`):
+**Example** (Enabling Debug Logs)
 
 ```ts twoslash
 import { Effect, Logger, LogLevel } from "effect"
 
 const task1 = Effect.gen(function* () {
   yield* Effect.sleep("2 seconds")
-  yield* Effect.logDebug("task1 done")
-}).pipe(Logger.withMinimumLogLevel(LogLevel.Debug))
+  yield* Effect.logDebug("task1 done") // Log a debug message
+}).pipe(Logger.withMinimumLogLevel(LogLevel.Debug)) // Enable DEBUG level
 
 const task2 = Effect.gen(function* () {
   yield* Effect.sleep("1 second")
-  yield* Effect.logDebug("task2 done")
+  yield* Effect.logDebug("task2 done") // This message won't be logged
 })
 
 const program = Effect.gen(function* () {
@@ -128,13 +134,17 @@ timestamp=... level=INFO message=done <-- 1 second later
 */
 ```
 
-In the above example, we enable `DEBUG` messages specifically for `task1` by using the `Logger.withMinimumLogLevel` function.
-
-By using `Logger.withMinimumLogLevel(effect, level)`, you have the flexibility to selectively enable different log levels for specific effects in your program. This allows you to control the level of detail in your logs and focus on the information that is most relevant to your debugging and troubleshooting needs.
+<Aside type="tip" title="Controlling Log Levels Per Effect">
+  By using `Logger.withMinimumLogLevel(effect, level)`, you can enable
+  different log levels for specific parts of your program, providing
+  fine-grained control over logging behavior.
+</Aside>
 
 ### logInfo
 
-By default, `INFO` messages are printed.
+The `INFO` log level is displayed by default. This level is typically used for general application events or progress updates.
+
+**Example** (Logging at the Info Level)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -154,11 +164,11 @@ timestamp=... level=INFO message=done <-- 3 seconds later
 */
 ```
 
-In the above example, the `Effect.log` function is used to log an `INFO` message with the content `"start"` and `"done"`. These messages will be printed during the execution of the program.
-
 ### logWarning
 
-By default, `WARN` messages are printed.
+The `WARN` log level is displayed by default. This level is intended for potential issues or warnings that do not immediately disrupt the flow of the program but should be monitored.
+
+**Example** (Logging at the Warning Level)
 
 ```ts twoslash
 import { Effect, Either } from "effect"
@@ -184,7 +194,9 @@ timestamp=... level=WARN fiber=#0 message="Oh uh!"
 
 ### logError
 
-By default, `ERROR` messages are printed.
+The `ERROR` log level is displayed by default. These messages represent issues that need to be addressed.
+
+**Example** (Logging at the Error Level)
 
 ```ts twoslash
 import { Effect, Either } from "effect"
@@ -210,7 +222,9 @@ timestamp=... level=ERROR fiber=#0 message="Oh uh!"
 
 ### logFatal
 
-By default, `FATAL` messages are printed.
+The `FATAL` log level is displayed by default. This log level is typically reserved for unrecoverable errors.
+
+**Example** (Logging at the Fatal Level)
 
 ```ts twoslash
 import { Effect, Either } from "effect"
@@ -236,10 +250,16 @@ timestamp=... level=FATAL fiber=#0 message="Oh uh!"
 
 ## Custom Annotations
 
+You can enhance your log outputs by adding custom annotations using the `Effect.annotateLogs` function. This allows you to attach extra metadata to each log entry, making it easier to trace and add context to your logs.
+
 Enhance your log outputs by incorporating custom annotations with the `Effect.annotateLogs` function.
 This function allows you to append additional metadata to each log entry of an effect, enhancing traceability and context.
 
-Here's how to apply a single annotation as a key/value pair:
+### Adding a Single Annotation
+
+You can apply a single annotation as a key/value pair to all log entries within an effect.
+
+**Example** (Single Key/Value Annotation)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -247,7 +267,10 @@ import { Effect } from "effect"
 const program = Effect.gen(function* () {
   yield* Effect.log("message1")
   yield* Effect.log("message2")
-}).pipe(Effect.annotateLogs("key", "value")) // Annotation as key/value pair
+}).pipe(
+  // Annotation as key/value pair
+  Effect.annotateLogs("key", "value")
+)
 
 Effect.runFork(program)
 /*
@@ -257,7 +280,13 @@ timestamp=... level=INFO fiber=#0 message=message2 key=value
 */
 ```
 
-To apply multiple annotations at once, you can pass an object containing several key/value pairs:
+In this example, all logs generated within the `program` will include the annotation `key=value`.
+
+### Adding Multiple Annotations
+
+You can also apply multiple annotations at once by passing an object with key/value pairs. Each key/value pair will be added to every log entry within the effect.
+
+**Example** (Multiple Annotations)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -265,7 +294,10 @@ import { Effect } from "effect"
 const program = Effect.gen(function* () {
   yield* Effect.log("message1")
   yield* Effect.log("message2")
-}).pipe(Effect.annotateLogs({ key1: "value1", key2: "value2" }))
+}).pipe(
+  // Add multiple annotations
+  Effect.annotateLogs({ key1: "value1", key2: "value2" })
+)
 
 Effect.runFork(program)
 /*
@@ -275,18 +307,27 @@ timestamp=... level=INFO fiber=#0 message=message2 key2=value2 key1=value1
 */
 ```
 
-Annotations can also be applied with a scoped lifetime using `Effect.annotateLogsScoped`.
-This method confines the application of annotations to logs within a specific [Scope](/docs/resource-management/scope/) of your effect computation:
+In this case, each log will contain both `key1=value1` and `key2=value2`.
+
+### Scoped Annotations
+
+If you want to limit the scope of your annotations so that they only apply to certain log entries, you can use `Effect.annotateLogsScoped`. This function confines the annotations to logs produced within a specific scope.
+
+**Example** (Scoped Annotations)
 
 ```ts twoslash
 import { Effect } from "effect"
 
 const program = Effect.gen(function* () {
-  yield* Effect.log("no annotations")
-  yield* Effect.annotateLogsScoped({ key: "value" })
-  yield* Effect.log("message1") // Annotation is applied to this log
-  yield* Effect.log("message2") // Annotation is applied to this log
-}).pipe(Effect.scoped, Effect.andThen(Effect.log("no annotations again")))
+  yield* Effect.log("no annotations") // No annotations
+  yield* Effect.annotateLogsScoped({ key: "value" }) // Scoped annotation
+  yield* Effect.log("message1") // Annotation applied
+  yield* Effect.log("message2") // Annotation applied
+}).pipe(
+  Effect.scoped,
+  // Outside scope, no annotations
+  Effect.andThen(Effect.log("no annotations again"))
+)
 
 Effect.runFork(program)
 /*
@@ -300,15 +341,23 @@ timestamp=... level=INFO fiber=#0 message="no annotations again"
 
 ## Log Spans
 
-Effect also provides support for log spans, allowing you to measure the duration of specific operations or tasks within your program.
+Effect provides built-in support for log spans, which allow you to measure and log the duration of specific tasks or sections of your code. This feature is helpful for tracking how long certain operations take, giving you better insights into the performance of your application.
+
+**Example** (Measuring Task Duration with a Log Span)
 
 ```ts twoslash
 import { Effect } from "effect"
 
 const program = Effect.gen(function* () {
+  // Simulate a delay to represent a task taking time
   yield* Effect.sleep("1 second")
+  // Log a message indicating the job is done
   yield* Effect.log("The job is finished!")
-}).pipe(Effect.withLogSpan("myspan"))
+}).pipe(
+  // Apply a log span labeled "myspan" to measure
+  // the duration of this operation
+  Effect.withLogSpan("myspan")
+)
 
 Effect.runFork(program)
 /*
@@ -317,17 +366,13 @@ timestamp=... level=INFO fiber=#0 message="The job is finished!" myspan=1011ms
 */
 ```
 
-In the above example, a log span is created using the `Effect.withLogSpan(label)` function.
-It measures the duration of the code block within the span.
-The resulting duration is then automatically recorded as an annotation within the log message.
-
 ## Disabling Default Logging
 
-If you ever find yourself needing to turn off default logging, perhaps during test execution, there are various ways to achieve this within the Effect framework. In this section, we'll explore different methods to disable default logging.
+Sometimes, perhaps during test execution, you might want to disable default logging in your application. Effect provides several ways to turn off logging when needed. In this section, we'll look at different methods to disable logging in the Effect framework.
 
-**Using withMinimumLogLevel**
+**Example** (Using `Logger.withMinimumLogLevel`)
 
-Effect provides a convenient function called `withMinimumLogLevel` that allows you to set the minimum log level, effectively disabling logging:
+One convenient way to disable logging is by using the `Logger.withMinimumLogLevel` function. This allows you to set the minimum log level to `None`, effectively turning off all log output.
 
 ```ts twoslash
 import { Effect, Logger, LogLevel } from "effect"
@@ -338,7 +383,7 @@ const program = Effect.gen(function* () {
   console.log("task done")
 })
 
-// Logging enabled (default)
+// Default behavior: logging enabled
 Effect.runFork(program)
 /*
 Output:
@@ -346,7 +391,7 @@ timestamp=... level=INFO fiber=#0 message="Executing task..."
 task done
 */
 
-// Logging disabled using withMinimumLogLevel
+// Disable logging by setting minimum log level to 'None'
 Effect.runFork(program.pipe(Logger.withMinimumLogLevel(LogLevel.None)))
 /*
 Output:
@@ -354,11 +399,9 @@ task done
 */
 ```
 
-By setting the log level to `LogLevel.None`, you effectively disable logging, and only the final result will be displayed.
+**Example** (Using a Layer)
 
-**Using a Layer**
-
-Another approach to disable logging is by creating a layer that sets the minimum log level to `LogLevel.None`, effectively turning off all logging:
+Another approach to disable logging is by creating a layer that sets the minimum log level to `LogLevel.None`, effectively turning off all log output.
 
 ```ts twoslash
 import { Effect, Logger, LogLevel } from "effect"
@@ -369,9 +412,10 @@ const program = Effect.gen(function* () {
   console.log("task done")
 })
 
+// Create a layer that disables logging
 const layer = Logger.minimumLogLevel(LogLevel.None)
 
-// Logging disabled using a layer
+// Apply the layer to disable logging
 Effect.runFork(program.pipe(Effect.provide(layer)))
 /*
 Output:
@@ -379,7 +423,7 @@ task done
 */
 ```
 
-**Using a Custom Runtime**
+**Example** (Using a Custom Runtime)
 
 You can also disable logging by creating a custom runtime that includes the configuration to turn off logging:
 
@@ -392,22 +436,24 @@ const program = Effect.gen(function* () {
   console.log("task done")
 })
 
+// Create a custom runtime that disables logging
 const customRuntime = ManagedRuntime.make(
   Logger.minimumLogLevel(LogLevel.None)
 )
 
-customRuntime.runPromise(program)
+// Run the program using the custom runtime
+customRuntime.runFork(program)
 /*
 Output:
 task done
 */
 ```
 
-In this approach, you create a custom runtime that incorporates the configuration to disable logging, and then you execute your program using this custom runtime.
-
 ## Loading the Log Level from Configuration
 
-To retrieve the log level from a [configuration](/docs/configuration/) and incorporate it into your program, utilize the layer produced by `Logger.minimumLogLevel`:
+To dynamically load the log level from a [configuration](/docs/configuration/) and apply it to your program, you can use the `Logger.minimumLogLevel` layer. This allows your application to adjust its logging behavior based on external configuration.
+
+**Example** (Loading Log Level from Configuration)
 
 ```ts twoslash
 import {
@@ -427,16 +473,19 @@ const program = Effect.gen(function* () {
   yield* Effect.logDebug("DEBUG!")
 })
 
-// Load the log level from the configuration as a layer
+// Load the log level from the configuration and apply it as a layer
 const LogLevelLive = Config.logLevel("LOG_LEVEL").pipe(
-  Effect.andThen((level) => Logger.minimumLogLevel(level)),
-  Layer.unwrapEffect
+  Effect.andThen((level) =>
+    // Set the minimum log level
+    Logger.minimumLogLevel(level)
+  ),
+  Layer.unwrapEffect // Convert the effect into a layer
 )
 
-// Configure the program with the loaded log level
+// Provide the loaded log level to the program
 const configured = Effect.provide(program, LogLevelLive)
 
-// Test the configured program using ConfigProvider.fromMap
+// Test the program using a mock configuration provider
 const test = Effect.provide(
   configured,
   Layer.setConfigProvider(
@@ -454,27 +503,42 @@ Output:
 */
 ```
 
-To evaluate the configured program, you can utilize `ConfigProvider.fromMap` for testing (refer to [Testing Services](/docs/configuration/#testing-services) for more details).
+<Aside type="tip" title="Using ConfigProvider for Testing">
+  The `ConfigProvider.fromMap` function is useful for testing by
+  simulating configuration values. You can also refer to [Testing
+  Services](/docs/configuration/#testing-services) for more details on
+  using mock configuration during tests.
+</Aside>
 
 ## Custom loggers
 
-In this section, we will learn how to define a custom logger and set it as the default logger.
+In this section, you'll learn how to define a custom logger and set it as the default logger in your application. Custom loggers give you control over how log messages are handled, such as routing them to external services, writing to files, or formatting logs in a specific way.
 
-First, let's define our custom logger using `Logger.make`:
+### Defining a Custom Logger
+
+You can define your own logger using the `Logger.make` function. This function allows you to specify how log messages should be processed.
+
+**Example** (Defining a Simple Custom Logger)
 
 ```ts twoslash
 import { Logger } from "effect"
 
+// Custom logger that outputs log messages to the console
 const logger = Logger.make(({ logLevel, message }) => {
   globalThis.console.log(`[${logLevel.label}] ${message}`)
 })
 ```
 
-Assuming we have defined the following program:
+In this example, the custom logger logs messages to the console with the log level and message formatted as `[LogLevel] Message`.
 
-```ts twoslash collapse={3-5}
+### Using a Custom Logger in a Program
+
+Let's assume you have the following tasks and a program where you log some messages:
+
+```ts twoslash collapse={3-6}
 import { Effect, Logger } from "effect"
 
+// Custom logger that outputs log messages to the console
 const logger = Logger.make(({ logLevel, message }) => {
   globalThis.console.log(`[${logLevel.label}] ${message}`)
 })
@@ -497,11 +561,14 @@ const program = Effect.gen(function* () {
 })
 ```
 
-To replace the default logger, we simply need to create a specific layer using `Logger.replace` and provide it to our program using `Effect.provide` before executing it:
+To replace the default logger with your custom logger, you can use the `Logger.replace` function. After creating a layer that replaces the default logger, you provide it to your program using `Effect.provide`.
 
-```ts twoslash collapse={3-22}
+**Example** (Replacing the Default Logger with a Custom Logger)
+
+```ts twoslash collapse={3-23}
 import { Effect, Logger, LogLevel } from "effect"
 
+// Custom logger that outputs log messages to the console
 const logger = Logger.make(({ logLevel, message }) => {
   globalThis.console.log(`[${logLevel.label}] ${message}`)
 })
@@ -534,7 +601,7 @@ Effect.runFork(
 )
 ```
 
-This is what we see printed on the console after executing the program:
+When you run the above program, the following log messages are printed to the console:
 
 ```ansi showLineNumbers=false
 [INFO] start
@@ -545,30 +612,11 @@ This is what we see printed on the console after executing the program:
 
 ## Built-in Loggers
 
-### json
+Effect provides several built-in loggers that you can use depending on your logging needs. These loggers offer different formats, each suited for different environments or purposes, such as development, production, or integration with external logging services.
 
-The json logger formats log entries as JSON objects, making them easy to integrate with logging systems that consume JSON data.
+### logFmt (default)
 
-```ts twoslash
-import { Effect, Logger } from "effect"
-
-const program = Effect.log("message1", "message2").pipe(
-  Effect.annotateLogs({ key1: "value1", key2: "value2" }),
-  Effect.withLogSpan("myspan")
-)
-
-Effect.runFork(program.pipe(Effect.provide(Logger.json)))
-```
-
-Output:
-
-```ansi showLineNumbers=false
-{"message":["message1","message2"],"logLevel":"INFO","timestamp":"...","annotations":{"key2":"value2","key1":"value1"},"spans":{"myspan":0},"fiberId":"#0"}
-```
-
-### logFmt
-
-This logger outputs logs in a human-readable format that is easy to read during development or in a production console.
+The `logFmt` logger outputs logs in a human-readable key-value format. This format is often used in development and production for its simplicity and readability in the console.
 
 ```ts twoslash
 import { Effect, Logger } from "effect"
@@ -587,9 +635,33 @@ Output:
 timestamp=... level=INFO fiber=#0 message=message1 message=message2 myspan=0ms key2=value2 key1=value1
 ```
 
+### pretty
+
+The `pretty` logger enhances log output by using color and indentation for better readability, making it particularly useful during development when visually scanning logs in the console.
+
+```ts twoslash
+import { Effect, Logger } from "effect"
+
+const program = Effect.log("message1", "message2").pipe(
+  Effect.annotateLogs({ key1: "value1", key2: "value2" }),
+  Effect.withLogSpan("myspan")
+)
+
+Effect.runFork(program.pipe(Effect.provide(Logger.pretty)))
+```
+
+Output:
+
+```ansi showLineNumbers=false
+[<timestamp>] [32mINFO[0m (#0) myspan=1ms: [36mmessage1[0m
+  message2
+  key2: value2
+  key1: value1
+```
+
 ### structured
 
-The structured logger provides detailed log outputs, structured in a way that retains comprehensive traceability of the events, suitable for deeper analysis and troubleshooting.
+The `structured` logger provides highly structured logs. This format is useful for situations that require detailed traceability of events, often in environments where logs are processed and analyzed by automated systems.
 
 ```ts twoslash
 import { Effect, Logger } from "effect"
@@ -608,7 +680,7 @@ Output:
 {
   message: [ 'message1', 'message2' ],
   logLevel: 'INFO',
-  timestamp: '2024-07-09T14:05:41.623Z',
+  timestamp: '...',
   cause: undefined,
   annotations: { key2: 'value2', key1: 'value1' },
   spans: { myspan: 0 },
@@ -616,10 +688,9 @@ Output:
 }
 ```
 
-### pretty
+### json
 
-The pretty logger utilizes the capabilities of the `console` API to generate visually engaging and color-enhanced log outputs.
-This feature is particularly useful for improving the readability of log messages during development and debugging processes.
+The `json` logger formats log entries as JSON objects, which is ideal for environments where logs are ingested by systems that process JSON.
 
 ```ts twoslash
 import { Effect, Logger } from "effect"
@@ -629,14 +700,11 @@ const program = Effect.log("message1", "message2").pipe(
   Effect.withLogSpan("myspan")
 )
 
-Effect.runFork(program.pipe(Effect.provide(Logger.pretty)))
+Effect.runFork(program.pipe(Effect.provide(Logger.json)))
 ```
 
 Output:
 
 ```ansi showLineNumbers=false
-[19:50:04.994] [32mINFO[0m (#0) myspan=1ms: [36mmessage1[0m
-  message2
-  key2: value2
-  key1: value1
+{"message":["message1","message2"],"logLevel":"INFO","timestamp":"...","annotations":{"key2":"value2","key1":"value1"},"spans":{"myspan":0},"fiberId":"#0"}
 ```
