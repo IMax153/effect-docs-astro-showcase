@@ -1,290 +1,110 @@
-import type * as monaco from "monaco-editor/esm/vs/editor/editor.api"
-import * as Data from "effect/Data"
+import * as monaco from "@effect/monaco-editor"
 import * as Effect from "effect/Effect"
-import * as GlobalValue from "effect/GlobalValue"
-import * as Layer from "effect/Layer"
 import * as Stream from "effect/Stream"
-import { WebContainer } from "./webcontainer"
-import { FileNotFoundError } from "../domain/workspace"
 import type ts from "typescript"
+import { ChromeDevTools, Dracula } from "./monaco/themes"
 
-export type MonacoApi = typeof monaco
+type MonacoApi = typeof import("@effect/monaco-editor")
 
-export class MonacoError extends Data.TaggedError("MonacoError")<{
-  readonly reason: "LoadApi"
-  readonly message: string
-}> {
-  constructor(reason: MonacoError["reason"], message: string) {
-    super({ reason, message: `${reason}: ${message}` })
-  }
-}
+export class Monaco extends Effect.Service<Monaco>()("app/Monaco", {
+  scoped: Effect.gen(function*() {
+    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
 
-const loadApi = GlobalValue.globalValue("app/Monaco/loadApi", () =>
-  Effect.async<MonacoApi, MonacoError>((resume) => {
-    const script = document.createElement("script")
-    script.src = "/vendor/monaco/min/vs/loader.js"
-    script.async = true
-    script.onload = () => {
-      const require = globalThis.require as any
-
-      require.config({
-        paths: {
-          vs: `${window.location.protocol}//${window.location.host}/vendor/monaco/min/vs`
-        },
-        // This is something you need for monaco to work
-        ignoreDuplicateModules: ["vs/editor/editor.main"]
-      })
-
-      require(["vs/editor/editor.main", "vs/language/typescript/tsWorker"], (
-        monaco: MonacoApi,
-        _tsWorker: any
-      ) => {
-        const isOK = monaco && (window as any).ts
-        if (!isOK) {
-          resume(
-            new MonacoError(
-              "LoadApi",
-              "Unable to setup all playground dependencies!"
-            )
-          )
-        } else {
-          resume(Effect.succeed(monaco))
-        }
-      })
-    }
-    document.body.appendChild(script)
-  }).pipe(Effect.cached, Effect.runSync)
-)
-
-const make = Effect.gen(function*() {
-  const monaco = yield* loadApi
-  const container = yield* WebContainer
-
-  const ts = (window as any).ts as typeof import("typescript")
-
-  monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
-
-  monaco.languages.typescript.typescriptDefaults.setWorkerOptions({
-    customWorkerPath: `${new URL(window.location.origin)}vendor/monaco/ts.worker.js`
-  })
-
-  monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-    allowNonTsExtensions: true,
-    exactOptionalPropertyTypes: true,
-    module: ts.ModuleKind.NodeNext as any,
-    moduleResolution: ts.ModuleResolutionKind.NodeNext as any,
-    strict: true,
-    target: ts.ScriptTarget.ESNext as any,
-  })
-
-  setupCompletionItemProviders(monaco)
-  setupTwoslash(monaco)
-
-  function makeEditor(element: HTMLElement) {
-    return Effect.gen(function*() {
-      const editor = yield* Effect.acquireRelease(
-        Effect.sync(() =>
-          monaco.editor.create(element, {
-            automaticLayout: true,
-            fixedOverflowWidgets: true,
-            fontSize: 16,
-            minimap: { enabled: false },
-            quickSuggestions: {
-              comments: false,
-              other: true,
-              strings: true
-            }
-          })
-        ),
-        (editor) => Effect.sync(() => {
-          monaco.editor.getModels().forEach((model) => model.dispose())
-          editor.dispose()
-        })
-      )
-
-      function getModel(path: string) {
-        return Effect.gen(function*() {
-          const uri = monaco.Uri.file(path)
-          const model = monaco.editor.getModel(uri)
-          if (model === null) {
-            return yield* new FileNotFoundError({ path })
-          }
-          return model
-        })
-      }
-
-      function createModel(path: string, content: string, language: string) {
-        return Effect.sync(() => {
-          const uri = monaco.Uri.file(path)
-          return monaco.editor.createModel(content, language, uri)
-        })
-      }
-
-      const viewStates = new Map<string, monaco.editor.ICodeEditorViewState | null>()
-
-      function loadModel(model: monaco.editor.ITextModel) {
-        return Effect.sync(() => {
-          const current = editor.getModel()
-          // If the current model matches the model to load, there is no further 
-          // work to do and we can return the model directly
-          if (current !== null && current === model) {
-            return model
-          }
-          // Otherwise, handle the editor view state
-          const fsPath = model.uri.fsPath
-          if (current !== null) {
-            // Make sure to save the view state for the outgoing model
-            viewStates.set(fsPath, editor.saveViewState())
-          }
-          editor.setModel(model)
-          if (viewStates.has(fsPath)) {
-            // Make sure to restore the view state for the incoming model
-            editor.restoreViewState(viewStates.get(fsPath)!)
-          }
-          return model
-        })
-      }
-
-      function readFile(path: string) {
-        return Effect.gen(function*() {
-          const model = yield* getModel(path)
-          const content = yield* container.readFile(path)
-          // Prevent constantly re-triggerring `IModelContentChanged` events
-          if (model.getValue() !== content) {
-            model.setValue(content)
-          }
-          return model
-        })
-      }
-
-      function writeFile(path: string, content: string, language: string) {
-        return getModel(path).pipe(
-          Effect.tap((model) => {
-            // Prevent constantly re-triggerring `IModelContentChanged` events
-            if (model.getValue() !== content) {
-              return model.setValue(content)
-            }
-          }),
-          Effect.orElse(() => createModel(path, content, language)),
-          Effect.zipLeft(container.writeFile(path, content)),
-        )
-      }
-
-      const content = Stream.async<string>((emit) => {
-        const disposable = editor.onDidChangeModelContent(() => {
-          emit.single(editor.getValue())
-        })
-        return Effect.sync(() => disposable.dispose())
-      })
-
-      return {
-        editor,
-        loadModel,
-        readFile,
-        writeFile,
-        content
-      } as const
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      allowNonTsExtensions: true,
+      exactOptionalPropertyTypes: true,
+      module: 199 as any, // ts.ModuleKind.NodeNext
+      moduleResolution: 99 as any, // ts.ModuleResolutionKind.ESNext
+      strict: true,
+      target: 99 // ts.ScriptTarget.ESNext
     })
-  }
 
-  return {
-    monaco,
-    makeEditor
-  } as const
-})
+    monaco.editor.defineTheme("chrome-devtools", ChromeDevTools)
+    monaco.editor.defineTheme("dracula", Dracula)
 
-export class Monaco extends Effect.Tag("app/Monaco")<
-  Monaco,
-  Effect.Effect.Success<typeof make>
->() {
-  static Live = Layer.scoped(this, make).pipe(
-    Layer.provideMerge(WebContainer.Live)
-  )
-}
+    setupCompletionItemProviders(monaco)
+    setupTwoslashIntegration(monaco)
 
-function setupTwoslash(monaco: MonacoApi) {
-  monaco.languages.registerInlayHintsProvider(
-    [
-      { language: "javascript" },
-      { language: "typescript" },
-      { language: "typescriptreact" },
-      { language: "javascriptreact" }
-    ],
-    {
-      displayName: "twoslash",
-      provideInlayHints: async (model, _, cancellationToken) => {
-        const text = model.getValue()
-        const queryRegex = /^\s*\/\/\.?\s*\^\?/gm
-        const inlineQueryRegex =
-          /^[^\S\r\n]*(?<start>\S).*\/\/\s*(?<end>=>)/gm
-        const results: Array<monaco.languages.InlayHint> = []
+    /**
+     * Creates a new Monaco editor and attaches it to the specified HTML 
+     * element.
+     *
+     * The editor will be disposed when the associated scope is closed.
+     */
+    function createEditor(element: HTMLElement) {
+      return Effect.gen(function*() {
+        const viewStates = new Map<string, monaco.editor.ICodeEditorViewState | null>()
 
-        const worker = await monaco.languages.typescript
-          .getTypeScriptWorker()
-          .then((worker) => worker(model.uri))
+        /**
+         * The editor that was created.
+         */
+        const editor = yield* Effect.acquireRelease(
+          Effect.sync(() =>
+            monaco.editor.create(element, {
+              automaticLayout: true,
+              fixedOverflowWidgets: true,
+              fontSize: 16,
+              minimap: { enabled: false },
+              quickSuggestions: {
+                comments: false,
+                other: true,
+                strings: true
+              }
+            })
+          ),
+          (editor) => Effect.sync(() => editor.dispose())
+        )
 
-        if (model.isDisposed()) {
-          return {
-            hints: [],
-            dispose: () => { }
-          }
-        }
-        let match
-
-        while ((match = queryRegex.exec(text)) !== null) {
-          const end = match.index + match[0].length - 1
-          const endPos = model.getPositionAt(end)
-          const inspectionPos = new monaco.Position(
-            endPos.lineNumber - 1,
-            endPos.column
-          )
-          const inspectionOff = model.getOffsetAt(inspectionPos)
-
-          if (cancellationToken.isCancellationRequested) {
-            return {
-              hints: [],
-              dispose: () => { }
+        /**
+         * Loads the specified model into the editor.
+         */
+        function loadModel(model: monaco.editor.ITextModel) {
+          return Effect.sync(() => {
+            const current = editor.getModel()
+            // If the current model matches the model to load, there is no further 
+            // work to do and we can return the model directly
+            if (current !== null && current === model) {
+              return model
             }
-          }
-
-          const hint: ts.QuickInfo | undefined =
-            await worker.getQuickInfoAtPosition(
-              `file://${model.uri.path}`,
-              inspectionOff
-            )
-
-          if (!hint || !hint.displayParts) {
-            continue
-          }
-
-          // Make a one-liner
-          let text = hint.displayParts
-            .map((d) => d.text)
-            .join("")
-            .replace(/\\n/g, " ")
-            .replace(/\/n/g, " ")
-            .replace(/  /g, " ")
-            .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
-
-          const inlay: monaco.languages.InlayHint = {
-            kind: monaco.languages.InlayHintKind.Type,
-            position: new monaco.Position(
-              endPos.lineNumber,
-              endPos.column + 1
-            ),
-            label: text,
-            paddingLeft: true
-          }
-          results.push(inlay)
+            // Otherwise, handle the editor view state
+            const fsPath = model.uri.fsPath
+            if (current !== null) {
+              // Make sure to save the view state for the outgoing model
+              viewStates.set(fsPath, editor.saveViewState())
+            }
+            editor.setModel(model)
+            if (viewStates.has(fsPath)) {
+              // Make sure to restore the view state for the incoming model
+              editor.restoreViewState(viewStates.get(fsPath)!)
+            }
+            return model
+          })
         }
+
+        /**
+         * A stream of changes made to the content of the editor's currently 
+         * loaded model.
+         */
+        const content = Stream.async<string>((emit) => {
+          const disposable = editor.onDidChangeModelContent(() => {
+            emit.single(editor.getValue())
+          })
+          return Effect.sync(() => disposable.dispose())
+        })
+
         return {
-          hints: results,
-          dispose: () => { }
-        }
-      }
+          editor,
+          loadModel,
+          content
+        } as const
+      })
     }
-  )
-}
+
+    return {
+      createEditor
+    } as const
+  })
+}) { }
 
 function setupCompletionItemProviders(monaco: MonacoApi) {
   const previousRegistrationProvider =
@@ -310,7 +130,7 @@ function setupCompletionItemProviders(monaco: MonacoApi) {
     ) {
       // Hack required for converting a `ts.TextChange` to a `ts.TextEdit` - see
       // toTextEdit function defined below
-      (this as any).__model = model
+      ; (this as any).__model = model
 
       const wordInfo = model.getWordUntilPosition(position)
       const wordRange = new monaco.Range(
@@ -455,16 +275,12 @@ function getAutoImports(
     return
   }
 
-  const changes = codeAction.changes[0]
-  if (!changes) {
-    return
-  }
-  const { textChanges } = changes
+  const textChanges = codeAction.changes[0]?.textChanges ?? []
 
   // If the newly entered text does not start with `import ...`, then it will be
   // potentially added to an existing import and can most likely be accepted
   // without modification
-  if (textChanges.every((textChange) => !/import/.test(textChange.newText))) {
+  if (textChanges.every((textChange: any) => !/import/.test(textChange.newText))) {
     const specifier = codeAction.description.match(/from ["'](.+)["']/)![1]
     return {
       detailText: `Auto import from '${specifier}'`,
@@ -581,4 +397,176 @@ const builtInNodeModules = [
 
 function pruneNodeBuiltIns(entry: ts.CompletionEntry): boolean {
   return !builtInNodeModules.includes(entry.name)
+}
+
+/** Strongly-typed RegExp groups (https://github.com/microsoft/TypeScript/issues/32098#issuecomment-1279645368) */
+type RegExpGroups<T extends string> = IterableIterator<RegExpMatchArray> &
+  Array<{ groups: Record<T, string> | Record<string, string> }>
+
+interface LineInfo {
+  readonly model: monaco.editor.ITextModel
+  readonly position: monaco.Position
+  readonly lineLength: number
+}
+
+function setupTwoslashIntegration(monaco: MonacoApi) {
+  monaco.languages.registerInlayHintsProvider(
+    [
+      { language: "javascript" },
+      { language: "typescript" },
+      { language: "typescriptreact" },
+      { language: "javascriptreact" }
+    ],
+    {
+      displayName: "twoslash",
+      provideInlayHints: async (model, _, cancellationToken) => {
+        const text = model.getValue()
+        const queryRegex = /^\s*\/\/\.?\s*\^\?/gm
+        const inlineQueryRegex =
+          /^[^\S\r\n]*(?<start>\S).*\/\/\s*(?<end>=>)/gm
+        const results: Array<monaco.languages.InlayHint> = []
+
+        const worker = await monaco.languages.typescript
+          .getTypeScriptWorker()
+          .then((worker) => worker(model.uri))
+
+        if (model.isDisposed()) {
+          return {
+            hints: [],
+            dispose: () => { }
+          }
+        }
+
+        const matches = text.matchAll(inlineQueryRegex) as unknown as RegExpGroups<"start" | "end">
+
+        for (const _match of matches) {
+          if (_match.index === undefined) {
+            break
+          }
+
+          if (cancellationToken.isCancellationRequested) {
+            return {
+              hints: [],
+              dispose: () => { }
+            }
+          }
+          const [line] = _match
+          const { start, end: querySymbol } = _match.groups
+
+          const offset = 0
+
+          const startIndex = line.indexOf(start)
+          const startPos = model.getPositionAt(
+            startIndex + offset + _match.index
+          )
+          const endIndex = line.lastIndexOf(querySymbol) + 2
+          const endPos = model.getPositionAt(endIndex + offset + _match.index)
+
+          const quickInfo = await getLeftMostQuickInfoOfLine(worker, {
+            model,
+            position: startPos,
+            lineLength: endIndex - startIndex - 2
+          })
+
+          if (!quickInfo || !quickInfo.displayParts) {
+            continue
+          }
+          results.push(
+            createHint({
+              displayParts: quickInfo.displayParts,
+              monaco,
+              position: endPos
+            })
+          )
+        }
+
+        let match
+
+        while ((match = queryRegex.exec(text)) !== null) {
+          const end = match.index + match[0].length - 1
+          const endPos = model.getPositionAt(end)
+          const inspectionPos = new monaco.Position(
+            endPos.lineNumber - 1,
+            endPos.column
+          )
+          const inspectionOff = model.getOffsetAt(inspectionPos)
+
+          if (cancellationToken.isCancellationRequested) {
+            return {
+              hints: [],
+              dispose: () => { }
+            }
+          }
+
+          const quickInfo: ts.QuickInfo | undefined =
+            await worker.getQuickInfoAtPosition(
+              "file://" + model.uri.path,
+              inspectionOff
+            )
+
+          if (!quickInfo || !quickInfo.displayParts) {
+            continue
+          }
+
+          results.push(
+            createHint({
+              displayParts: quickInfo.displayParts,
+              monaco,
+              position: endPos
+            })
+          )
+        }
+        return {
+          hints: results,
+          dispose: () => { }
+        }
+      }
+    }
+  )
+}
+
+function createHint(options: {
+  displayParts: ts.SymbolDisplayPart[]
+  position: monaco.Position
+  monaco: MonacoApi
+}): monaco.languages.InlayHint {
+  const { displayParts, position, monaco } = options
+  let text = displayParts
+    .map((d) => d.text)
+    .join("")
+    .replace(/\\n/g, " ")
+    .replace(/\/n/g, " ")
+    .replace(/  /g, " ")
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+
+  return {
+    kind: monaco.languages.InlayHintKind.Type,
+    position: new monaco.Position(position.lineNumber, position.column + 1),
+    label: text,
+    paddingLeft: true
+  }
+}
+
+const range = (num: number) => [...Array(num).keys()]
+
+async function getLeftMostQuickInfoOfLine(
+  worker: monaco.languages.typescript.TypeScriptWorker,
+  { model, position, lineLength }: LineInfo
+): Promise<ts.QuickInfo | undefined> {
+  const offset = model.getOffsetAt(position)
+  for (const i of range(lineLength)) {
+    const quickInfo: ts.QuickInfo | undefined =
+      await worker.getQuickInfoAtPosition(
+        "file://" + model.uri.path,
+        i + offset
+      )
+
+    if (!quickInfo || !quickInfo.displayParts) {
+      continue
+    }
+
+    return quickInfo
+  }
+
+  return Promise.resolve(undefined)
 }

@@ -72,8 +72,9 @@ function main() {
   step("Cloning the repo");
 
   if (existsSync("monaco-editor")) exec("rm -rf monaco-editor")
+  // TODO: follow up on the issue below:
+  // https://github.com/microsoft/monaco-editor/issues/4654
   exec("git clone https://github.com/microsoft/monaco-editor.git");
-
 
   // Add typescript to the tsWorker export
   // https://github.com/microsoft/monaco-editor/pull/2775

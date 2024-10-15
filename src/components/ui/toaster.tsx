@@ -14,20 +14,18 @@ export function Toaster() {
 
   return (
     <ToastProvider>
-      {toasts.map(function({ id, title, description, action, ...props }) {
-        return (
-          <Toast key={id} {...props}>
-            <div className="grid gap-1">
-              {title && <ToastTitle>{title}</ToastTitle>}
-              {description && (
-                <ToastDescription>{description}</ToastDescription>
-              )}
-            </div>
-            {action}
-            <ToastClose />
-          </Toast>
-        )
-      })}
+      {toasts.map(({ id, title, description, action, ...props }) => (
+        <Toast key={id} className="bg-[--sl-color-bg]" {...props}>
+          <div className="grid gap-1">
+            {title && <ToastTitle className="text-[--sl-color-white]">{title}</ToastTitle>}
+            {description && (
+              <ToastDescription className="text-[--sl-color-text]">{description}</ToastDescription>
+            )}
+          </div>
+          {action}
+          <ToastClose className="bg-transparent text-[--sl-color-white] cursor-pointer" />
+        </Toast>
+      ))}
       <ToastViewport />
     </ToastProvider>
   )

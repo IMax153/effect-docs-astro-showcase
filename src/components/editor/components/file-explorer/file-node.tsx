@@ -1,15 +1,15 @@
 import React, { useCallback, useMemo, useState } from "react"
-import { useRx } from "@effect-rx/rx-react"
 import { Equal } from "effect"
 import {
-  File as FileIcon,
-  FilePen,
-  FilePlus,
-  Folder,
-  FolderOpen,
-  FolderPlus,
-  Trash2
+  FileIcon,
+  FilePenIcon,
+  FilePlusIcon,
+  FolderClosedIcon,
+  FolderOpenIcon,
+  FolderPlusIcon,
+  TrashIcon
 } from "lucide-react"
+import { useRx } from "@effect-rx/rx-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -103,6 +103,7 @@ export function FileNode({
     />
   ) : (
     <FileNodeRoot
+      className={showControls ? "grid-cols-[auto_minmax(0,1fr)]" : "grid-cols-1"}
       isSelected={isSelected}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
@@ -115,28 +116,32 @@ export function FileNode({
         <FileNodeIcon {...props} />
         <FileNodeName node={node} />
       </FileNodeTrigger>
-      {showControls && <FileNodeControls node={node} />}
+      {showControls && <FileNodeControls className="justify-self-end" node={node} />}
     </FileNodeRoot>
   )
 }
 
 function FileNodeRoot({
   children,
+  className,
   isSelected,
   onMouseEnter,
   onMouseLeave
 }: React.PropsWithChildren<{
+  readonly className?: string
   readonly isSelected: boolean
   readonly onMouseEnter: () => void
   readonly onMouseLeave: () => void
 }>) {
   return (
     <div
+      data-selected={isSelected}
       className={cn(
-        "flex items-center transition-colors",
+        "grid items-center transition-colors",
         isSelected
-          ? "bg-gray-200 dark:bg-zinc-800"
-          : "hover:bg-gray-200/50 dark:hover:bg-zinc-800/50"
+          ? "group bg-[--sl-color-text-accent]"
+          : "hover:bg-[--sl-color-gray-6] dark:hover:bg-[--sl-color-gray-5]",
+        className
       )}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -165,10 +170,8 @@ function FileNodeTrigger({
       type="button"
       style={styles}
       className={cn(
-        "flex grow items-center py-1 [&_svg]:mr-1 bg-transparent text-sm text-gray-300 [&_span]:truncate border-none",
-        isSelected
-          ? "text-blue-500 dark:text-sky-500"
-          : "hover:text-blue-500 dark:hover:text-sky-500"
+        "w-full grid grid-cols-[16px_auto] gap-2 items-center justify-start py-1 bg-transparent cursor-pointer [&_svg]:mr-1 [&_span]:truncate",
+        isSelected && "text-[--sl-color-text-invert]"
       )}
       onClick={onClick}
     >
@@ -185,9 +188,9 @@ function FileNodeIcon(
   return props.type === "file" ? (
     <FileIcon size={16} />
   ) : props.isOpen ? (
-    <FolderOpen size={16} />
+    <FolderOpenIcon size={16} />
   ) : (
-    <Folder size={16} />
+    <FolderClosedIcon size={16} />
   )
 }
 
@@ -196,28 +199,31 @@ function FileNodeName({ node }: { readonly node: File | Directory }) {
   return <span>{fileName}</span>
 }
 
-function FileNodeControls({ node }: { readonly node: File | Directory }) {
+function FileNodeControls({ className, node }: {
+  readonly className?: string
+  readonly node: File | Directory
+}) {
   const state = useExplorerState()
   const dispatch = useExplorerDispatch()
   const remove = useRemove()
 
   const isIdle = state._tag === "Idle"
 
-  return (
-    <div className="flex items-center gap-2 mr-2">
+  return (node._tag === "Directory" || node.userManaged) && (
+    <div className={cn("flex items-center gap-2 !mr-2", className)}>
       {node.userManaged && (
         <Tooltip disableHoverableContent={!isIdle}>
           <TooltipTrigger asChild>
             <Button
               variant="ghost"
-              className="h-full p-0 rounded-none"
+              className="h-full p-0 bg-transparent cursor-pointer group-data-[selected=true]:bg-[--sl-color-text-accent] group-data-[selected=true]:text-[--sl-color-text-invert]"
               onClick={() => dispatch(State.Editing({ node }))}
             >
               <span className="sr-only">Edit</span>
-              <FilePen />
+              <FilePenIcon size={16} />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="bottom">
+          <TooltipContent side="bottom" className="text-[--sl-color-text] bg-[--sl-color-black] ring-1 ring-inset ring-[--sl-color-text]">
             <p>Edit</p>
           </TooltipContent>
         </Tooltip>
@@ -228,7 +234,7 @@ function FileNodeControls({ node }: { readonly node: File | Directory }) {
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-full p-0 bg-transparent text-gray-300 border-none rounded-none cursor-pointer"
+                className="h-full p-0 bg-transparent cursor-pointer group-data-[selected=true]:bg-[--sl-color-text-accent] group-data-[selected=true]:text-[--sl-color-text-invert]"
                 onClick={() =>
                   dispatch(
                     State.Creating({
@@ -239,18 +245,18 @@ function FileNodeControls({ node }: { readonly node: File | Directory }) {
                 }
               >
                 <span className="sr-only">Add File</span>
-                <FilePlus size={16} />
+                <FilePlusIcon size={16} />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <p className="m-0">New File...</p>
+            <TooltipContent side="bottom" className="text-[--sl-color-text] bg-[--sl-color-black] ring-1 ring-inset ring-[--sl-color-text]">
+              <p>New File...</p>
             </TooltipContent>
           </Tooltip>
           <Tooltip disableHoverableContent={!isIdle}>
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-full p-0 bg-transparent text-gray-300 border-none rounded-none cursor-pointer"
+                className="h-full p-0 bg-transparent cursor-pointer group-data-[selected=true]:bg-[--sl-color-text-accent] group-data-[selected=true]:text-[--sl-color-text-invert]"
                 onClick={() =>
                   dispatch(
                     State.Creating({
@@ -261,11 +267,11 @@ function FileNodeControls({ node }: { readonly node: File | Directory }) {
                 }
               >
                 <span className="sr-only">Add Directory</span>
-                <FolderPlus size={16} />
+                <FolderPlusIcon size={16} />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <p className="m-0">New Folder...</p>
+            <TooltipContent side="bottom" className="text-[--sl-color-text] bg-[--sl-color-black] ring-1 ring-inset ring-[--sl-color-text]">
+              <p>New Folder...</p>
             </TooltipContent>
           </Tooltip>
         </>
@@ -275,9 +281,9 @@ function FileNodeControls({ node }: { readonly node: File | Directory }) {
           <Tooltip disableHoverableContent={!isIdle}>
             <AlertDialogTrigger asChild>
               <TooltipTrigger asChild>
-                <Button variant="ghost" className="h-full p-0 bg-transparent border-none rounded-none">
+                <Button variant="ghost" className="h-full p-0 bg-transparent cursor-pointer group-data-[selected=true]:bg-[--sl-color-text-accent] group-data-[selected=true]:text-[--sl-color-text-invert]">
                   <span className="sr-only">Delete</span>
-                  <Trash2 size={16} />
+                  <TrashIcon size={16} />
                 </Button>
               </TooltipTrigger>
             </AlertDialogTrigger>
@@ -299,8 +305,8 @@ function FileNodeControls({ node }: { readonly node: File | Directory }) {
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
-            <TooltipContent side="bottom">
-              <p className="m-0">Delete</p>
+            <TooltipContent side="bottom" className="text-[--sl-color-text] bg-[--sl-color-black] ring-1 ring-inset ring-[--sl-color-text]">
+              <p>Delete</p>
             </TooltipContent>
           </Tooltip>
         </AlertDialog>

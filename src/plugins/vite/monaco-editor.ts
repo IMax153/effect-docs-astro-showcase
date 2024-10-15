@@ -201,7 +201,7 @@ export function monacoEditorPlugin(options: PluginMonacoEditorOptions = {}): Plu
     },
     configureServer: (server) => {
       server.middlewares.use((req, res, next) => {
-        if (req.url?.includes("monaco-editor") && req.url?.endsWith("?worker_file&type=module")) {
+        if (req.url?.includes("monaco-editor") && req.url?.includes("?worker_file")) {
           res.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
           res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
         }

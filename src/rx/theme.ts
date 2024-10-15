@@ -1,11 +1,11 @@
 import { Rx } from "@effect-rx/rx-react"
 
 function getTheme(): "light" | "dark" {
-  const selected = localStorage?.theme || "system"
-  if (selected === "light" || selected === "dark") return selected
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light"
+  const selected = localStorage?.getItem("starlight-theme") || "system"
+  if (selected === "light" || selected === "dark") {
+    return selected
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
 }
 
 export const themeRx = Rx.make<"light" | "dark">((get) => {
@@ -15,6 +15,6 @@ export const themeRx = Rx.make<"light" | "dark">((get) => {
   get.addFinalizer(() => {
     observer.disconnect()
   })
-  observer.observe(document.documentElement, { attributeFilter: ["class"] })
+  observer.observe(document.documentElement, { attributeFilter: ["data-theme"] })
   return getTheme()
 })

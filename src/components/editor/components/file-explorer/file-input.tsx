@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import { FileIcon, FolderIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useClickOutside } from "@/hooks/useClickOutside"
+import { Workspace } from "../../domain/workspace"
 import { State, useExplorerDispatch } from "../file-explorer"
-import { File as FileIcon, Folder } from "lucide-react"
-import type { Editor } from "../../rx/editor"
 
 export function FileInput({
   depth,
@@ -12,7 +12,7 @@ export function FileInput({
   initialValue = ""
 }: {
   readonly depth: number
-  readonly type: Editor.FileType
+  readonly type: Workspace.FileType
   readonly initialValue?: string
   readonly onSubmit: (path: string) => void
 }) {
@@ -22,13 +22,6 @@ export function FileInput({
 
   const paddingLeft = 16 + depth * 8
   const styles = { paddingLeft: `${paddingLeft}px` }
-
-  function getIcon(type: "File" | "Directory") {
-    if (type === "File") {
-      return <FileIcon size={16} />
-    }
-    return <Folder size={16} />
-  }
 
   const handleChange = useCallback<
     React.ChangeEventHandler<HTMLInputElement>
@@ -58,19 +51,23 @@ export function FileInput({
   }, [dispatch])
 
   return (
-    <div style={styles} className="flex items-center py-1 text-gray-300">
-      <span className="flex items-center h-4 w-4 mr-1">
-        {getIcon(type)}
-      </span>
-      <form className="grow mr-1" onSubmit={handleSubmit}>
-        <Input
-          ref={inputRef}
-          className="h-6 p-0 text-gray-300 border-solid border-gray-300 rounded-none"
-          value={fileName}
-          onChange={handleChange}
-          autoFocus
-        />
-      </form>
+    <div style={styles} className="h-7 w-full pr-1 grid grid-cols-[16px_1fr] items-center gap-1">
+      <div className="h-4 w-4">
+        {type === "File" ? <FileIcon size={16} /> : <FolderIcon size={16} />}
+      </div>
+      <div>
+        <form onSubmit={handleSubmit}>
+          <Input
+            ref={inputRef}
+            type="text"
+            className="w-full p-0 px-1 bg-[--sl-color-black] border-[--sl-color-text] rounded-sm"
+            value={fileName}
+            onChange={handleChange}
+            onFocus={(e) => e.target.select()}
+            autoFocus
+          />
+        </form>
+      </div>
     </div>
   )
 }

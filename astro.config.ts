@@ -12,6 +12,7 @@ import starlight from "@astrojs/starlight"
 import tailwind from "@astrojs/tailwind"
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections"
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers"
+import effectPlaygroundPlugin from "./src/plugins/starlight/playground"
 import pluginTwoslash from "./src/plugins/twoslash/plugin"
 import { monacoEditorPlugin } from "./src/plugins/vite/monaco-editor"
 
@@ -86,7 +87,12 @@ export default defineConfig({
     ]
   },
   vite: {
-    plugins: [monacoEditorPlugin({ languages: ["json", "typescript"] })]
+    plugins: [
+      monacoEditorPlugin({
+        languages: ["json", "typescript"],
+        features: "all"
+      })
+    ]
   },
   integrations: [
     react(),
@@ -183,6 +189,9 @@ export default defineConfig({
         }),
         starlightLinksValidator({
           exclude: ["/events/effect-days*"]
+        }),
+        effectPlaygroundPlugin({
+          pattern: "/play"
         })
       ],
       sidebar: [

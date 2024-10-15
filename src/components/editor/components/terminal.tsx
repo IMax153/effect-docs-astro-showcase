@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, Suspense } from "react"
+import { useCallback, useMemo, Suspense } from "react"
 import { useRxSuspenseSuccess } from "@effect-rx/rx-react"
 import { useWorkspaceHandle } from "../context/workspace"
 import type { WorkspaceShell } from "../domain/workspace"
@@ -23,14 +23,13 @@ export function Terminal({ shell }: {
 function Shell({ shell }: {
   readonly shell: WorkspaceShell
 }) {
-  const ref = useRef<HTMLDivElement>(null)
   const handle = useWorkspaceHandle()
-  const rx = useMemo(() => handle.makeTerminal(shell), [handle, shell])
+  const rx = useMemo(() => handle.createTerminal(shell), [handle, shell])
   const terminal = useRxSuspenseSuccess(rx).value
 
-  useEffect(() => {
-    terminal.open(ref.current!)
+  const terminalRef = useCallback((node: HTMLDivElement) => {
+    terminal.open(node)
   }, [terminal])
 
-  return <div ref={ref} id="terminal" className="h-full" />
+  return <div ref={terminalRef} id="terminal" className="h-full" />
 }

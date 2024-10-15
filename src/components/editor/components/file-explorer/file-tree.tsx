@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import * as Array from "effect/Array"
+import { Array } from "effect"
 import { FileTree as Tree } from "../../domain/workspace"
 import { DirectoryNode } from "./directory-node"
 import { FileNode } from "./file-node"

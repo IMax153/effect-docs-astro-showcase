@@ -1,24 +1,13 @@
 import * as Schema from "@effect/schema/Schema"
 import * as Brand from "effect/Brand"
-import * as Data from "effect/Data"
 import * as Effect from "effect/Effect"
 import { pipe } from "effect/Function"
 import * as Hash from "effect/Hash"
 import * as Iterable from "effect/Iterable"
 import * as Option from "effect/Option"
-import type { Scope } from "effect/Scope"
-import type { RxWorkspaceHandle } from "../rx/workspace"
-import type { Monaco } from "../services/monaco"
-import type { WebContainer } from "../services/webcontainer"
 
 export type FullPath = Brand.Branded<string, "FullPath">
 export const FullPath = Brand.nominal<FullPath>()
-
-export declare namespace Workspace {
-  export interface Plugin {
-    (handle: RxWorkspaceHandle): Effect.Effect<void, never, Monaco | WebContainer | Scope>
-  }
-}
 
 export class WorkspaceShell extends Schema.Class<WorkspaceShell>("WorkspaceShell")({
   command: Schema.optional(Schema.String),
@@ -94,6 +83,14 @@ export function makeDirectory(
 
 export const FileTree = Schema.Array(Schema.Union(File, Directory))
 export type FileTree = typeof FileTree.Type
+
+export declare namespace Workspace {
+  export type FileType = "File" | "Directory"
+
+  export interface CreateFileOptions {
+    readonly parent?: Directory
+  }
+}
 
 export class Workspace extends Schema.Class<Workspace>("Workspace")({
   name: Schema.String,
@@ -224,7 +221,7 @@ export class Workspace extends Schema.Class<Workspace>("Workspace")({
     )
   }
   relativePath(path: string) {
-    return `${this.name}/${path}`
+    return `${this.name.replace(/\/$/, "")}/${path.replace(/^\//, "")}`
   }
   updateFiles<E, R>(
     f: (item: File, path: string) => Effect.Effect<File, E, R>
@@ -270,50 +267,6 @@ export class Workspace extends Schema.Class<Workspace>("Workspace")({
     return Hash.string(this.name)
   }
 }
-
-export class FileAlreadyExistsError extends Data.TaggedError("FileAlreadyExistsError")<{
-  readonly path: string
-}> {
-  override get message(): string {
-    return `The file at path '${this.path}' already exists`
-  }
-}
-
-export class FileNotFoundError extends Data.TaggedError("FileNotFoundError")<{
-  readonly path: string
-}> {
-  override get message(): string {
-    return `The file at path '${this.path}' was not found`
-  }
-}
-
-export class FileValidationError extends Data.TaggedError("FileValidationError")<{
-  readonly reason: "InvalidName" | "UnsupportedType"
-}> {
-  override get message(): string {
-    switch (this.reason) {
-      case "InvalidName": {
-        return "Directory names cannot be empty or contain '/'."
-      }
-      case "UnsupportedType": {
-        return "The playground currently only supports creation of `.ts` files."
-      }
-    }
-  }
-
-  // get asToast(): Omit<Toast, "id"> {
-  //   return {
-  //     title:
-  //       this.reason === "InvalidName"
-  //         ? "Invalid Name"
-  //         : "Unsupported File Type",
-  //     description: this.message,
-  //     variant: "destructive",
-  //     duration: 5000
-  //   }
-  // }
-}
-
 
 export const defaultFiles = [
   new File({
