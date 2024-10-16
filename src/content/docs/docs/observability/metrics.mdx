@@ -6,21 +6,21 @@ sidebar:
   order: 1
 ---
 
+import { Aside } from "@astrojs/starlight/components"
+
 In complex and highly concurrent applications, managing various interconnected components can be quite challenging. Ensuring that everything runs smoothly and avoiding application downtime becomes crucial in such setups.
 
 Now, let's imagine we have a sophisticated infrastructure with numerous services. These services are replicated and distributed across our servers. However, we often lack insight into what's happening across these services, including error rates, response times, and service uptime. This lack of visibility can make it challenging to identify and address issues effectively. This is where Effect Metrics comes into play; it allows us to capture and analyze various metrics, providing valuable data for later investigation.
 
 Effect Metrics offers support for five different types of metrics:
 
-1. **Counter**: Counters are used to track values that increase over time, such as request counts. They help us keep tabs on how many times a specific event or action has occurred.
-
-2. **Gauge**: Gauges represent a single numerical value that can fluctuate up and down over time. They are often used to monitor metrics like memory usage, which can vary continuously.
-
-3. **Histogram**: Histograms are useful for tracking the distribution of observed values across different buckets. They are commonly used for metrics like request latencies, allowing us to understand how response times are distributed.
-
-4. **Summary**: Summaries provide insight into a sliding window of a time series and offer metrics for specific percentiles of the time series, often referred to as quantiles. This is particularly helpful for understanding latency-related metrics, such as request response times.
-
-5. **Frequency**: Frequency metrics count the occurrences of distinct string values. They are useful when you want to keep track of how often different events or conditions are happening in your application.
+| Metric        | Description                                                                                                                                                                                                                                                             |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Counter**   | Counters are used to track values that increase over time, such as request counts. They help us keep tabs on how many times a specific event or action has occurred.                                                                                                    |
+| **Gauge**     | Gauges represent a single numerical value that can fluctuate up and down over time. They are often used to monitor metrics like memory usage, which can vary continuously.                                                                                              |
+| **Histogram** | Histograms are useful for tracking the distribution of observed values across different buckets. They are commonly used for metrics like request latencies, allowing us to understand how response times are distributed.                                               |
+| **Summary**   | Summaries provide insight into a sliding window of a time series and offer metrics for specific percentiles of the time series, often referred to as quantiles. This is particularly helpful for understanding latency-related metrics, such as request response times. |
+| **Frequency** | Frequency metrics count the occurrences of distinct string values. They are useful when you want to keep track of how often different events or conditions are happening in your application.                                                                           |
 
 ## Counter
 
@@ -28,15 +28,77 @@ In the world of metrics, a Counter is a metric that represents a single numerica
 
 Unlike some other types of metrics (like gauges), where we're interested in the value at a specific moment, with counters, we care about the cumulative value over time. This means it provides a running total of changes, which can go up and down, reflecting the dynamic nature of certain metrics.
 
+Some typical use cases for counters include:
+
+- **Request Counts**: Monitoring the number of incoming requests to your server.
+- **Completed Tasks**: Keeping track of how many tasks or processes have been successfully completed.
+- **Error Counts**: Counting the occurrences of errors in your application.
+
 ### How to Create a Counter
 
-To create a counter, you can use the `Metric.counter` constructor in your code. You have the option to specify the type of the counter as either `number` or `bigint`. Here's how you can do it:
+To create a counter, you can use the `Metric.counter` constructor.
+
+**Example** (Creating a Counter)
+
+```ts twoslash
+import { Metric, Effect } from "effect"
+
+const requestCount = Metric.counter("request_count", {
+  // Optional
+  description: "A counter for tracking requests"
+})
+```
+
+Once created, the counter can accept an effect that returns a `number`, which will increment or decrement the counter.
+
+**Example** (Using a Counter)
+
+```ts twoslash
+import { Metric, Effect } from "effect"
+
+const requestCount = Metric.counter("request_count")
+
+const program = Effect.gen(function* () {
+  // Increment the counter by 1
+  const a = yield* requestCount(Effect.succeed(1))
+  // Increment the counter by 2
+  const b = yield* requestCount(Effect.succeed(2))
+  // Decrement the counter by 4
+  const c = yield* requestCount(Effect.succeed(-4))
+
+  // Get the current state of the counter
+  const state = yield* Metric.value(requestCount)
+  console.log(state)
+
+  return a * b * c
+})
+
+Effect.runPromise(program).then(console.log)
+/*
+Output:
+CounterState {
+  count: -1,
+  ...
+}
+-8
+*/
+```
+
+<Aside type="note" title="Type Preservation">
+  Applying a counter to an effect doesn't change its original type. The
+  metric simply adds tracking without affecting the effect's output type.
+</Aside>
+
+### Counter Types
+
+You can specify whether the counter tracks a `number` or `bigint`.
 
 ```ts twoslash
 import { Metric } from "effect"
 
 const numberCounter = Metric.counter("request_count", {
   description: "A counter for tracking requests"
+  // bigint: false // default
 })
 
 const bigintCounter = Metric.counter("error_count", {
@@ -45,77 +107,83 @@ const bigintCounter = Metric.counter("error_count", {
 })
 ```
 
-If you wish to create a counter that only increases its value, you can utilize the `incremental: true` option as follows:
+### Increment-Only Counters
+
+If you need a counter that only increments, you can use the `incremental: true` option.
+
+**Example** (Using an Increment-Only Counter)
 
 ```ts twoslash
-import { Metric } from "effect"
+import { Metric, Effect } from "effect"
 
 const incrementalCounter = Metric.counter("count", {
   description: "a counter that only increases its value",
   incremental: true
 })
+
+const program = Effect.gen(function* () {
+  const a = yield* incrementalCounter(Effect.succeed(1))
+  const b = yield* incrementalCounter(Effect.succeed(2))
+  // This will have no effect on the counter
+  const c = yield* incrementalCounter(Effect.succeed(-4))
+
+  const state = yield* Metric.value(incrementalCounter)
+  console.log(state)
+
+  return a * b * c
+})
+
+Effect.runPromise(program).then(console.log)
+/*
+Output:
+CounterState {
+  count: 3,
+  ...
+}
+-8
+*/
 ```
 
-With this configuration, Effect ensures that non-incremental updates have no impact on the counter, making it exclusively suitable for counting upwards.
+In this configuration, the counter only accepts positive values. Any attempts to decrement will have no effect, ensuring the counter strictly counts upwards.
 
-### When to Use Counters
+### Counters With Constant Input
 
-Counters are incredibly useful when you need to keep track of cumulative values that can both increase and decrease over time. So, when should you use counters?
+You can configure a counter to always increment by a fixed value each time it is invoked.
 
-1. **Tracking a Value Over Time**: If you need to monitor something that consistently increases over time, like the number of incoming requests, counters are your go-to choice.
-
-2. **Measuring Growth Rates**: Counters are also handy when you want to measure how fast something is growing. For instance, you can use them to keep tabs on request rates.
-
-Counters find application in various scenarios, including:
-
-- **Request Counts**: Monitoring the number of incoming requests to your server.
-
-- **Completed Tasks**: Keeping track of how many tasks or processes have been successfully completed.
-
-- **Error Counts**: Counting the occurrences of errors in your application.
-
-### Example
-
-Here's a practical example of creating and using a counter in your code:
+**Example** (Constant Input)
 
 ```ts twoslash
-import { Metric, Effect, Console } from "effect"
+import { Metric, Effect } from "effect"
 
-// Create a counter named 'task_count' and increment it by 1 every time
-// it is invoked
 const taskCount = Metric.counter("task_count").pipe(
-  Metric.withConstantInput(1)
+  Metric.withConstantInput(1) // Automatically increments by 1
 )
 
 const task1 = Effect.succeed(1).pipe(Effect.delay("100 millis"))
 const task2 = Effect.succeed(2).pipe(Effect.delay("200 millis"))
+const task3 = Effect.succeed(-4).pipe(Effect.delay("300 millis"))
 
 const program = Effect.gen(function* () {
   const a = yield* taskCount(task1)
   const b = yield* taskCount(task2)
-  return a + b
+  const c = yield* taskCount(task3)
+
+  const state = yield* Metric.value(taskCount)
+  console.log(state)
+
+  return a * b * c
 })
 
-const showMetric = Metric.value(taskCount).pipe(
-  Effect.andThen(Console.log)
-)
-
-Effect.runPromise(program.pipe(Effect.tap(() => showMetric))).then(
-  console.log
-)
+Effect.runPromise(program).then(console.log)
 /*
 Output:
 CounterState {
-  count: 2,
+  count: 3,
   ...
 }
-3
+-8
 */
 ```
-
-In this example, we create a counter called `taskCount`, which is incremented by 1 each time it's invoked. We then use it to monitor the number of times certain tasks are executed. The result provides valuable insights into the cumulative count of these tasks.
-
-It's worth noting that applying the `taskCount` metric to an effect doesn't change its type. So, if `task1` has a type of `Effect<number>`, then `taskCount(task1)` still has the same type, `Effect<number>`.
 
 ## Gauge
 
@@ -123,15 +191,93 @@ In the world of metrics, a Gauge is a metric that represents a single numerical 
 
 Unlike counters, where we're interested in cumulative values over time, with gauges, our focus is on the current value at a specific point in time.
 
+Gauges are the best choice when you want to monitor values that can both increase and decrease, and you're not interested in tracking their rates of change. In other words, gauges help us measure things that have a specific value at a particular moment.
+
+Some typical use cases for gauges include:
+
+- **Memory Usage**: Keeping an eye on how much memory your application is using right now.
+- **Queue Size**: Monitoring the current size of a queue where tasks are waiting to be processed.
+- **In-Progress Request Counts**: Tracking the number of requests currently being handled by your server.
+- **Temperature**: Measuring the current temperature, which can fluctuate up and down.
+
 ### How to Create a Gauge
 
-To create a gauge, you can use the `Metric.gauge` constructor in your code. You can specify the type of the gauge as either `number` or `bigint`. Here's how you can do it:
+To create a gauge, you can use the `Metric.gauge` constructor.
+
+**Example** (Creating a Gauge)
+
+```ts twoslash
+import { Metric } from "effect"
+
+const memory = Metric.gauge("memory_usage", {
+  // Optional
+  description: "A gauge for memory usage"
+})
+```
+
+Once created, a gauge can be updated by passing an effect that produces the value you want to set for the gauge.
+
+**Example** (Using a Gauge)
+
+```ts twoslash
+import { Metric, Effect, Random } from "effect"
+
+// Create a gauge to track temperature
+const temperature = Metric.gauge("temperature")
+
+// Simulate fetching a random temperature
+const getTemperature = Effect.gen(function* () {
+  // Get a random temperature between -10 and 10
+  const t = yield* Random.nextIntBetween(-10, 10)
+  console.log(`new temperature: ${t}`)
+  return t
+})
+
+// Program that updates the gauge multiple times
+const program = Effect.gen(function* () {
+  const series: Array<number> = []
+  // Update the gauge with new temperature readings
+  series.push(yield* temperature(getTemperature))
+  series.push(yield* temperature(getTemperature))
+  series.push(yield* temperature(getTemperature))
+
+  // Retrieve the current state of the gauge
+  const state = yield* Metric.value(temperature)
+  console.log(state)
+
+  return series
+})
+
+Effect.runPromise(program).then(console.log)
+/*
+Example Output:
+new temperature: 9
+new temperature: -9
+new temperature: 2
+GaugeState {
+  value: 2, // the most recent value set in the gauge
+  ...
+}
+[ 9, -9, 2 ]
+*/
+```
+
+<Aside type="note" title="Gauge Behavior">
+  Gauges capture the most recent value set, so if you're tracking a
+  sequence of updates, the final state will show only the last recorded
+  value, not the entire series.
+</Aside>
+
+### Gauge Types
+
+You can specify whether the gauge tracks a `number` or `bigint`.
 
 ```ts twoslash
 import { Metric } from "effect"
 
 const numberGauge = Metric.gauge("memory_usage", {
   description: "A gauge for memory usage"
+  // bigint: false // default
 })
 
 const bigintGauge = Metric.gauge("cpu_load", {
@@ -140,166 +286,128 @@ const bigintGauge = Metric.gauge("cpu_load", {
 })
 ```
 
-### When to Use Gauges
-
-Gauges are the best choice when you want to monitor values that can both increase and decrease, and you're not interested in tracking their rates of change. In other words, gauges help us measure things that have a specific value at a particular moment:
-
-- **Memory Usage**: Keeping an eye on how much memory your application is using right now.
-
-- **Queue Size**: Monitoring the current size of a queue where tasks are waiting to be processed.
-
-- **In-Progress Request Counts**: Tracking the number of requests currently being handled by your server.
-
-- **Temperature**: Measuring the current temperature, which can fluctuate up and down.
-
-### Example
-
-Let's look at a practical example of creating and using a gauge in your code:
-
-```ts twoslash
-import { Metric, Effect, Random, Console } from "effect"
-
-const temperature = Metric.gauge("temperature")
-
-const getTemperature = Effect.gen(function* () {
-  const n = yield* Random.nextIntBetween(-10, 10)
-  console.log(`variation: ${n}`)
-  return n
-})
-
-const program = Effect.gen(function* () {
-  const series: Array<number> = []
-  series.push(yield* temperature(getTemperature))
-  series.push(yield* temperature(getTemperature))
-  series.push(yield* temperature(getTemperature))
-  return series
-})
-
-const showMetric = Metric.value(temperature).pipe(
-  Effect.andThen(Console.log)
-)
-
-Effect.runPromise(program.pipe(Effect.tap(() => showMetric))).then(
-  console.log
-)
-/*
-Output:
-variation: 6
-variation: -4
-variation: -9
-GaugeState {
-  value: -9,
-  ...
-}
-[ 6, -4, -9 ]
-*/
-```
-
 ## Histogram
 
-A Histogram is a metric that helps us understand how a collection of numerical values is distributed over time. Instead of just focusing on the individual values, histograms organize these values into distinct intervals, called buckets, and record the frequency of values within each bucket.
+A Histogram is a metric used to analyze how numerical values are distributed over time. Instead of focusing on individual data points, a histogram groups values into predefined ranges, called buckets, and tracks how many values fall into each range.
 
-Histograms are valuable because they not only represent the actual values but also provide insights into their distribution. They are like a summary of a dataset, breaking down the data into buckets and showing how many data points fall into each one.
+When a value is recorded, it gets assigned to one of the histogram's buckets based on its range. Each bucket has an upper boundary, and the count for that bucket is increased if the value is less than or equal to its boundary. Once recorded, the individual value is discarded, and the focus shifts to how many values have fallen into each bucket.
 
-### How Histograms Work
+Histograms also track:
 
-In a histogram, each incoming sample is assigned to a predefined bucket. When a data point arrives, it increases the count for the corresponding bucket, and then the individual sample is discarded. This bucketed approach allows us to aggregate data across multiple instances. Histograms are especially useful for measuring percentiles, helping us estimate specific percentiles by looking at bucket counts.
+- **Total Count**: The number of values that have been observed.
+- **Sum**: The sum of all the observed values.
+- **Min**: The smallest observed value.
+- **Max**: The largest observed value.
 
-### Key Concepts
+Histograms are especially useful for calculating percentiles, which can help you estimate specific points in a dataset by analyzing how many values are in each bucket.
 
-- **Observing Values:** Histograms observe numerical values and count how many observations fall into specific buckets. Each bucket has an upper boundary, and the count for a bucket increases by 1 if an observed value is less than or equal to the bucket's upper boundary.
+This concept is inspired by [Prometheus](https://prometheus.io/docs/concepts/metric_types#histogram), a well-known monitoring and alerting toolkit.
 
-- **Overall Count:** A histogram also keeps track of the total count of observed values and the sum of all observed values.
+Histograms are particularly useful in performance analysis and system monitoring. By examining how response times, latencies, or other metrics are distributed, you can gain valuable insights into your system's behavior. This data helps you identify outliers, performance bottlenecks, or trends that may require optimization.
 
-- **Inspired by Prometheus:** The concept of histograms is inspired by [Prometheus](https://prometheus.io/docs/concepts/metric_types#histogram), a popular monitoring and alerting toolkit.
+Common use cases for histograms include:
 
-### When to Use Histograms
+- **Percentile Estimation**: Histograms allow you to approximate percentiles of observed values, like the 95th percentile of response times.
+- **Known Ranges**: If you can estimate the range of values in advance, histograms can organize the data into predefined buckets for better analysis.
+- **Performance Metrics**: Use histograms to track metrics like request latencies, memory usage, or throughput over time.
+- **Aggregation**: Histograms can be aggregated across multiple instances, making them ideal for distributed systems where you need to collect data from different sources.
 
-Histograms are widely used in software metrics for various purposes, especially in analyzing the performance of software systems. They are valuable for metrics such as response times, latencies, and throughput. By visualizing the distribution of these metrics in a histogram, developers can identify performance bottlenecks, outliers, or variations. This information helps in optimizing code, infrastructure, and system configurations to improve overall performance.
+<Aside type="note" title="Histogram Buckets and Precision">
+  Keep in mind that histograms don't retain exact values. Instead, they
+  group values into buckets, so the precision of your data depends on how
+  you define these buckets.
+</Aside>
 
-Histograms are the best choice in the following situations:
+**Example** (Histogram With Linear Buckets)
 
-- When you want to observe many values and later calculate percentiles of those observed values.
+In this example, we define a histogram with linear buckets, where the values range from `0` to `100` in increments of `10`. Additionally, we include a final bucket for values greater than `100`, referred to as the "Infinity" bucket. This configuration is useful for tracking numeric values, like request latencies, within specific ranges.
 
-- When you can estimate the range of values in advance, as histograms organize observations into predefined buckets.
-
-- When you don't require exact values due to the inherent lossy nature of bucketing data in histograms.
-
-- When you need to aggregate histograms across multiple instances.
-
-### Examples
-
-#### Histogram With Linear Buckets
-
-In this example, we create a histogram with linear buckets, ranging from 0 to 100 in increments of 10, and an "Infinity" bucket. It's suitable for effects yielding a `number`. The program then generates random values, records them in the histogram, and displays the histogram's state.
+The program generates random numbers between `1` and `120`, records them in the histogram, and then prints the histogram's state, showing the count of values that fall into each bucket.
 
 ```ts twoslash
 import { Effect, Metric, MetricBoundaries, Random } from "effect"
 
-const latencyHistogram = Metric.histogram(
+// Define a histogram to track request latencies, with linear buckets
+const latency = Metric.histogram(
   "request_latency",
+  // Buckets from 0-100, with an extra Infinity bucket
   MetricBoundaries.linear({ start: 0, width: 10, count: 11 })
 )
 
-const program = latencyHistogram(Random.nextIntBetween(1, 120)).pipe(
-  Effect.repeatN(99)
-)
+const program = Effect.gen(function* () {
+  // Generate 100 random values and record them in the histogram
+  yield* latency(Random.nextIntBetween(1, 120)).pipe(Effect.repeatN(99))
 
-Effect.runPromise(
-  program.pipe(Effect.andThen(Metric.value(latencyHistogram)))
-).then((histogramState) => console.log("%o", histogramState))
+  // Fetch and display the histogram's state
+  const state = yield* Metric.value(latency)
+  console.log(state)
+})
+
+Effect.runPromise(program)
 /*
-Output:
+Example Output:
 HistogramState {
   buckets: [
-    [ 0, 0 ],
-    [ 10, 7 ],
-    [ 20, 11 ],
-    [ 30, 20 ],
-    [ 40, 27 ],
+    [ 0, 0 ],    // No values in the 0-10 range
+    [ 10, 7 ],   // 7 values in the 10-20 range
+    [ 20, 11 ],  // 11 values in the 20-30 range
+    [ 30, 20 ],  // 20 values in the 30-40 range
+    [ 40, 27 ],  // and so on...
     [ 50, 38 ],
     [ 60, 53 ],
     [ 70, 64 ],
     [ 80, 73 ],
     [ 90, 84 ],
-    [ Infinity, 100 ],
-    [length]: 11
+    [ Infinity, 100 ] // All 100 values have been recorded
   ],
-  count: 100,
-  min: 1,
-  max: 119,
-  sum: 5980,
+  count: 100,  // Total count of observed values
+  min: 1,      // Smallest observed value
+  max: 119,    // Largest observed value
+  sum: 5980,   // Sum of all observed values
   ...
 }
 */
 ```
 
-#### Timer Metric
+### Timer Metric
 
-This example demonstrates the use of a timer metric to track workflow durations. It generates random values, simulates waiting times, records durations in the timer metric, and displays the histogram's state.
+In this example, we demonstrate how to use a timer metric to track the duration of specific workflows. The timer captures how long certain tasks take to execute, storing this information in a histogram, which provides insights into the distribution of these durations.
+
+We generate random values to simulate varying wait times, record the durations in the timer, and then print out the histogram's state.
+
+**Example** (Tracking Workflow Durations with a Timer Metric)
 
 ```ts twoslash
 import { Metric, Array, Random, Effect } from "effect"
 
-// Metric<Histogram, Duration, Histogram>
+// Create a timer metric with predefined boundaries from 1 to 10
 const timer = Metric.timerWithBoundaries("timer", Array.range(1, 10))
 
-const program = Random.nextIntBetween(1, 10).pipe(
-  Effect.andThen((n) => Effect.sleep(`${n} millis`)),
-  Metric.trackDuration(timer),
-  Effect.repeatN(99)
-)
+// Define a task that simulates random wait times
+const task = Effect.gen(function* (_) {
+  // Generate a random value between 1 and 10
+  const n = yield* Random.nextIntBetween(1, 10)
+  // Simulate a delay based on the random value
+  yield* Effect.sleep(`${n} millis`)
+})
 
-Effect.runPromise(program.pipe(Effect.andThen(Metric.value(timer)))).then(
-  (histogramState) => console.log("%o", histogramState)
-)
+const program = Effect.gen(function* (_) {
+  // Track the duration of the task and repeat it 100 times
+  yield* Metric.trackDuration(task, timer).pipe(Effect.repeatN(99))
+
+  // Retrieve and print the current state of the timer histogram
+  const state = yield* Metric.value(timer)
+  console.log(state)
+})
+
+Effect.runPromise(program)
 /*
-Output:
+Example Output:
 HistogramState {
   buckets: [
-    [ 1, 3 ],
-    [ 2, 13 ],
-    [ 3, 17 ],
+    [ 1, 3 ],   // 3 tasks completed in <= 1 ms
+    [ 2, 13 ],  // 13 tasks completed in <= 2 ms
+    [ 3, 17 ],  // and so on...
     [ 4, 26 ],
     [ 5, 35 ],
     [ 6, 43 ],
@@ -307,19 +415,16 @@ HistogramState {
     [ 8, 56 ],
     [ 9, 65 ],
     [ 10, 72 ],
-    [ Infinity, 100 ],
-    [length]: 11
+    [ Infinity, 100 ]      // All 100 tasks have completed
   ],
-  count: 100,
-  min: 0.25797,
-  max: 12.25421,
-  sum: 683.0266810000002,
+  count: 100,              // Total number of tasks observed
+  min: 0.25797,            // Shortest task duration in milliseconds
+  max: 12.25421,           // Longest task duration in milliseconds
+  sum: 683.0266810000002,  // Total time spent across all tasks
   ...
 }
 */
 ```
-
-These examples showcase how histograms can be used to analyze and understand the distribution of data in various scenarios, making them a valuable tool in software metrics.
 
 ## Summary
 
