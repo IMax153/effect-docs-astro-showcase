@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/blog/this-week-in-effect-2024-10-11",
+      "destination": "/blog/this-week-in-effect/2024/10/11/"
+    },
+    {
       "source": "/blog/effect-3.9",
       "destination": "/blog/releases/effect/39/"
     },
