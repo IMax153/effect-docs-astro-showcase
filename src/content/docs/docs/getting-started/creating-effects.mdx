@@ -341,8 +341,10 @@ const readFile = (filename: string) =>
   Effect.async<Buffer, Error>((resume) => {
     NodeFS.readFile(filename, (error, data) => {
       if (error) {
+        // If there's an error, resume with a failed Effect
         resume(Effect.fail(error))
       } else {
+        // If successful, resume with a succeeded Effect
         resume(Effect.succeed(data))
       }
     })
@@ -354,11 +356,13 @@ const program = readFile("todos.txt")
 In the above example, we manually annotate the types when calling `Effect.async` because TypeScript cannot infer the type parameters for a callback
 based on the return value inside the callback body. Annotating the types ensures that the values provided to `resume` match the expected types.
 
-<Aside type="tip" title="Sync & Async Code">
-  You can seamlessly mix synchronous and asynchronous code within the
-  Effect framework. Everything becomes an Effect, enabling you to handle
-  different types of side effects in a unified way.
+<Aside type="caution">
+  The `resume` function **MUST** be called at most once.
 </Aside>
+
+Additionally, the `resume` function can optionally return an `Effect`, which will be executed if the `Fiber` executing this `Effect` is interrupted.
+
+Moreover, if interruption support is required, the `resume` function can also receive an `AbortSignal`.
 
 ## Suspended Effects
 
