@@ -5,12 +5,7 @@ sidebar:
   order: 5
 ---
 
-import {
-  Aside,
-  Tabs,
-  TabItem,
-  Badge
-} from "@astrojs/starlight/components"
+import { Aside, Badge } from "@astrojs/starlight/components"
 
 Configuration is an essential aspect of any cloud-native application. Effect simplifies the process of managing configuration by offering a convenient interface for configuration providers.
 
@@ -26,68 +21,9 @@ To make our application configurable, we need to understand three essential elem
 
 - **Config Backend**: The `ConfigProvider` serves as the underlying engine that manages the configuration loading process. Effect comes with a default config provider as part of its default services. This default provider reads the configuration data from environment variables. If we want to use a custom config provider, we can utilize the `Layer.setConfigProvider` layer to configure the Effect runtime accordingly.
 
-## Getting Started
+## Basic Configuration Types
 
-Effect provides a set of primitives for the most common types like `string`, `number`, `boolean`, `integer`, etc.
-
-Let's start with a simple example of how to read configuration from environment variables:
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
-
-```ts twoslash
-import { Effect, Config } from "effect"
-
-const program = Effect.gen(function* () {
-  const host = yield* Config.string("HOST")
-  const port = yield* Config.number("PORT")
-  console.log(`Application started: ${host}:${port}`)
-})
-
-Effect.runSync(program)
-```
-
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect, Config, Console } from "effect"
-
-const program = Effect.all([
-  Config.string("HOST"),
-  Config.number("PORT")
-]).pipe(
-  Effect.andThen(([host, port]) =>
-    Console.log(`Application started: ${host}:${port}`)
-  )
-)
-
-Effect.runSync(program)
-```
-
-</TabItem>
-
-</Tabs>
-
-If we run this program we will get the following output:
-
-```sh showLineNumbers=false
-npx tsx primitives.ts
-(Missing data at HOST: "Expected HOST to exist in the process context")
-```
-
-This is because we have not provided any configuration. Let's try running it with the following environment variables:
-
-```sh showLineNumbers=false
-HOST=localhost PORT=8080 npx tsx primitives.ts
-Application started: localhost:8080
-```
-
-## Primitives
-
-Effect offers these basic types out of the box:
+Effect provides several built-in types for configuration values, which you can use right out of the box:
 
 | Type       | Description                                                                          |
 | ---------- | ------------------------------------------------------------------------------------ |
@@ -103,120 +39,169 @@ Effect offers these basic types out of the box:
 
 (\*) `string | number | boolean | null | bigint`
 
+**Example** (Using Primitives)
+
+Here's an example of loading a basic configuration using environment variables for `HOST` and `PORT`:
+
+```ts twoslash title="primitives.ts"
+import { Effect, Config } from "effect"
+
+// Define a program that loads HOST and PORT configuration
+const program = Effect.gen(function* () {
+  // Load the HOST from environment variables
+  const host = yield* Config.string("HOST")
+  // Load the PORT as a number
+  const port = yield* Config.number("PORT")
+
+  console.log(`Application started: ${host}:${port}`)
+})
+
+Effect.runPromise(program)
+```
+
+If you run this without setting the required environment variables:
+
+```sh showLineNumbers=false
+npx tsx primitives.ts
+```
+
+you'll see an error indicating the missing configuration:
+
+```ansi showLineNumbers=false
+[Error: (Missing data at HOST: "Expected HOST to exist in the process context")] {
+  name: '(FiberFailure) Error',
+  [Symbol(effect/Runtime/FiberFailure)]: Symbol(effect/Runtime/FiberFailure),
+  [Symbol(effect/Runtime/FiberFailure/Cause)]: {
+    _tag: 'Fail',
+    error: {
+      _op: 'MissingData',
+      path: [ 'HOST' ],
+      message: 'Expected HOST to exist in the process context'
+    }
+  }
+}
+```
+
+To run the program successfully, set the environment variables as shown below:
+
+```sh showLineNumbers=false
+HOST=localhost PORT=8080 npx tsx primitives.ts
+```
+
+Output:
+
+```ansi showLineNumbers=false
+Application started: localhost:8080
+```
+
 ## Default Values
 
-In some cases, you may encounter situations where an environment variable is not set, leading to a missing value in the configuration. To handle such scenarios, Effect provides the `Config.withDefault` function. This function allows you to specify a fallback or default value to use when an environment variable is not present.
+Sometimes, you may encounter situations where an environment variable is missing, leading to an incomplete configuration. To address this, Effect provides the `Config.withDefault` function, which allows you to specify a default value. This fallback ensures that your application continues to function even if a required environment variable is not set.
 
-Here's how you can use `Config.withDefault` to handle fallback values:
+**Example** (Using Default Values)
 
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
-
-```ts twoslash
+```ts twoslash title="defaults.ts"
 import { Effect, Config } from "effect"
 
 const program = Effect.gen(function* () {
   const host = yield* Config.string("HOST")
+  // Use default 8080 if PORT is not set
   const port = yield* Config.number("PORT").pipe(Config.withDefault(8080))
   console.log(`Application started: ${host}:${port}`)
 })
 
-Effect.runSync(program)
+Effect.runPromise(program)
 ```
 
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect, Config, Console } from "effect"
-
-const program = Effect.all([
-  Config.string("HOST"),
-  Config.number("PORT").pipe(Config.withDefault(8080))
-]).pipe(
-  Effect.andThen(([host, port]) =>
-    Console.log(`Application started: ${host}:${port}`)
-  )
-)
-
-Effect.runSync(program)
-```
-
-</TabItem>
-
-</Tabs>
-
-When running the program with the command:
+Running this program with only the `HOST` environment variable set:
 
 ```sh showLineNumbers=false
-HOST=localhost npx tsx withDefault.ts
+HOST=localhost npx tsx defaults.ts
 ```
 
-you will see the following output:
+produces the following output:
 
-```sh showLineNumbers=false
+```ansi showLineNumbers=false
 Application started: localhost:8080
 ```
 
-Even though the `PORT` environment variable is not set, the fallback value of `8080` is used, ensuring that the program continues to run smoothly with a default value.
+In this case, even though the `PORT` environment variable is not set, the program continues to run, using the default value of `8080` for the port. This ensures that the application remains functional without requiring every configuration to be explicitly provided.
 
-## Constructors
+## Constructors for Configurations
 
-Effect provides several built-in constructors. These are functions that take a `Config` as input and produce another `Config`.
+Effect provides several built-in constructors that allow you to define and manipulate configurations. These constructors take a `Config` as input and produce another `Config`, enabling more complex configuration structures.
 
-- `array`: Constructs a config for an array of values.
-- `chunk`: Constructs a config for a sequence of values.
-- `option`: Returns an optional version of this config, which will be `None` if the data is missing from configuration, and `Some` otherwise.
-- `repeat`: Returns a config that describes a sequence of values, each of which has the structure of this config.
-- `hashSet`: Constructs a config for a sequence of values.
-- `hashMap`: Constructs a config for a sequence of values.
+Here are some of the key constructors:
 
-In addition to the basic ones, there are three special constructors you might find useful:
+| Constructor | Description                                                                                                         |
+| ----------- | ------------------------------------------------------------------------------------------------------------------- |
+| `array`     | Constructs a configuration for an array of values.                                                                  |
+| `chunk`     | Constructs a configuration for a sequence of values.                                                                |
+| `option`    | Returns an optional configuration. If the data is missing, the result will be `None`; otherwise, it will be `Some`. |
+| `repeat`    | Describes a sequence of values, each following the structure of the given config.                                   |
+| `hashSet`   | Constructs a configuration for a set of values.                                                                     |
+| `hashMap`   | Constructs a configuration for a key-value map.                                                                     |
 
-- `succeed`: Constructs a config which contains the specified value.
-- `fail`: Constructs a config that fails with the specified message.
-- `all`: Constructs a config from a tuple / struct / arguments of configs.
+Additionally, there are three special constructors for specific use cases:
 
-**Example**
+| Constructor | Description                                                              |
+| ----------- | ------------------------------------------------------------------------ |
+| `succeed`   | Constructs a config that contains a predefined value.                    |
+| `fail`      | Constructs a config that fails with the specified error message.         |
+| `all`       | Combines multiple configurations into a tuple, struct, or argument list. |
 
-```ts twoslash
+**Example** (Using `array` Constructor)
+
+The following example demonstrates how to load an environment variable as an array of strings using the `Config.array` constructor.
+
+```ts twoslash title="array.ts"
 import { Effect, Config } from "effect"
 
 const program = Effect.gen(function* () {
+  // Load array from env var MY_ARRAY
   const config = yield* Config.array(Config.string(), "MY_ARRAY")
   console.log(config)
 })
 
-Effect.runSync(program)
+Effect.runPromise(program)
 ```
+
+If we run this program with the following environment variable:
 
 ```sh showLineNumbers=false
 MY_ARRAY=a,b,c npx tsx array.ts
+```
 
+The output will be:
+
+```ansi showLineNumbers=false
 [ 'a', 'b', 'c' ]
 ```
 
+This shows how the `array` constructor converts a comma-separated string from an environment variable into an array of values, making configuration handling more flexible.
+
 ## Operators
 
-Effect comes with a set of built-in operators to help you manipulate and handle configurations.
+Effect provides several built-in operators to work with configurations, allowing you to manipulate and transform them according to your needs.
 
 ### Transforming Operators
 
-These operators allow you to transform a config into a new one:
+These operators enable you to modify configurations or validate their values:
 
-- `validate`: Returns a config that describes the same structure as this one, but which performs validation during loading.
-- `map`: Creates a new config with the same structure as the original but with values transformed using a given function.
-- `mapAttempt`: Similar to `map`, but if the function throws an error, it's caught and turned into a validation error.
-- `mapOrFail`: Like `map`, but allows for functions that might fail. If the function fails, it results in a validation error.
+| Operator     | Description                                                                                               |
+| ------------ | --------------------------------------------------------------------------------------------------------- |
+| `validate`   | Ensures that a configuration meets certain criteria, returning a validation error if it does not.         |
+| `map`        | Transforms the values of a configuration using a provided function.                                       |
+| `mapAttempt` | Similar to `map`, but catches any errors thrown by the function and converts them into validation errors. |
+| `mapOrFail`  | Like `map`, but the function can fail. If it does, the result is a validation error.                      |
 
-**Example**
+**Example** (Using `validate` Operator)
 
-```ts twoslash
+```ts twoslash title="validate.ts"
 import { Effect, Config } from "effect"
 
 const program = Effect.gen(function* () {
+  // Load the NAME environment variable and validate its length
   const config = yield* Config.string("NAME").pipe(
     Config.validate({
       message: "Expected a string at least 4 characters long",
@@ -226,261 +211,250 @@ const program = Effect.gen(function* () {
   console.log(config)
 })
 
-Effect.runSync(program)
+Effect.runPromise(program)
 ```
+
+If we run this program with an invalid `NAME` value:
 
 ```sh showLineNumbers=false
 NAME=foo npx tsx validate.ts
+```
 
-[(Invalid data at NAME: "Expected a string at least 4 characters long")]
+The output will be:
+
+```ansi showLineNumbers=false
+[Error: (Invalid data at NAME: "Expected a string at least 4 characters long")] {
+  name: '(FiberFailure) Error',
+  [Symbol(effect/Runtime/FiberFailure)]: Symbol(effect/Runtime/FiberFailure),
+  [Symbol(effect/Runtime/FiberFailure/Cause)]: {
+    _tag: 'Fail',
+    error: {
+      _op: 'InvalidData',
+      path: [ 'NAME' ],
+      message: 'Expected a string at least 4 characters long'
+    }
+  }
+}
 ```
 
 ### Fallback Operators
 
-These operators help you set up fallbacks in case of errors or missing data:
+Fallback operators are useful when you want to provide alternative configurations in case of errors or missing data. These operators ensure that your program can still run even if some configuration values are unavailable.
 
-- `orElse`: Sets up a config that tries to use this config first. If there's an issue, it falls back to another specified config.
-- `orElseIf`: This one also tries to use the main config first but switches to a fallback config if there's an error that matches a specific condition.
+| Operator   | Description                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| `orElse`   | Attempts to use the primary config first. If it fails or is missing, it falls back to another config. |
+| `orElseIf` | Similar to `orElse`, but it switches to the fallback config only if the error matches a condition.    |
 
-**Example**
+**Example** (Using `orElse` for Fallback)
 
-In this example, we have a program that requires two configurations: `A` and `B`. We will use two configuration providers, where each provider has only one of the configurations. We will demonstrate how to set up fallbacks using the `orElse` operator.
+In this example, the program requires two configuration values: `A` and `B`. We set up two configuration providers, each containing only one of the required values. Using the `orElse` operator, we combine these providers so the program can retrieve both `A` and `B`.
 
-```ts twoslash
+```ts twoslash title="orElse.ts"
 import { Config, ConfigProvider, Effect, Layer } from "effect"
 
 // A program that requires two configurations: A and B
 const program = Effect.gen(function* () {
-  const A = yield* Config.string("A")
-  const B = yield* Config.string("B")
-  console.log(`A: ${A}`, `B: ${B}`)
+  const A = yield* Config.string("A") // Retrieve config A
+  const B = yield* Config.string("B") // Retrieve config B
+  console.log(`A: ${A}, B: ${B}`)
 })
 
-const provider1 = ConfigProvider.fromMap(
-  new Map([
-    ["A", "A"]
-    // B is missing
-  ])
-)
+// First provider has A but is missing B
+const provider1 = ConfigProvider.fromMap(new Map([["A", "A"]]))
 
-const provider2 = ConfigProvider.fromMap(
-  new Map([
-    // A is missing
-    ["B", "B"]
-  ])
-)
+// Second provider has B but is missing A
+const provider2 = ConfigProvider.fromMap(new Map([["B", "B"]]))
 
+// Use `orElse` to fall back from provider1 to provider2
 const layer = Layer.setConfigProvider(
   provider1.pipe(ConfigProvider.orElse(() => provider2))
 )
 
-Effect.runSync(Effect.provide(program, layer))
+Effect.runPromise(Effect.provide(program, layer))
 ```
+
+If we run this program:
 
 ```sh showLineNumbers=false
 npx tsx orElse.ts
-
-A: A B: B
 ```
 
-<Aside type="note">
-  The `ConfigProvider.fromMap` function used in this example creates a
-  configuration provider from a `Map`. This behavior is explained in more
-  detail in the [Testing Services](#testing-services) section.
+The output will be:
+
+```ansi showLineNumbers=false
+A: A, B: B
+```
+
+<Aside type="tip">
+  In this example, we use `ConfigProvider.fromMap` to create a
+  configuration provider from a simple JavaScript `Map`. This is
+  particularly useful for testing, as described in the [Testing
+  Configurable Services](#testing-services) section.
 </Aside>
 
 ## Custom Configurations
 
-In addition to primitive types, we can also define configurations for custom types. To achieve this, we use primitive configs and combine them using `Config` operators (`zip`, `orElse`, `map`, etc.) and constructors (`array`, `hashSet`, etc.).
+Effect allows you to define configurations for custom types by combining primitive configs using `Config` [operators](#operators) (such as `zip`, `orElse`, `map`) and [constructors](#constructors-for-configurations) (like `array`, `hashSet`).
 
-Let's consider the `HostPort` data type, which consists of two fields: `host` and `port`.
+For example, let's create a `HostPort` class, which has two fields: `host` and `port`.
 
 ```ts twoslash
 class HostPort {
   constructor(readonly host: string, readonly port: number) {}
+  get url() {
+    return `${this.host}:${this.port}`
+  }
 }
 ```
 
-We can define a configuration for this data type by combining primitive configs for `string` and `number`:
+To define a configuration for this custom type, we can combine primitive configs for `string` and `number`:
 
 ```ts twoslash
 import { Config } from "effect"
 
 class HostPort {
   constructor(readonly host: string, readonly port: number) {}
-
   get url() {
     return `${this.host}:${this.port}`
   }
 }
 
+// Combine the configuration for 'HOST' and 'PORT'
 const both = Config.all([Config.string("HOST"), Config.number("PORT")])
 
+// Map the configuration values into a HostPort instance
 const config = Config.map(
   both,
   ([host, port]) => new HostPort(host, port)
 )
 ```
 
-In the above example, we use the `Config.all(configs)` operator to combine two primitive configs `Config<string>` and `Config<number>` into a `Config<[string, number]>`.
+In this example, `Config.all(configs)` combines two primitive configurations, `Config<string>` and `Config<number>`, into a `Config<[string, number]>`. The `Config.map` operator is then used to transform these values into an instance of the `HostPort` class.
 
-If we use this customized configuration in our application:
+**Example** (Using Custom Configuration)
 
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
-
-```ts twoslash
+```ts twoslash title="App.ts"
 import { Effect, Config } from "effect"
 
 class HostPort {
   constructor(readonly host: string, readonly port: number) {}
-
   get url() {
     return `${this.host}:${this.port}`
   }
 }
 
+// Combine the configuration for 'HOST' and 'PORT'
 const both = Config.all([Config.string("HOST"), Config.number("PORT")])
 
+// Map the configuration values into a HostPort instance
 const config = Config.map(
   both,
   ([host, port]) => new HostPort(host, port)
 )
 
+// Main program that reads configuration and starts the application
 const program = Effect.gen(function* () {
   const hostPort = yield* config
   console.log(`Application started: ${hostPort.url}`)
 })
+
+Effect.runPromise(program)
 ```
 
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect, Config, Console } from "effect"
-
-class HostPort {
-  constructor(readonly host: string, readonly port: number) {}
-
-  get url() {
-    return `${this.host}:${this.port}`
-  }
-}
-
-const both = Config.all([Config.string("HOST"), Config.number("PORT")])
-
-const config = Config.map(
-  both,
-  ([host, port]) => new HostPort(host, port)
-)
-
-const program = config.pipe(
-  Effect.andThen((hostPort) =>
-    Console.log(`Application started: ${hostPort.url}`)
-  )
-)
-```
-
-</TabItem>
-
-</Tabs>
-
-when you run the program using `Effect.runSync(program)`, it will attempt to read the corresponding values from environment variables (`HOST` and `PORT`):
+When you run this program, it will try to retrieve the values for `HOST` and `PORT` from your environment variables:
 
 ```sh showLineNumbers=false
 HOST=localhost PORT=8080 npx tsx App.ts
+```
 
+If successful, it will print:
+
+```ansi showLineNumbers=false
 Application started: localhost:8080
 ```
 
 ## Top-level and Nested Configurations
 
-So far, we have learned how to define configurations in a top-level manner, whether they are for primitive or custom types. However, we can also define nested configurations.
+We've seen how to define configurations at the top level, whether for primitive or custom types. In some cases, though, you might want to structure your configurations in a more nested way, organizing them under common namespaces for clarity and manageability.
 
-Let's assume we have a `ServiceConfig` data type that consists of two fields: `hostPort` and `timeout`.
+For instance, consider the following `ServiceConfig` type:
 
 ```ts twoslash
-import { Config } from "effect"
-
-class HostPort {
-  constructor(readonly host: string, readonly port: number) {}
-
+class ServiceConfig {
+  constructor(
+    readonly host: string,
+    readonly port: number,
+    readonly timeout: number
+  ) {}
   get url() {
     return `${this.host}:${this.port}`
   }
-}
-
-class ServiceConfig {
-  constructor(readonly hostPort: HostPort, readonly timeout: number) {}
 }
 ```
 
-If we use this customized config in our application, it tries to read corresponding values from environment variables: `HOST`, `PORT`, and `TIMEOUT`.
+If you were to use this configuration in your application, it would expect the `HOST`, `PORT`, and `TIMEOUT` environment variables at the top level. But in many cases, you may want to organize configurations under a shared namespace—for example, grouping `HOST` and `PORT` under a `SERVER` namespace, while keeping `TIMEOUT` at the root.
 
-However, in many cases, we don't want to read all configurations from the top-level namespace. Instead, we may want to nest them under a common namespace. For example, we want to read both `HOST` and `PORT` from the `HOSTPORT` namespace, and `TIMEOUT` from the root namespace.
-
-To achieve this, we can use the `Config.nested` combinator. It allows us to nest configs under a specific namespace. Here's how we can update our configuration:
+To do this, you can use the `Config.nested` operator, which allows you to nest configuration values under a specific namespace. Let's update the previous example to reflect this:
 
 ```ts twoslash
 import { Config } from "effect"
 
-class HostPort {
-  constructor(readonly host: string, readonly port: number) {}
-
+class ServiceConfig {
+  constructor(
+    readonly host: string,
+    readonly port: number,
+    readonly timeout: number
+  ) {}
   get url() {
     return `${this.host}:${this.port}`
   }
 }
 
-const both = Config.all([Config.string("HOST"), Config.number("PORT")])
+const serverConfig = Config.all([
+  Config.string("HOST"),
+  Config.number("PORT")
+])
 
-const config = Config.map(
-  both,
-  ([host, port]) => new HostPort(host, port)
-)
-
-class ServiceConfig {
-  constructor(readonly hostPort: HostPort, readonly timeout: number) {}
-}
-
-const serfviceConfig = Config.map(
+const serviceConfig = Config.map(
   Config.all([
-    Config.nested(config, "HOSTPORT"),
+    // Read 'HOST' and 'PORT' from 'SERVER' namespace
+    Config.nested(serverConfig, "SERVER"),
+    // Read 'TIMEOUT' from the root namespace
     Config.number("TIMEOUT")
   ]),
-  ([hostPort, timeout]) => new ServiceConfig(hostPort, timeout)
+  ([[host, port], timeout]) => new ServiceConfig(host, port, timeout)
 )
 ```
 
-Now, if we run our application, it will attempt to read the corresponding values from the environment variables: `HOSTPORT_HOST`, `HOSTPORT_PORT`, and `TIMEOUT`.
+Now, if you run your application with this configuration setup, it will look for the following environment variables:
 
-## Testing Services
+- `SERVER_HOST` for the host value
+- `SERVER_PORT` for the port value
+- `TIMEOUT` for the timeout value
 
-When testing services, there are scenarios where we need to provide specific configurations to them. In such cases, we should be able to mock the backend that reads the configuration data.
+This structured approach keeps your configuration more organized, especially when dealing with multiple services or complex applications.
 
-To accomplish this, we can use the `ConfigProvider.fromMap` constructor. This constructor takes a `Map<string, string>` that represents the configuration data, and it returns a config provider that reads the configuration from that map.
+## Testing Configurable Services
 
-Once we have the mock config provider, we can use `Layer.setConfigProvider` function. This function allows us to override the default config provider and provide our own custom config provider. It returns a `Layer` that can be used to configure the Effect runtime for our test specs.
+When testing services, there are times when you need to provide specific configurations for your tests. To simulate this, it's useful to mock the configuration backend that reads these values.
 
-Here's an example of how we can mock a config provider for testing purposes:
+You can achieve this using the `ConfigProvider.fromMap` constructor. This method allows you to create a configuration provider from a `Map<string, string>`, where the map represents the configuration data. You can then use this mock provider in place of the default one by calling `Layer.setConfigProvider`. This function returns a `Layer` that can override the default configuration for your tests.
+
+**Example** (Mocking a Config Provider for Testing)
 
 ```ts twoslash
 import { Config, ConfigProvider, Layer, Effect } from "effect"
 
 class HostPort {
   constructor(readonly host: string, readonly port: number) {}
-
   get url() {
     return `${this.host}:${this.port}`
   }
 }
 
-const both = Config.all([Config.string("HOST"), Config.number("PORT")])
-
 const config = Config.map(
-  both,
+  Config.all([Config.string("HOST"), Config.number("PORT")]),
   ([host, port]) => new HostPort(host, port)
 )
 
@@ -489,7 +463,7 @@ const program = Effect.gen(function* () {
   console.log(`Application started: ${hostPort.url}`)
 })
 
-// Create a mock config provider using ConfigProvider.fromMap
+// Create a mock config provider using a map with test data
 const mockConfigProvider = ConfigProvider.fromMap(
   new Map([
     ["HOST", "localhost"],
@@ -497,73 +471,88 @@ const mockConfigProvider = ConfigProvider.fromMap(
   ])
 )
 
-// Create a layer using Layer.setConfigProvider to override the default config provider
+// Override the default config provider with the mock provider
 const layer = Layer.setConfigProvider(mockConfigProvider)
 
-// Run the program using the provided layer
-Effect.runSync(Effect.provide(program, layer))
+// Run the program using the mock config provider
+Effect.runPromise(Effect.provide(program, layer))
 // Output: Application started: localhost:8080
 ```
 
-By using this approach, we can easily mock the configuration data and test our services with different configurations in a controlled manner.
+This approach helps you create isolated tests that don't rely on external environment variables, ensuring your tests run consistently with mock configurations.
 
 ## Redacted
 
-What sets `Config.redacted` apart from `Config.string` is its handling of sensitive information.
-It parses the config value and wraps it in a `Redacted<string>`, a [data type](/docs/data-types/redacted/) designed for holding secrets.
+The `Config.redacted` function is used to handle sensitive information safely. It parses the configuration value and wraps it in a `Redacted<string>`, a specialized [data type](/docs/data-types/redacted/) designed to protect secrets.
 
-When you use `Console.log` on a redacted, the actual value remains hidden, providing an added layer of security.
-The only way to access the value is by using `Redacted.value`.
+When you log a `Redacted` value using `console.log`, the actual content remains hidden, providing an extra layer of security. To access the real value, you must explicitly use `Redacted.value`.
 
-```ts twoslash
-import { Effect, Config, Console, Redacted } from "effect"
+**Example** (Handling Redacted Values)
 
-const program = Config.redacted("API_KEY").pipe(
-  Effect.tap((redacted) => Console.log(`Console output: ${redacted}`)),
-  Effect.tap((redacted) =>
-    Console.log(`Actual value: ${Redacted.value(redacted)}`)
-  )
-)
+```ts twoslash title="redacted.ts"
+import { Effect, Config, Redacted } from "effect"
 
-Effect.runSync(program)
+const program = Effect.gen(function* () {
+  const redacted = yield* Config.redacted("API_KEY")
+
+  // Log the redacted value, which won't reveal the actual secret
+  console.log(`Console output: ${redacted}`)
+
+  // Access the real value using Redacted.value and log it
+  console.log(`Actual value: ${Redacted.value(redacted)}`)
+})
+
+Effect.runPromise(program)
 ```
 
-If we run this program we will get the following output:
+When this program is executed:
 
 ```sh showLineNumbers=false
-API_KEY=my-api-key tsx Redacted.ts
+API_KEY=my-api-key tsx redacted.ts
+```
+
+The output will look like this:
+
+```ansi showLineNumbers=false
 Console output: <redacted>
 Actual value: my-api-key
 ```
 
-In this example, you can see that when logging the redacted using `Console.log`, the actual value is replaced with `<redacted>`, ensuring that sensitive information is not exposed.
-The `Redacted.value` function, on the other hand, provides a controlled way to retrieve the original secret value.
+As shown, when logging the `Redacted` value using `console.log`, the output is `<redacted>`, ensuring that sensitive data remains concealed. However, by using `Redacted.value`, the true value (`"my-api-key"`) can be accessed and displayed, providing controlled access to the secret.
 
 ## Secret <Badge text="Deprecated" variant="caution" />
 
-Deprecated since version 3.3.0: Please use [Config.redacted](#redacted)
-for handling sensitive information going forward.
+_Deprecated since version 3.3.0: Please use [Config.redacted](#redacted) for handling sensitive information going forward._
 
-`Config.secret` functions similarly to `Config.redacted` by securing sensitive information.
-It wraps configuration values in a `Secret` type, which also obscures details when logged but allows access through the `Secret.value` method.
+The `Config.secret` function was previously used to secure sensitive information in a similar way to `Config.redacted`. It wraps configuration values in a `Secret` type, which also conceals details when logged but allows access via `Secret.value`.
 
-```ts twoslash
-import { Effect, Config, Console, Secret } from "effect"
+**Example** (Using Deprecated `Config.secret`)
 
-const program = Config.secret("API_KEY").pipe(
-  Effect.tap((secret) => Console.log(`Console output: ${secret}`)),
-  Effect.tap((secret) =>
-    Console.log(`Secret value: ${Secret.value(secret)}`)
-  )
-)
+```ts twoslash title="secret.ts"
+import { Effect, Config, Secret } from "effect"
 
-Effect.runSync(program)
+const program = Effect.gen(function* () {
+  const secret = yield* Config.secret("API_KEY")
+
+  // Log the secret value, which won't reveal the actual secret
+  console.log(`Console output: ${secret}`)
+
+  // Access the real value using Secret.value and log it
+  console.log(`Actual value: ${Secret.value(secret)}`)
+})
+
+Effect.runPromise(program)
 ```
 
-If we run this program we will get the following output:
+When this program is executed:
 
 ```sh showLineNumbers=false
-API_KEY=my-api-key tsx Secret.ts
+API_KEY=my-api-key tsx secret.ts
+```
+
+The output will look like this:
+
+```ansi showLineNumbers=false
 Console output: Secret(<redacted>)
-Secret value: my-api-key
+Actual value: my-api-key
 ```
