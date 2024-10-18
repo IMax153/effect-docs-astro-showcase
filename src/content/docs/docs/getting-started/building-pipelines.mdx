@@ -542,7 +542,7 @@ const program = Effect.all([
 
 Let's summarize the transformation functions we have seen so far:
 
-| **API**   | **Input**                                 | **Output**                  |
+| API       | Input                                     | Output                      |
 | --------- | ----------------------------------------- | --------------------------- |
 | `map`     | `Effect<A, E, R>`, `A => B`               | `Effect<B, E, R>`           |
 | `flatMap` | `Effect<A, E, R>`, `A => Effect<B, E, R>` | `Effect<B, E, R>`           |

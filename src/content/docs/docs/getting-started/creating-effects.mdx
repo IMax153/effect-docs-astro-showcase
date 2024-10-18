@@ -29,7 +29,9 @@ To address this issue, Effect introduces dedicated constructors for creating eff
 
 ### succeed
 
-The `Effect.succeed` constructor in the Effect library is used to explicitly create an effect that is guaranteed to succeed. Here's how you can use it:
+The `Effect.succeed` constructor is used to create an effect that will always succeed.
+
+**Example** (Creating a Successful Effect)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -38,18 +40,25 @@ import { Effect } from "effect"
 const success = Effect.succeed(42)
 ```
 
-In this example, `success` is an instance of `Effect<number, never, never>`. This means it's an effect that:
+The type of `success` is `Effect<number, never, never>`, which means:
 
-- Always succeeds, yielding a value of type `number`.
-- Does not generate any errors (`never` indicates that no errors are expected).
-- Requires no additional data or dependencies from the environment (`never` indicates no requirements).
+- It produces a value of type `number`.
+- It does not generate any errors (`never` indicates no errors).
+- It requires no additional data or dependencies (`never` indicates no requirements).
+
+```text showLineNumbers=false
+         ┌─── Produces a value of type number
+         │       ┌─── Does not generate any errors
+         │       │      ┌─── Requires no dependencies
+         ▼       ▼      ▼
+Effect<number, never, never>
+```
 
 ### fail
 
-When a computation might fail, it's essential to manage the failure explicitly.
-The `Effect.fail` constructor allows you to encapsulate an error within your program flow explicitly.
-This method is useful for representing known error states in a predictable and type-safe way.
-Here's a practical example to illustrate:
+When a computation may fail, it's important to manage failure explicitly. The `Effect.fail` constructor allows you to represent an error in a type-safe way.
+
+**Example** (Creating a Failed Effect)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -60,15 +69,25 @@ const failure = Effect.fail(
 )
 ```
 
-The type of `failure` is `Effect<never, Error, never>`, which means
+The type of `failure` is `Effect<never, Error, never>`, which means:
 
-- It never produces a successful value (`never`).
+- It never produces a value (`never` indicates that no successful result will be produced).
 - It fails with an error, specifically an `Error`.
-- It does not depend on any external context to execute (`never`).
+- It requires no additional data or dependencies (`never` indicates no requirements).
 
-While you can use `Error` objects with `Effect.fail`, it also supports strings, numbers, or more complex objects, depending on your error management strategy.
+```text showLineNumbers=false
+         ┌─── Never produces a value
+         │      ┌─── Fails with an Error
+         │      │      ┌─── Requires no dependencies
+         ▼      ▼      ▼
+Effect<never, Error, never>
+```
 
-However, using "tagged" errors, which are objects with a `_tag` field, helps identify error types and integrates well with standard Effect functions like [Effect.catchTag](/docs/error-management/expected-errors/#catchtag).
+Although you can use `Error` objects with `Effect.fail`, you can also pass strings, numbers, or more complex objects depending on your error management strategy.
+
+Using "tagged" errors (objects with a `_tag` field) can help identify error types and works well with standard Effect functions, like [Effect.catchTag](/docs/error-management/expected-errors/#catchtag).
+
+**Example** (Using Tagged Errors)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -80,11 +99,13 @@ class NetworkError {
 const failure = Effect.fail(new NetworkError())
 ```
 
+## Traking Errors
+
 With `Effect.succeed` and `Effect.fail`, you can explicitly handle success and failure cases and the type system will ensure that errors are tracked and accounted for.
 
 **Example** (Rewriting a Division Function)
 
-Let's see an example of rewriting the [`divide`](#why-not-throw-errors) function using Effect to make the error handling explicit:
+Here's how you can rewrite the [`divide`](#why-not-throw-errors) function using Effect, making error handling explicit.
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -95,9 +116,16 @@ const divide = (a: number, b: number): Effect.Effect<number, Error> =>
     : Effect.succeed(a / b)
 ```
 
-In this example, the `divide` function explicitly indicates that it can produce an effect that either fails with an `Error` or succeeds with a `number` value.
+In this example, the `divide` function indicates in its return type `Effect<number, Error>` that the operation can either succeed with a `number` or fail with an `Error`.
 
-The type signature makes it clear how errors are handled and ensures that callers are aware of the possible outcomes.
+```text showLineNumbers=false
+         ┌─── Produces a value of type number
+         │       ┌─── Fails with an Error
+         ▼       ▼
+Effect<number, Error>
+```
+
+This clear type signature helps ensure that errors are handled properly and that anyone calling the function is aware of the possible outcomes.
 
 **Example** (Simulating a User Retrieval Operation)
 
@@ -133,9 +161,9 @@ const getUser = (userId: number): Effect.Effect<User, Error> => {
 const exampleUserEffect = getUser(1)
 ```
 
-In this example `exampleUserEffect` can result in either a `User` object or an `Error`, depending on whether the user exists in the simulated database
+In this example, `exampleUserEffect`, which has the type `Effect<User, Error>`, will either produce a `User` object or an `Error`, depending on whether the user exists in the mocked database.
 
-To dive deeper into handling and managing errors effectively in your applications using Effect, you might want to explore the guide on [Error Management](/docs/error-management/expected-errors/). This guide provides detailed insights and strategies for robust error handling in TypeScript applications using Effect.
+For a deeper dive into managing errors in your applications, refer to the [Error Management Guide](/docs/error-management/expected-errors/).
 
 ## Modeling Synchronous Effects
 
@@ -169,12 +197,6 @@ const program = log("Hello, World!")
 ```
 
 In the above example, `Effect.sync` is used to defer the side-effect of writing to the console.
-
-The `program` has the type `Effect<void, never, never>`, indicating that:
-
-- It doesn't produce a return value (`void`).
-- It's not expected to fail (`never` indicates no expected errors).
-- It doesn't require any external dependencies or context (`never`).
 
 Important Notes:
 
@@ -214,7 +236,9 @@ In this example:
 - `parse` is a function that creates an effect encapsulating the JSON parsing operation.
 - If `JSON.parse(input)` throws an error due to invalid input, `Effect.try` catches this error and the effect represented by `program` will fail with an `UnknownException`. This ensures that errors are not silently ignored but are instead handled within the structured flow of effects.
 
-**Customizing Error Handling**. You might want to transform the caught exception into a more specific error or perform additional operations when catching an error. `Effect.try` supports an overload that allows you to specify how caught exceptions should be transformed:
+#### Customizing Error Handling
+
+You might want to transform the caught exception into a more specific error or perform additional operations when catching an error. `Effect.try` supports an overload that allows you to specify how caught exceptions should be transformed:
 
 **Example** (Custom Error Handling)
 
@@ -282,7 +306,7 @@ The `program` value has the type `Effect<string, never, never>` and can be inter
   reject.
 </Aside>
 
-**Handling Unexpected Errors**. If, despite precautions, the thunk passed to `Effect.promise` does reject, an `Effect` containing a ["defect"](/docs/error-management/unexpected-errors/) is created, similar to what happens when using the [Effect.die](/docs/error-management/unexpected-errors/#die--diemessage) function.
+If, despite precautions, the thunk passed to `Effect.promise` does reject, an `Effect` containing a [defect](/docs/error-management/unexpected-errors/) is created, similar to what happens when using the [Effect.die](/docs/error-management/unexpected-errors/#die--diemessage) function.
 
 ### tryPromise
 
@@ -309,9 +333,13 @@ The `program` value has the type `Effect<Response, UnknownException, never>` and
 - might produce an error (`UnknownException`)
 - does not require any context (`never`)
 
-**Customizing Error Handling**. If you want more control over what gets propagated to the error channel, you can use an overload of `Effect.tryPromise` that takes a remapping function:
+#### Customizing Error Handling
 
-```ts {7}
+If you want more control over what gets propagated to the error channel, you can use an overload of `Effect.tryPromise` that takes a remapping function:
+
+**Example** (Custom Error Handling)
+
+```ts twoslash {7}
 import { Effect } from "effect"
 
 const getTodo = (id: number) =>
@@ -370,6 +398,8 @@ Moreover, if interruption support is required, the `resume` function can also re
 It allows you to defer the evaluation of an effect until it is actually needed.
 The `Effect.suspend` function takes a thunk that represents the effect, and it wraps it in a suspended effect.
 
+**Syntax**
+
 ```ts showLineNumbers=false
 const suspendedEffect = Effect.suspend(() => effect)
 ```
@@ -381,6 +411,8 @@ Let's explore some common scenarios where `Effect.suspend` proves useful.
 When you want to defer the evaluation of an effect until it is required. This can be useful for optimizing the execution of effects, especially when they are not always needed or when their computation is expensive.
 
 Also, when effects with side effects or scoped captures are created, use `Effect.suspend` to re-execute on each invocation.
+
+**Example** (Lazy Evaluation with Side Effects)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -410,7 +442,9 @@ In this example, `bad` is the result of calling `Effect.succeed(i++)` a single t
 ### Handling Circular Dependencies
 
 `Effect.suspend` is helpful in managing circular dependencies between effects, where one effect depends on another, and vice versa.
-For example it's fairly common for `Effect.suspend` to be used in recursive functions to escape an eager call. For instance:
+For example it's fairly common for `Effect.suspend` to be used in recursive functions to escape an eager call.
+
+**Example** (Recursive Fibonacci)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -448,7 +482,9 @@ Conversely, `allGood` avoids stack overflow by using `Effect.suspend` to defer t
 
 ### Unifying Return Type
 
-In situations where TypeScript struggles to unify the returned effect type, `Effect.suspend` can be employed to resolve this issue. For example:
+In situations where TypeScript struggles to unify the returned effect type, `Effect.suspend` can be employed to resolve this issue.
+
+**Example**
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -470,7 +506,7 @@ const nice = (a: number, b: number) =>
 
 The table provides a summary of the available constructors, along with their input and output types, allowing you to choose the appropriate function based on your needs.
 
-| **API**                 | **Given**                          | **To**                        |
+| API                     | Given                              | Result                        |
 | ----------------------- | ---------------------------------- | ----------------------------- |
 | `succeed`               | `A`                                | `Effect<A>`                   |
 | `fail`                  | `E`                                | `Effect<never, E>`            |
@@ -483,7 +519,4 @@ The table provides a summary of the available constructors, along with their inp
 | `async`                 | `(Effect<A, E> => void) => void`   | `Effect<A, E>`                |
 | `suspend`               | `() => Effect<A, E, R>`            | `Effect<A, E, R>`             |
 
-You can find the complete list of constructors [here](https://effect-ts.github.io/effect/effect/Effect.ts.html#constructors).
-
-Now that we know how to create effects, it's time to learn how to run them.
-Check out the next guide on [Running Effects](/docs/getting-started/running-effects/) to find out more.
+For the complete list of constructors, visit the [Effect Constructors Documentation](https://effect-ts.github.io/effect/effect/Effect.ts.html#constructors).

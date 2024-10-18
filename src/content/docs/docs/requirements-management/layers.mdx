@@ -17,7 +17,7 @@ Layers act as **constructors for creating services**, allowing us to manage depe
 
 Let's review some key concepts before diving into the details:
 
-| **Concept** | **Description**                                                                                                           |
+| Concept     | Description                                                                                                               |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **service** | A reusable component providing specific functionality, used across different parts of an application.                     |
 | **tag**     | A unique identifier representing a **service**, allowing Effect to locate and use it.                                     |
@@ -60,7 +60,7 @@ For simplicity, let's assume that we won't encounter any errors during the value
 
 Now, let's determine how many layers we need to implement our dependency graph:
 
-| **Layer**      | **Dependencies**                                           | **Type**                                   |
+| Layer          | Dependencies                                               | Type                                       |
 | -------------- | ---------------------------------------------------------- | ------------------------------------------ |
 | `ConfigLive`   | The `Config` service does not depend on any other services | `Layer<Config>`                            |
 | `LoggerLive`   | The `Logger` service depends on the `Config` service       | `Layer<Logger, never, Config>`             |

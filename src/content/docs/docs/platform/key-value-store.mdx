@@ -25,7 +25,7 @@ const program = Effect.gen(function* () {
 
 The `KeyValueStore` interface includes the following operations:
 
-| **Operation**        | **Description**                                                      |
+| Operation            | Description                                                          |
 | -------------------- | -------------------------------------------------------------------- |
 | **get**              | Returns the value as `string` of the specified key if it exists.     |
 | **getUint8Array**    | Returns the value as `Uint8Array` of the specified key if it exists. |
@@ -73,7 +73,7 @@ Effect.runPromise(program.pipe(Effect.provide(layerMemory)))
 
 The module provides several built-in implementations of the `KeyValueStore` interface, available as [layers](/docs/requirements-management/layers/), to suit different needs:
 
-| **Implementation**    | **Description**                                                                                           |
+| Implementation        | Description                                                                                               |
 | --------------------- | --------------------------------------------------------------------------------------------------------- |
 | **In-Memory Store**   | `layerMemory` provides a simple, in-memory key-value store, ideal for lightweight or testing scenarios.   |
 | **File System Store** | `layerFileSystem` offers a file-based store for persistent storage needs.                                 |
