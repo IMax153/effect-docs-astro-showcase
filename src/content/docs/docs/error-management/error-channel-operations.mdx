@@ -71,7 +71,7 @@ The Effect library provides several operators to filter values on the success ch
 
 These operators offer different strategies for handling cases where the predicate fails:
 
-| **API**                              | **Description**                                                                                                                                                                                                                                   |
+| API                                  | Description                                                                                                                                                                                                                                       |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `filterOrFail`                       | This operator filters the values on the success channel based on a predicate. If the predicate fails for any value, the original effect fails with an error.                                                                                      |
 | `filterOrDie` / `filterOrDieMessage` | These operators also filter the values on the success channel based on a predicate. If the predicate fails for any value, the original effect terminates abruptly. The `filterOrDieMessage` variant allows you to provide a custom error message. |

@@ -7,21 +7,21 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-To execute an effect, we can utilize a variety of "run" functions provided by the `Effect` module.
+To execute an effect, you can use one of the many `run` functions provided by the `Effect` module.
 
-<Aside type="tip">
+<Aside type="tip" title="Running Effects at the Program's Edge">
   The recommended approach is to design your program with the majority of
   its logic as Effects. It's advisable to use the `run*` functions closer
   to the "edge" of your program. This approach allows for greater
   flexibility in executing your program and building sophisticated
-  Effects.
+  effects.
 </Aside>
 
 ## runSync
 
-The `Effect.runSync` function is used to execute an effect synchronously, which means it runs immediately and returns the result.
+The `Effect.runSync` function executes an effect synchronously, meaning it runs immediately and returns the result.
 
-**Example**
+**Example** (Synchronous Logging)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -38,30 +38,51 @@ console.log(result)
 // Output: 1
 ```
 
-The `Effect.runSync` function will throw an error if your effect fails or performs any
-asynchronous tasks. In the latter case, the execution will not proceed
-beyond that asynchronous task:
+`Effect.runSync` will throw an error if the effect fails or if it involves any asynchronous operations. In such cases, execution will stop at the point where the asynchronous task occurs:
 
-```ts twoslash
+```ts twoslash collapse={7-9,17-28}
 import { Effect } from "effect"
 
-Effect.runSync(Effect.fail("my error")) // throws
+Effect.runSync(Effect.fail("my error"))
+/*
+throws:
+[Error: my error] {
+  name: '(FiberFailure) Error',
+  [Symbol(effect/Runtime/FiberFailure/Cause)]: { _tag: 'Fail', error: 'my error' }
+  ...
+}
+*/
 
-Effect.runSync(Effect.promise(() => Promise.resolve(1))) // throws
+Effect.runSync(Effect.promise(() => Promise.resolve(1)))
+/*
+throws:
+[AsyncFiberException: Fiber #0 cannot be resolved synchronously. This is caused by using runSync on an effect that performs async work] {
+  name: '(FiberFailure) AsyncFiberException',
+  [Symbol(effect/Runtime/FiberFailure/Cause)]: {
+    _tag: 'Die',
+    defect: [Fiber #0 cannot be resolved synchronously. This is caused by using runSync on an effect that performs async work] {
+      fiber: FiberRuntime {
+        ...
+      },
+      _tag: 'AsyncFiberException',
+      name: 'AsyncFiberException'
+    }
+  }
+  ...
+}
+*/
 ```
 
 ## runSyncExit
 
-The `Effect.runSyncExit` function is used to execute an effect synchronously, which means it runs immediately and returns the result as an [Exit](/docs/data-types/exit/)
-(a data type used to describe the result of executing an effect workflow).
+`Effect.runSyncExit` runs an effect synchronously, returning the result as an [Exit](/docs/data-types/exit/), which represents the outcome (success or failure) of the effect.
 
-**Example**
+**Example** (Handling Results as Exit)
 
 ```ts twoslash
 import { Effect } from "effect"
 
-const result1 = Effect.runSyncExit(Effect.succeed(1))
-console.log(result1)
+console.log(Effect.runSyncExit(Effect.succeed(1)))
 /*
 Output:
 {
@@ -71,8 +92,7 @@ Output:
 }
 */
 
-const result2 = Effect.runSyncExit(Effect.fail("my error"))
-console.log(result2)
+console.log(Effect.runSyncExit(Effect.fail("my error")))
 /*
 Output:
 {
@@ -87,19 +107,37 @@ Output:
 */
 ```
 
-The `Effect.runSyncExit` function will throw an error if your effect performs any
-asynchronous tasks and the execution will not proceed beyond that
-asynchronous task:
+If the effect involves any asynchronous operations, `Effect.runSyncExit` will return an Exit with a `Die` cause, indicating that the effect can't be resolved synchronously.
+
+**Example** (Asynchronous Operation Resulting in Die)
 
 ```ts twoslash
 import { Effect } from "effect"
 
-Effect.runSyncExit(Effect.promise(() => Promise.resolve(1))) // throws
+console.log(Effect.runSyncExit(Effect.promise(() => Promise.resolve(1))))
+/*
+Output:
+{
+  _id: 'Exit',
+  _tag: 'Failure',
+  cause: {
+    _id: 'Cause',
+    _tag: 'Die',
+    defect: [Fiber #0 cannot be resolved synchronously. This is caused by using runSync on an effect that performs async work] {
+      fiber: [FiberRuntime],
+      _tag: 'AsyncFiberException',
+      name: 'AsyncFiberException'
+    }
+  }
+}
+*/
 ```
 
 ## runPromise
 
 The `Effect.runPromise` function is used to execute an effect and obtain the result as a `Promise`.
+
+**Example** (Running an Effect as a Promise)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -107,18 +145,30 @@ import { Effect } from "effect"
 Effect.runPromise(Effect.succeed(1)).then(console.log) // Output: 1
 ```
 
-The `Effect.runPromise` function will reject with an error if your Effect fails:
+If the effect fails, `Effect.runPromise` will reject with an error:
 
-```ts twoslash
+```ts twoslash collapse={7-12}
 import { Effect } from "effect"
 
-Effect.runPromise(Effect.fail("my error")) // rejects
+Effect.runPromise(Effect.fail("my error"))
+/*
+throws:
+[Error: my error] {
+  name: '(FiberFailure) Error',
+  [Symbol(effect/Runtime/FiberFailure/Cause)]: {
+    _tag: 'Fail',
+    error: 'my error'
+  }
+  ...
+}
+*/
 ```
 
 ## runPromiseExit
 
-The `Effect.runPromiseExit` function is used to execute an Effect and obtain the result as a `Promise` that resolves to an [Exit](/docs/data-types/exit/)
-(a data type used to describe the result of executing an `Effect` workflow).
+The `Effect.runPromiseExit` function runs an effect and returns a `Promise` that resolves to an [Exit](/docs/data-types/exit/), which represents the outcome (success or failure) of the effect.
+
+**Example** (Handling Results as Exit)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -150,7 +200,16 @@ Output:
 
 ## runFork
 
-The `Effect.runFork` function serves as a foundational building block for running effects. In fact, all other run functions are built upon it. Unless you have a specific need for a `Promise` or a synchronous operation, `Effect.runFork` is the recommended choice. It returns a fiber that you can observe or interrupt as needed.
+The `Effect.runFork` function is the foundational function for running effects.
+It starts a fiber that can be observed or interrupted.
+All other run functions are built on top of `runFork`.
+
+<Aside type="tip" title="The Default for Effect Execution">
+  Unless you specifically need a `Promise` or synchronous operation,
+  `Effect.runFork` is a good default choice.
+</Aside>
+
+**Example** (Running an Effect with a Fiber)
 
 ```ts twoslash
 import { Effect, Console, Schedule, Fiber } from "effect"
@@ -193,7 +252,7 @@ In most cases, effects are run at the outermost parts of your application. Typic
 
 The table provides a summary of the available `run*` functions, along with their input and output types, allowing you to choose the appropriate function based on your needs.
 
-| **API**          | **Given**      | **To**                |
+| API              | Given          | Result                |
 | ---------------- | -------------- | --------------------- |
 | `runSync`        | `Effect<A, E>` | `A`                   |
 | `runSyncExit`    | `Effect<A, E>` | `Exit<A, E>`          |

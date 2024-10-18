@@ -47,7 +47,7 @@ In contrast, with functions, extending the functionality is much simpler. You ca
 
 The `pipe` function is a utility that allows us to compose functions in a readable and sequential manner. It takes the output of one function and passes it as the input to the next function in the pipeline. This enables us to build complex transformations by chaining multiple functions together.
 
-The basic syntax of `pipe` is as follows:
+**Syntax**
 
 ```ts showLineNumbers=false
 import { pipe } from "effect"
@@ -64,6 +64,8 @@ Here's an illustration of how `pipe` works:
 It's important to note that functions passed to `pipe` must have a **single argument** because they are only called with a single argument.
 
 Let's see an example to better understand how `pipe` works:
+
+**Example** (Chaining Arithmetic Operations)
 
 ```ts twoslash
 import { pipe } from "effect"
@@ -88,11 +90,9 @@ The result is equivalent to `subtractTen(double(increment(5)))`, but using `pipe
 The `Effect.map` function is used to transform the value inside an effect.
 It takes a function and applies it to the value contained within the effect, creating a **new** effect with the transformed value.
 
-The syntax for `Effect.map` is as follows:
+**Syntax**
 
 ```ts showLineNumbers=false
-import { pipe, Effect } from "effect"
-
 const mappedEffect = pipe(myEffect, Effect.map(transformation))
 // or
 const mappedEffect = Effect.map(myEffect, transformation)
@@ -109,9 +109,9 @@ In the code above, `transformation` is the function applied to the value, and `m
   value.
 </Aside>
 
-**Example**
+**Example** (Adding a Service Charge)
 
-Consider a program that adds a small service charge to a transaction:
+Here's a practical example where we apply a service charge to a transaction amount:
 
 ```ts twoslash
 import { pipe, Effect } from "effect"
@@ -133,11 +133,14 @@ Effect.runPromise(finalAmount).then(console.log) // Output: 101
 
 ## as
 
-To map an `Effect` to a constant value, replacing the original value, use `Effect.as`:
+The `Effect.as` function is used to replace the original value inside an effect with a constant value.
+
+**Example** (Replacing a Value)
 
 ```ts twoslash
 import { pipe, Effect } from "effect"
 
+// Replace the value 5 with the constant "new value"
 const program = pipe(Effect.succeed(5), Effect.as("new value"))
 
 Effect.runPromise(program).then(console.log) // Output: "new value"
@@ -148,13 +151,11 @@ Effect.runPromise(program).then(console.log) // Output: "new value"
 The `Effect.flatMap` function is used when you need to chain transformations that produce `Effect` instances.
 This is useful for asynchronous operations or computations that depend on the results of previous effects.
 
-The `Effect.flatMap` function enables you to sequence computations that result in new `Effect` values, "flattening" any nested effect structures that arise.
+This function allows you to sequence multiple effects, ensuring that each step results in a new `Effect`, "flattening" any nested structures that may arise.
 
-The syntax for `Effect.flatMap` is as follows:
+**Syntax**
 
 ```ts showLineNumbers=false
-import { pipe, Effect } from "effect"
-
 const flatMappedEffect = pipe(myEffect, Effect.flatMap(transformation))
 // or
 const flatMappedEffect = Effect.flatMap(myEffect, transformation)
@@ -171,7 +172,7 @@ In the code above, `transformation` is the function that takes a value and retur
   transformed value.
 </Aside>
 
-**Example**
+**Example** (Applying a Discount)
 
 ```ts twoslash
 import { pipe, Effect } from "effect"
@@ -188,6 +189,7 @@ const applyDiscount = (
 // Simulated asynchronous task to fetch a transaction amount from database
 const fetchTransactionAmount = Effect.promise(() => Promise.resolve(100))
 
+// Chaining the fetch and discount application using `flatMap`
 const finalAmount = pipe(
   fetchTransactionAmount,
   Effect.flatMap((amount) => applyDiscount(amount, 5))
@@ -196,10 +198,9 @@ const finalAmount = pipe(
 Effect.runPromise(finalAmount).then(console.log) // Output: 95
 ```
 
-**Ensuring All Effects Are Considered**
+### Ensure All Effects Are Considered
 
-It's vital to ensure that all effects within `Effect.flatMap` contribute to the final computation.
-Neglecting any effect can lead to unexpected behaviors or incorrect outcomes:
+Make sure that all effects within `Effect.flatMap` contribute to the final computation. If you ignore an effect, it can lead to unexpected behavior:
 
 ```ts {3} showLineNumbers=false
 Effect.flatMap((amount) => {
@@ -209,13 +210,11 @@ Effect.flatMap((amount) => {
 })
 ```
 
-The `Effect.sync` above is ignored and does not influence the result of `applyDiscount(amount, 5)`.
-To include effects properly and avoid errors, explicitly chain them using functions like `Effect.map`, `Effect.flatMap`, `Effect.andThen`, or `Effect.tap`.
+In this case, the `Effect.sync` call is ignored and does not affect the result of `applyDiscount(amount, 5)`. To handle effects correctly, make sure to explicitly chain them using functions like `Effect.map`, `Effect.flatMap`, `Effect.andThen`, or `Effect.tap`.
 
-**Further Information on `flatMap`**
+### Further Information on flatMap
 
-Although many developers may recognize `flatMap` from its usage with arrays, in the Effect framework, it's utilized to manage and resolve nested `Effect` structures.
-If your goal is to flatten nested arrays within an Effect (`Effect<Array<Array<A>>>`), this can be done using:
+While developers may recognize `flatMap` from its use in arrays, in the `Effect` framework, it helps manage and flatten nested `Effect` structures. For instance, if you're working with an effect that contains nested arrays (`Effect<Array<Array<A>>>`), you can flatten them like this:
 
 ```ts twoslash
 import { pipe, Effect, Array } from "effect"
@@ -229,21 +228,15 @@ const flattened = pipe(
 )
 ```
 
-or using the standard `Array.prototype.flat()` method.
+Alternatively, you can use JavaScript's built-in `Array.prototype.flat()` method for array flattening.
 
 ## andThen
 
-Both the `Effect.map` and `Effect.flatMap` functions serve to transform an effect into another effect in two different scenarios.
-In the first scenario, `Effect.map` is used when the transformation function does not return an effect, while in the second scenario,
-`Effect.flatMap` is used when the transformation function still returns an effect.
+The `Effect.andThen` function is a convenient tool for sequencing actions in `Effect`, combining both transformation scenarios handled by `Effect.map` and `Effect.flatMap`. It allows you to perform two actions, typically effects, where the second action may depend on the result of the first.
 
-However, since both scenarios involve transformations, the Effect module also exposes a convenient all-in-one solution to use: `Effect.andThen`.
-
-The `Effect.andThen` function executes a sequence of two actions, typically two effects, where the second action can depend on the result of the first action.
+**Syntax**
 
 ```ts showLineNumbers=false
-import { pipe, Effect } from "effect"
-
 const transformedEffect = pipe(myEffect, Effect.andThen(anotherEffect))
 // or
 const transformedEffect = Effect.andThen(myEffect, anotherEffect)
@@ -251,18 +244,18 @@ const transformedEffect = Effect.andThen(myEffect, anotherEffect)
 const transformedEffect = myEffect.pipe(Effect.andThen(anotherEffect))
 ```
 
-The `anotherEffect` action can take various forms:
+The `anotherEffect` action can take many forms:
 
-1. a value (i.e. same functionality of `Effect.as`)
-2. a function returning a value (i.e. same functionality of `Effect.map`)
-3. a `Promise`
-4. a function returning a `Promise`
-5. an `Effect`
-6. a function returning an `Effect`(i.e. same functionality of `Effect.flatMap`)
+1. A value (similar to `Effect.as`)
+2. A function returning a value (similar to `Effect.map`)
+3. A `Promise`
+4. A function returning a `Promise`
+5. An `Effect`
+6. A function returning an `Effect` (similar to `Effect.flatMap`)
 
-**Example**
+**Example** (Using `andThen` to Sequence Actions)
 
-Let's see an example where we can compare the use of `Effect.andThen` instead of `Effect.map` and `Effect.flatMap`:
+Let's look at an example comparing `Effect.andThen` with `Effect.map` and `Effect.flatMap`:
 
 ```ts twoslash
 import { pipe, Effect } from "effect"
@@ -279,7 +272,7 @@ const applyDiscount = (
 // Simulated asynchronous task to fetch a transaction amount from database
 const fetchTransactionAmount = Effect.promise(() => Promise.resolve(100))
 
-// Using Effect.map, Effect.flatMap
+// Using Effect.map and Effect.flatMap
 const result1 = pipe(
   fetchTransactionAmount,
   Effect.map((amount) => amount * 2),
@@ -298,31 +291,34 @@ const result2 = pipe(
 Effect.runPromise(result2).then(console.log) // Output: 190
 ```
 
-It's worth noting that [Option](/docs/data-types/option/#interop-with-effect) and [Either](/docs/data-types/either/#interop-with-effect), types commonly used to handle optional values and simple error scenarios, are also compatible with `Effect.andThen`.
-However, it is important to understand that when these types are used, the operations are categorized under scenarios 5 and 6 as described previously, as both `Option` and `Either` operate as `Effect`s in this context.
+### Option and Either with andThen
 
-**Example with Option**
+Both [Option](/docs/data-types/option/#interop-with-effect) and [Either](/docs/data-types/either/#interop-with-effect) are commonly used for handling optional or missing values or simple error cases. These types integrate well with `Effect.andThen`. When used with `Effect.andThen`, the operations are categorized as scenarios 5 and 6 (as discussed earlier) because both `Option` and `Either` are treated as effects in this context.
+
+**Example** (with Option)
 
 ```ts twoslash
 import { pipe, Effect, Option } from "effect"
 
 // Simulated asynchronous task fetching a number from a database
-const fetchNumberValue = Effect.promise(() => Promise.resolve(42))
+const fetchNumberValue = Effect.tryPromise(() => Promise.resolve(42))
 
-// Although one might expect the type to be
-// Effect<Option<number>, never, never>, it is actually
-// Effect<number, NoSuchElementException, never>
+// Effect<number, UnknownException | NoSuchElementException, never>
 const program = pipe(
   fetchNumberValue,
   Effect.andThen((x) => (x > 0 ? Option.some(x) : Option.none()))
 )
 ```
 
-<Aside type="note" title="Option As Effect">
+You might expect the type of `program` to be `Effect<Option<number>, UnknownException, never>`, but it is actually `Effect<number, UnknownException | NoSuchElementException, never>`.
+
+This is because `Option<A>` is treated as an effect of type `Effect<A, NoSuchElementException>`, and as a result, the possible errors are combined into a union type.
+
+<Aside type="tip" title="Option As Effect">
 A value of type `Option<A>` is interpreted as an effect of type `Effect<A, NoSuchElementException>`.
 </Aside>
 
-**Example with Either**
+**Example** (with Either)
 
 ```ts twoslash
 import { pipe, Effect, Either } from "effect"
@@ -334,27 +330,28 @@ const parseInteger = (input: string): Either.Either<number, string> =>
     : Either.right(parseInt(input))
 
 // Simulated asynchronous task fetching a string from database
-const fetchStringValue = Effect.promise(() => Promise.resolve("42"))
+const fetchStringValue = Effect.tryPromise(() => Promise.resolve("42"))
 
-// Although one might expect the type to be
-// Effect<Either<number, string>, never, never>, it is actually
-// Effect<number, string, never>
+// Effect<number, string | UnknownException, never>
 const program = pipe(
   fetchStringValue,
   Effect.andThen((str) => parseInteger(str))
 )
 ```
 
-<Aside type="note" title="Either As Effect">
+Although one might expect the type of `program` to be `Effect<Either<number, string>, UnknownException, never>`, it is actually `Effect<number, string | UnknownException, never>`.
+
+This is because `Either<A, E>` is treated as an effect of type `Effect<A, E>`, meaning the errors are combined into a union type.
+
+<Aside type="tip" title="Either As Effect">
 A value of type `Either<A, E>` is interpreted as an effect of type `Effect<A, E>`.
 </Aside>
 
 ## tap
 
-The `Effect.tap` API has a similar signature to `Effect.flatMap`, but the result of the transformation function is **ignored**.
-This means that the value returned by the previous computation will still be available for the next computation.
+The `Effect.tap` function works similarly to `Effect.flatMap`, but with a key difference: the successful result of the function passed to `tap` is **ignored**. This means the value from the previous computation remains available for the next step in the chain.
 
-**Example**
+**Example** (Logging a Discount Application)
 
 ```ts twoslash
 import { pipe, Effect } from "effect"
@@ -373,6 +370,7 @@ const fetchTransactionAmount = Effect.promise(() => Promise.resolve(100))
 
 const finalAmount = pipe(
   fetchTransactionAmount,
+  // Log the fetched transaction amount
   Effect.tap((amount) =>
     Effect.sync(() => console.log(`Apply a discount to: ${amount}`))
   ),
@@ -388,30 +386,31 @@ Apply a discount to: 100
 */
 ```
 
+In this example, `Effect.tap` is used to log the transaction amount before applying the discount, without modifying the value itself. The original value (`amount`) remains available for the next operation (`applyDiscount`).
+
 Using `Effect.tap` allows us to execute side effects during the computation without altering the result.
 This can be useful for logging, performing additional actions, or observing the intermediate values without interfering with the main computation flow.
 
 ## all
 
-The `Effect.all` function is a powerful utility provided by Effect that allows you to combine multiple effects into a single effect that produces a tuple of results.
+The `Effect.all` function lets you combine multiple effects into a single effect. This new effect will produce a tuple containing the results of all the individual effects.
 
-The syntax for `Effect.all` is as follows:
+**Syntax**
 
 ```ts showLineNumbers=false
-import { Effect } from "effect"
-
 const combinedEffect = Effect.all([effect1, effect2, ...])
 ```
 
-The `Effect.all` function will execute all these effects in **sequence** (to explore options for
+By default the `Effect.all` function executes all the provided effects **sequentially** (to explore options for
 managing concurrency and controlling how these effects are executed, you can
 refer to the [Concurrency Options](/docs/concurrency/concurrency-options/)
 documentation).
 
-It will return a new effect that produces a tuple containing the results of each individual effect.
-Keep in mind that the order of the results corresponds to the order of the original effects passed to `Effect.all`.
+Each effect runs in order, and the function returns a new effect that contains the results of the original effects as a tuple.
 
-**Example**
+The results in the tuple follow the same order as the effects passed to `Effect.all`.
+
+**Example** (Combining Configuration and Database Checks)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -450,7 +449,9 @@ DB Status: Connected to Database
 
 ## Build your first pipeline
 
-Now, let's combine `pipe`, `Effect.all` and `Effect.andThen` to build a pipeline that performs a series of transformations:
+Let's now combine the `pipe` function, `Effect.all`, and `Effect.andThen` to create a pipeline that performs a sequence of transformations.
+
+**Example** (Building a Transaction Pipeline)
 
 ```ts twoslash
 import { Effect, pipe } from "effect"
@@ -476,12 +477,22 @@ const fetchDiscountRate = Effect.promise(() => Promise.resolve(5))
 
 // Assembling the program using a pipeline of effects
 const program = pipe(
+  // Combine both fetch effects to get the transaction amount
+  // and discount rate
   Effect.all([fetchTransactionAmount, fetchDiscountRate]),
-  Effect.flatMap(([transactionAmount, discountRate]) =>
+
+  // Apply the discount to the transaction amount
+  Effect.andThen(([transactionAmount, discountRate]) =>
     applyDiscount(transactionAmount, discountRate)
   ),
-  Effect.map(addServiceCharge),
-  Effect.map((finalAmount) => `Final amount to charge: ${finalAmount}`)
+
+  // Add the service charge to the discounted amount
+  Effect.andThen(addServiceCharge),
+
+  // Format the final result for display
+  Effect.andThen(
+    (finalAmount) => `Final amount to charge: ${finalAmount}`
+  )
 )
 
 // Execute the program and log the result
@@ -489,11 +500,13 @@ Effect.runPromise(program).then(console.log)
 // Output: "Final amount to charge: 96"
 ```
 
+This pipeline demonstrates how you can structure your code by combining different effects into a clear, readable flow.
+
 ## The pipe method
 
 Effect provides a `pipe` method that works similarly to the `pipe` method found in [rxjs](https://rxjs.dev/api/index/function/pipe). This method allows you to chain multiple operations together, making your code more concise and readable.
 
-Here's how the `pipe` **method** works:
+**Syntax**
 
 ```ts showLineNumbers=false
 const result = effect.pipe(func1, func2, ..., funcN)
@@ -505,9 +518,11 @@ This is equivalent to using the `pipe` **function** like this:
 const result = pipe(effect, func1, func2, ..., funcN)
 ```
 
-The `pipe` method is available on all effects and many other data types, eliminating the need to import the `pipe` function from the `Function` module and saving you some keystrokes.
+The `pipe` method is available on all effects and many other data types, eliminating the need to import the `pipe` function and saving you some keystrokes.
 
-Let's rewrite the previous example using the `pipe` method:
+**Example** (Using the `pipe` Method)
+
+Let's rewrite an [earlier example](#build-your-first-pipeline), this time using the `pipe` method.
 
 ```ts twoslash collapse={3-15}
 import { Effect } from "effect"
@@ -530,11 +545,13 @@ const program = Effect.all([
   fetchTransactionAmount,
   fetchDiscountRate
 ]).pipe(
-  Effect.flatMap(([transactionAmount, discountRate]) =>
+  Effect.andThen(([transactionAmount, discountRate]) =>
     applyDiscount(transactionAmount, discountRate)
   ),
-  Effect.map(addServiceCharge),
-  Effect.map((finalAmount) => `Final amount to charge: ${finalAmount}`)
+  Effect.andThen(addServiceCharge),
+  Effect.andThen(
+    (finalAmount) => `Final amount to charge: ${finalAmount}`
+  )
 )
 ```
 
@@ -542,7 +559,7 @@ const program = Effect.all([
 
 Let's summarize the transformation functions we have seen so far:
 
-| **API**   | **Input**                                 | **Output**                  |
+| API       | Input                                     | Output                      |
 | --------- | ----------------------------------------- | --------------------------- |
 | `map`     | `Effect<A, E, R>`, `A => B`               | `Effect<B, E, R>`           |
 | `flatMap` | `Effect<A, E, R>`, `A => Effect<B, E, R>` | `Effect<B, E, R>`           |

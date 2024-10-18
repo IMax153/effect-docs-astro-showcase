@@ -9,7 +9,7 @@ Programming is challenging. When we build libraries and apps, we look to many to
 
 Effect is an ecosystem of tools that help you build better applications and libraries. As a result, you will also learn more about the TypeScript language and how to use the type system to make your programs more reliable and easier to maintain.
 
-In "typical" TypeScript, without Effect, we write code that assumes that a function is either successful or throws an exception. Take this trivial example of division:
+In "typical" TypeScript, without Effect, we write code that assumes that a function is either successful or throws an exception. For example:
 
 ```ts twoslash
 const divide = (a: number, b: number): number => {
@@ -30,7 +30,7 @@ One of the most important tools we have in TypeScript is the compiler. It is the
 
 While Effect is a vast ecosystem of many different tools, if it had to be reduced down to just one idea, it would be the following:
 
-Effect's major unique insight is that we can use the type system to track _errors_ and _"context"_ (more on this later), not only _success_ values as shown in the divide example above.
+Effect's major unique insight is that we can use the type system to track **errors** and **context**, not only **success** values as shown in the divide example above.
 
 Here's the same divide function from above, but with the Effect pattern:
 
@@ -46,9 +46,19 @@ const divide = (
     : Effect.succeed(a / b)
 ```
 
-Notice how looking at the type signature tells you exactly what success value(s) it returns (`number`), what error(s) it can return (`Error`) and what context the function needs (`never`, as in, no context required here). This function no longer throws an exception, and you can cleanly pass on the error to the caller of this function.
+With this approach, the function no longer throws exceptions. Instead, errors are handled as values, which can be passed along like success values. The type signature also makes it clear:
 
-Errors now become values, just like your success values. Effect gives us many functions to make managing errors and success values ergonomic.
+- What success value the function returns (`number`).
+- What error can occur (`Error`).
+- What additional context or dependencies are required (`never` indicates none).
+
+```text showLineNumbers=false
+         ┌─── Produces a value of type number
+         │       ┌─── Fails with an Error
+         │       │      ┌─── Requires no dependencies
+         ▼       ▼      ▼
+Effect<number, Error, never>
+```
 
 Additionally, tracking context allows you to provide additional information to your functions without having to pass in everything as an argument. For example, you can swap out implementations of live external services with mocks during your tests without changing any core business logic.
 
