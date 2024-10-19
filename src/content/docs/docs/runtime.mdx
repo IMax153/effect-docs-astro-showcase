@@ -35,7 +35,21 @@ It then starts a loop, executing the instructions described by the `Effect` step
 
 You can think of the runtime as a system that takes an [`Effect<A, E, R>`](/docs/getting-started/the-effect-type/) and its associated context `Context<R>` and produces an [`Exit<A, E>`](/docs/data-types/exit/) result.
 
-![Effect Runtime](./_assets/runtime.svg "A diagram outlining how an Effect Runtime processes input and produces output")
+```text showLineNumbers=false
+┌────────────────────────────────┐
+│  Context<R> + Effect<A, E, R>  │
+└────────────────────────────────┘
+               │
+               ▼
+┌────────────────────────────────┐
+│      Effect Runtime System     │
+└────────────────────────────────┘
+               │
+               ▼
+┌────────────────────────────────┐
+│          Exit<A, E>            │
+└────────────────────────────────┘
+```
 
 Runtime Systems have a lot of responsibilities:
 
