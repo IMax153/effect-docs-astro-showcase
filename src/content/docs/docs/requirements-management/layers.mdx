@@ -34,9 +34,7 @@ Let's imagine that we are building a web application. We could imagine that the 
 
 Our goal is to build the `Database` service along with its direct and indirect dependencies. This means we need to ensure that the `Config` service is available for both `Logger` and `Database`, and then provide these dependencies to the `Database` service.
 
-## Creating Layers
-
-We will use layers to construct the `Database` service instead of providing a service implementation directly as we did in the [Managing Services](/docs/requirements-management/services/) page. Layers are a way of separating implementation details from the service itself.
+We will use **layers** to construct the `Database` service instead of providing a service implementation directly as we did in the [Managing Services](/docs/requirements-management/services/) page.
 
 <Aside type="tip" title="Use Layers for Dependencies">
   When a service has its own requirements, it's best to separate
@@ -45,16 +43,27 @@ We will use layers to construct the `Database` service instead of providing a se
   construction level rather than the service level.
 </Aside>
 
-A `Layer` type:
+## Creating Layers
 
-```ts showLineNumbers=false
+The `Layer` type is structured as follows:
+
+```text showLineNumbers=false
+        ┌─── The service to be created
+        │                ┌─── The possible error
+        │                │      ┌─── The required dependencies
+        ▼                ▼      ▼
 Layer<RequirementsOut, Error, RequirementsIn>
 ```
 
-represents a blueprint for constructing a `RequirementsOut`.
-It takes a value of type `RequirementsIn` as input and may potentially produce an error of type `Error` during the construction process.
+A `Layer` represents a blueprint for constructing a `RequirementsOut` (the service). It requires a `RequirementsIn` (dependencies) as input and may result in an error of type `Error` during the construction process.
 
-In our case, the `RequirementsOut` type represents the service we want to construct, while `RequirementsIn` represents the dependencies required for construction.
+| Parameter         | Description                                                                |
+| ----------------- | -------------------------------------------------------------------------- |
+| `RequirementsOut` | The service or resource to be created.                                     |
+| `Error`           | The type of error that might occur during the construction of the service. |
+| `RequirementsIn`  | The dependencies required to construct the service.                        |
+
+By using layers, you can better organize your services, ensuring that their dependencies are clearly defined and separated from their implementation details.
 
 For simplicity, let's assume that we won't encounter any errors during the value construction (meaning `Error = never`).
 
