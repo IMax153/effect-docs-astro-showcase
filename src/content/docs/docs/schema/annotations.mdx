@@ -6,44 +6,44 @@ sidebar:
   order: 8
 ---
 
-One of the fundamental requirements in the design of `@effect/schema` is that it is extensible and customizable. Customizations are achieved through "annotations". Each node contained in the AST of `@effect/docs/schema/AST` contains an `annotations: Record<symbol, unknown>` field that can be used to attach additional information to the schema.
+One of the key features of the Schema design is its flexibility and ability to be customized.
+This is achieved through "annotations."
+Each node in the `ast` field of a schema has an `annotations: Record<string | symbol, unknown>` field,
+which allows you to attach additional information to the schema.
 You can manage these annotations using the `annotations` method or the `Schema.annotations` API.
 
-**Example**
+**Example** (Using Annotations to Customize Schema)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
-const Password =
-  // initial schema, a string
-  Schema.String
-    // add an error message for non-string values
-    .annotations({ message: () => "not a string" })
-    .pipe(
-      // add a constraint to the schema, only non-empty strings are valid
-      // and add an error message for empty strings
-      Schema.nonEmptyString({ message: () => "required" }),
-      // add a constraint to the schema, only strings with a length less or equal than 10 are valid
-      // and add an error message for strings that are too long
-      Schema.maxLength(10, { message: (s) => `${s} is too long` })
-      // add an identifier to the schema
-    )
-    .annotations({
-      // add an identifier to the schema
-      identifier: "Password",
-      // add a title to the schema
-      title: "password",
-      // add a description to the schema
-      description:
-        "A password is a string of characters used to verify the identity of a user during the authentication process",
-      // add examples to the schema
-      examples: ["1Ki77y", "jelly22fi$h"],
-      // add documentation to the schema
-      documentation: `jsDoc documentation...`
+// Define a Password schema, starting with a string type
+const Password = Schema.String
+  // Add a custom error message for non-string values
+  .annotations({ message: () => "not a string" })
+  .pipe(
+    // Enforce non-empty strings and provide a custom error message
+    Schema.nonEmptyString({ message: () => "required" }),
+    // Restrict the string length to 10 characters or fewer
+    // with a custom error message for exceeding length
+    Schema.maxLength(10, {
+      message: (issue) => `${issue.actual} is too long`
     })
+  )
+  .annotations({
+    // Add a unique identifier for the schema
+    identifier: "Password",
+    // Provide a title for the schema
+    title: "password",
+    // Include a description explaining what this schema represents
+    description:
+      "A password is a secret string used to authenticate a user",
+    // Add examples for better clarity
+    examples: ["1Ki77y", "jelly22fi$h"],
+    // Include any additional documentation
+    documentation: `...technical information on Password schema...`
+  })
 ```
-
-This example demonstrates the use of built-in annotations to add metadata like error messages, identifiers, and descriptions to enhance the schema's functionality and documentation.
 
 ## Built-in Annotations
 
@@ -70,9 +70,24 @@ The following table provides an overview of common built-in annotations and thei
 
 ## Concurrency Annotation
 
-For complex schemas like `Struct`, `Array`, or `Union` that contain multiple nested schemas, the `concurrency` annotation provides a way to manage how validations are executed concurrently:
+For more complex schemas like `Struct`, `Array`, or `Union` that contain multiple nested schemas, the `concurrency` annotation provides a way to control how validations are executed concurrently.
 
-**Sequential Execution**
+```ts showLineNumbers=false
+type ConcurrencyAnnotation = number | "unbounded" | "inherit" | undefined
+```
+
+Here’s a shorter version presented in a table:
+
+| Value         | Description                                                     |
+| ------------- | --------------------------------------------------------------- |
+| `number`      | Limits the maximum number of concurrent tasks.                  |
+| `"unbounded"` | All tasks run concurrently with no limit.                       |
+| `"inherit"`   | Inherits concurrency settings from the parent context.          |
+| `undefined`   | Tasks run sequentially, one after the other (default behavior). |
+
+**Example** (Sequential Execution)
+
+In this example, we define three tasks that simulate asynchronous operations with different durations. Since no concurrency is specified, the tasks are executed sequentially, one after the other.
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -106,7 +121,9 @@ Task 3 done
 */
 ```
 
-**Concurrent Execution**
+**Example** (Concurrent Execution)
+
+By adding a `concurrency` annotation set to `"unbounded"`, the tasks can now run concurrently, meaning they don't wait for one another to finish before starting. This allows faster execution when multiple tasks are involved.
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
@@ -140,11 +157,9 @@ Task 1 done
 */
 ```
 
-This configuration allows developers to specify whether validations within a schema should be processed sequentially or concurrently, offering flexibility based on the performance needs and the dependencies between validations.
-
 ## Handling Decoding Errors with Fallbacks
 
-The `DecodingFallbackAnnotation` provides a way to handle decoding errors gracefully in your schemas.
+The `DecodingFallbackAnnotation` allows you to handle decoding errors by providing a custom fallback logic.
 
 ```ts showLineNumbers=false
 type DecodingFallbackAnnotation<A> = (
@@ -152,16 +167,17 @@ type DecodingFallbackAnnotation<A> = (
 ) => Effect<A, ParseIssue>
 ```
 
-By using this annotation, you can define custom fallback behaviors that trigger when decoding operations fail.
+This annotation enables you to specify fallback behavior when decoding fails, making it possible to recover gracefully from errors.
 
-**Example Usage**
+**Example** (Basic Fallback)
+
+In this basic example, when decoding fails (e.g., the input is `null`), the fallback value is returned instead of an error.
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
-import { Effect, Either } from "effect"
+import { Either } from "effect"
 
-// Basic Fallback
-
+// Schema with a fallback value
 const schema = Schema.String.annotations({
   decodingFallback: () => Either.right("<fallback>")
 })
@@ -170,43 +186,60 @@ console.log(Schema.decodeUnknownSync(schema)("valid input"))
 // Output: valid input
 
 console.log(Schema.decodeUnknownSync(schema)(null))
-// Output: <fallback value>
+// Output: <fallback>
+```
 
-// Advanced Fallback with Logging
+**Example** (Advanced Fallback with Logging)
 
+In this advanced example, when a decoding error occurs, the schema logs the issue and then returns a fallback value.
+This demonstrates how you can incorporate logging and other side effects during error handling.
+
+```ts twoslash
+import { Schema } from "@effect/schema"
+import { Effect } from "effect"
+
+// Schema with logging and fallback
 const schemaWithLog = Schema.String.annotations({
   decodingFallback: (issue) =>
     Effect.gen(function* () {
+      // Log the error issue
       yield* Effect.log(issue._tag)
+      // Simulate a delay
       yield* Effect.sleep(10)
-      return yield* Effect.succeed("<fallback2>")
+      // Return a fallback value
+      return yield* Effect.succeed("<fallback>")
     })
 })
 
+// Run the effectful fallback logic
 Effect.runPromise(Schema.decodeUnknown(schemaWithLog)(null)).then(
   console.log
 )
 /*
 Output:
 timestamp=2024-07-25T13:22:37.706Z level=INFO fiber=#0 message=Type
-<fallback2>
+<fallback>
 */
 ```
 
 ## Custom Annotations
 
-You can also define your own custom annotations for specific needs. Here's how you can create a `deprecated` annotation:
+In addition to built-in annotations, you can define custom annotations to meet specific requirements. For instance, here’s how to create a `deprecated` annotation:
+
+**Example** (Defining a Custom Annotation)
 
 ```ts twoslash
 import { Schema } from "@effect/schema"
 
+// Define a unique identifier for your custom annotation
 const DeprecatedId = Symbol.for(
   "some/unique/identifier/for/your/custom/annotation"
 )
 
-const schema = Schema.String.annotations({ [DeprecatedId]: true })
+// Apply the custom annotation to the schema
+const MyString = Schema.String.annotations({ [DeprecatedId]: true })
 
-console.log(schema)
+console.log(MyString)
 /*
 Output:
 [class SchemaClass] {
@@ -223,23 +256,28 @@ Output:
 */
 ```
 
-Annotations can be read using the `AST.getAnnotation` helper, here's an example:
+You can retrieve custom annotations using the `AST.getAnnotation` helper method.
 
-```ts twoslash
+**Example** (Reading a Custom Annotation)
+
+```ts twoslash collapse={4-10}
 import { AST, Schema } from "@effect/schema"
 import { Option } from "effect"
 
+// Define the unique identifier for the custom annotation
 const DeprecatedId = Symbol.for(
   "some/unique/identifier/for/your/custom/annotation"
 )
 
-const schema = Schema.String.annotations({ [DeprecatedId]: true })
+// Create a schema with the custom annotation
+const MyString = Schema.String.annotations({ [DeprecatedId]: true })
 
+// Helper function to check if a schema is marked as deprecated
 const isDeprecated = <A, I, R>(schema: Schema.Schema<A, I, R>): boolean =>
   AST.getAnnotation<boolean>(DeprecatedId)(schema.ast).pipe(
     Option.getOrElse(() => false)
   )
 
 console.log(isDeprecated(Schema.String)) // Output: false
-console.log(isDeprecated(schema)) // Output: true
+console.log(isDeprecated(MyString)) // Output: true
 ```

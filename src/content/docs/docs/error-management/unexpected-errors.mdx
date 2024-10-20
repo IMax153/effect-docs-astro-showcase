@@ -23,7 +23,7 @@ The following functions and combinators allow for termination of the effect and 
 
 The `Effect.die` function returns an effect that throws a specified error, while `Effect.dieMessage` throws a `RuntimeException` with a specified text message. These functions are useful for terminating a fiber when a defect, a critical and unexpected error, is detected in the code.
 
-**Example** (`die`)
+**Example** (Terminating on Division by Zero with `Effect.die`)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -33,10 +33,11 @@ const divide = (a: number, b: number): Effect.Effect<number> =>
     ? Effect.die(new Error("Cannot divide by zero"))
     : Effect.succeed(a / b)
 
-Effect.runSync(divide(1, 0)) // throws Error: Cannot divide by zero
+Effect.runPromise(divide(1, 0))
+// throws Error: Cannot divide by zero
 ```
 
-**Example** (`dieMessage`)
+**Example** (Returning a RuntimeException with `Effect.dieMessage`)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -46,15 +47,15 @@ const divide = (a: number, b: number): Effect.Effect<number> =>
     ? Effect.dieMessage("Cannot divide by zero")
     : Effect.succeed(a / b)
 
-Effect.runSync(divide(1, 0))
+Effect.runPromise(divide(1, 0))
 // throws RuntimeException: Cannot divide by zero
 ```
 
 ### orDie
 
-The `Effect.orDie` function transforms an effect's failure into a termination of the fiber, making all failures unchecked and not part of the type of the effect. It can be used to handle errors that you do not wish to recover from.
+The `Effect.orDie` function converts an effect's failure into a termination of the fiber, removing the error from the type of the effect. It is useful when you encounter failures that you do not intend to handle or recover from.
 
-**Example**
+**Example** (Converting Failure to Defect with `Effect.orDie`)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -64,18 +65,21 @@ const divide = (a: number, b: number): Effect.Effect<number, Error> =>
     ? Effect.fail(new Error("Cannot divide by zero"))
     : Effect.succeed(a / b)
 
+//      ┌─── Effect<number, never, never>
+//      ▼
 const program = Effect.orDie(divide(1, 0))
 
-Effect.runSync(program) // throws Error: Cannot divide by zero
+Effect.runPromise(program)
+// throws Error: Cannot divide by zero
 ```
 
-After using `Effect.orDie`, the error channel type of the `program` is `never`, indicating that all failures are unchecked, and the effect is expected to terminate the fiber when an error occurs.
+After using `Effect.orDie`, the error channel type of the `program` is `never`, meaning that the effect no longer handles failures, and will terminate the fiber when an error occurs.
 
 ### orDieWith
 
 Similar to `Effect.orDie`, the `Effect.orDieWith` function transforms an effect's failure into a termination of the fiber using a specified mapping function. It allows you to customize the error message before terminating the fiber.
 
-**Example**
+**Example** (Customizing Defect Message with `Effect.orDieWith`)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -85,12 +89,15 @@ const divide = (a: number, b: number): Effect.Effect<number, Error> =>
     ? Effect.fail(new Error("Cannot divide by zero"))
     : Effect.succeed(a / b)
 
+//      ┌─── Effect<number, never, never>
+//      ▼
 const program = Effect.orDieWith(
   divide(1, 0),
   (error) => new Error(`defect: ${error.message}`)
 )
 
-Effect.runSync(program) // throws Error: defect: Cannot divide by zero
+Effect.runPromise(program)
+// throws Error: defect: Cannot divide by zero
 ```
 
 After using `Effect.orDieWith`, the error channel type of the `program` is `never`, just like with `Effect.orDie`.
@@ -115,7 +122,7 @@ The error type of the returned effect is specified as `never`, confirming that t
 
 By yielding an `Exit`, we gain the ability to "pattern match" on this type to handle both failure and success cases within the generator function.
 
-**Example**
+**Example** (Catching Defects with `Effect.exit`)
 
 ```ts twoslash
 import { Effect, Cause, Console, Exit } from "effect"
@@ -157,7 +164,7 @@ RuntimeException defect caught: Boom!
 
 The `Effect.catchAllDefect` function allows you to recover from all defects using a provided function.
 
-**Example**
+**Example** (Handling All Defects with `Effect.catchAllDefect`)
 
 ```ts twoslash
 import { Effect, Cause, Console } from "effect"
@@ -197,7 +204,7 @@ However, in some specific cases, such as when dealing with dynamically loaded pl
 
 The `Effect.catchSomeDefect` function in Effect allows you to recover from specific defects using a provided partial function.
 
-**Example**
+**Example** (Handling Specific Defects with `Effect.catchSomeDefect`)
 
 ```ts twoslash
 import { Effect, Cause, Option, Console } from "effect"

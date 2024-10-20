@@ -92,14 +92,14 @@ Using "tagged" errors (objects with a `_tag` field) can help identify error type
 ```ts twoslash
 import { Effect } from "effect"
 
-class NetworkError {
-  readonly _tag = "NetworkError"
+class HttpError {
+  readonly _tag = "HttpError"
 }
 
-const failure = Effect.fail(new NetworkError())
+const program = Effect.fail(new HttpError())
 ```
 
-## Traking Errors
+## Error Tracking
 
 With `Effect.succeed` and `Effect.fail`, you can explicitly handle success and failure cases and the type system will ensure that errors are tracked and accounted for.
 
