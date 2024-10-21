@@ -7,16 +7,13 @@ sidebar:
 
 ## Making API Calls and Handling Timeouts
 
-For our API calls to third-party services, we have a few requirements.
-We want to ensure that if the entire function takes more than `4` seconds to execute, it's interrupted.
-Additionally, we'll set up the system to retry the API call a maximum of `2` times.
-
-**Solution**
+When making API calls to third-party services, we may want to enforce timeouts and retry mechanisms.
+In this example, the API call is set to retry a maximum of two times in case of failure, and the entire operation will be interrupted if it takes longer than 4 seconds.
 
 ```ts twoslash
-import { NodeRuntime } from "@effect/platform-node"
 import { Console, Effect } from "effect"
 
+// Function to make the API call
 const getJson = (url: string) =>
   Effect.tryPromise(() =>
     fetch(url).then((res) => {
@@ -29,6 +26,8 @@ const getJson = (url: string) =>
     })
   )
 
+// Program that retries the API call twice,
+// times out after 4 seconds, and logs errors
 const program = (url: string) =>
   getJson(url).pipe(
     Effect.retry({ times: 2 }),
@@ -36,56 +35,46 @@ const program = (url: string) =>
     Effect.catchAll(Console.error)
   )
 
-// testing the happy path
-NodeRuntime.runMain(
-  program("https://dummyjson.com/products/1?delay=1000")
-)
+// Test the successful case
+Effect.runFork(program("https://dummyjson.com/products/1?delay=1000"))
 /*
 Output:
 ok
 */
 
-// testing the timeout
-// NodeRuntime.runMain(
-//   program("https://dummyjson.com/products/1?delay=5000")
-// )
+// Test case: timeout scenario
+Effect.runFork(program("https://dummyjson.com/products/1?delay=5000"))
 /*
 Output:
-TimeoutException
+TimeoutException: Operation timed out before the specified duration of '4s' elapsed
 */
 
-// testing API errors
-// NodeRuntime.runMain(
-//   program("https://dummyjson.com/auth/products/1?delay=500")
-// )
+// Test case: API error handling
+Effect.runFork(program("https://dummyjson.com/auth/products/1?delay=500"))
 /*
 Output:
 error
 error
 error
-UnknownException: Forbidden
+UnknownException: An unknown error occurred
 */
 ```
 
 ## Implementing Conditional Retries
 
-We want to implement a mechanism to retry an API call only if it encounters certain types of errors.
-
-**Solution**
+Sometimes, we need to retry a failed API call only for specific error conditions, such as certain HTTP status codes.
 
 ```ts twoslash
-import { NodeRuntime } from "@effect/platform-node"
 import { Console, Effect } from "effect"
 
+// Custom error class for handling status codes
 class Err extends Error {
-  constructor(
-    message: string,
-    readonly status: number
-  ) {
+  constructor(message: string, readonly status: number) {
     super(message)
   }
 }
 
+// Function to make the API call
 const getJson = (url: string) =>
   Effect.tryPromise({
     try: () =>
@@ -99,28 +88,28 @@ const getJson = (url: string) =>
     catch: (e) => e as Err
   })
 
+// Program that retries only for 401 status codes
 const program = (url: string) =>
   getJson(url).pipe(
-    // Retry if the error is a 403
-    Effect.retry({ while: (err) => err.status === 403 }),
+    Effect.retry({ while: (err) => err.status === 401 }),
     Effect.catchAll(Console.error)
   )
 
-// testing 403
-NodeRuntime.runMain(
+// Test the 401 scenario
+Effect.runFork(
   program("https://dummyjson.com/auth/products/1?delay=1000")
 )
 /*
 Output:
-403
-403
-403
-403
+401
+401
+401
+401
 ...
 */
 
-// testing 404
-// NodeRuntime.runMain(program("https://dummyjson.com/-"))
+// Test the 404 scenario
+Effect.runFork(program("https://dummyjson.com/-"))
 /*
 Output:
 404
@@ -130,9 +119,7 @@ Err [Error]: Not Found
 
 ## Running Scheduled Effects Until Completion
 
-We can use schedules to run an effect periodically until another long-running effect completes. This can be useful for tasks like polling or periodic logging.
-
-**Solution**
+Sometimes, we need to run a task periodically until a longer-running task completes. This is common in scenarios like polling or periodic status logging.
 
 ```ts twoslash
 import { Effect, Console, Schedule } from "effect"
