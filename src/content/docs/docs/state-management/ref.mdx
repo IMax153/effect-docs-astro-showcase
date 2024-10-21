@@ -5,7 +5,7 @@ sidebar:
   order: 0
 ---
 
-import { Aside, Tabs, TabItem } from "@astrojs/starlight/components"
+import { Aside } from "@astrojs/starlight/components"
 
 When we write programs, it is common to need to keep track of some form of state during the execution of the program. State refers to any data that can change as the program runs. For example, in a counter application, the count value changes as the user increments or decrements it. Similarly, in a banking application, the account balance changes as deposits and withdrawals are made. State management is crucial to building interactive and dynamic applications.
 
@@ -21,7 +21,9 @@ Let's dive in and see how we can leverage `Ref` for effective state management i
 
 ## Using Ref
 
-Let's explore how to use the `Ref` data type with a simple example of a counter:
+Here is a simple example using `Ref` to create a counter:
+
+**Example** (Basic Counter with `Ref`)
 
 ```ts twoslash
 import { Effect, Ref } from "effect"
@@ -41,11 +43,7 @@ class Counter {
 const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
 ```
 
-Here is the usage example of the `Counter`:
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
+**Example** (Using the Counter)
 
 ```ts twoslash collapse={3-15}
 import { Effect, Ref } from "effect"
@@ -81,51 +79,6 @@ This counter has a value of 2.
 */
 ```
 
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash collapse={3-15}
-import { Effect, Ref, Console } from "effect"
-
-class Counter {
-  inc: Effect.Effect<void>
-  dec: Effect.Effect<void>
-  get: Effect.Effect<number>
-
-  constructor(private value: Ref.Ref<number>) {
-    this.inc = Ref.update(this.value, (n) => n + 1)
-    this.dec = Ref.update(this.value, (n) => n - 1)
-    this.get = Ref.get(this.value)
-  }
-}
-
-const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
-
-const program = make.pipe(
-  Effect.andThen((counter) =>
-    counter.inc.pipe(
-      Effect.andThen(counter.inc),
-      Effect.andThen(counter.dec),
-      Effect.andThen(counter.inc),
-      Effect.andThen(counter.get),
-      Effect.andThen((value) =>
-        Console.log(`This counter has a value of ${value}.`)
-      )
-    )
-  )
-)
-
-Effect.runPromise(program)
-/*
-This counter has a value of 2.
-*/
-```
-
-</TabItem>
-
-</Tabs>
-
 <Aside type="note" title="Ref Operations Are Effectful">
   All the operations on the `Ref` data type are effectful. So when we are
   reading from or writing to a `Ref`, we are performing an effectful
@@ -134,12 +87,11 @@ This counter has a value of 2.
 
 ## Using Ref in a Concurrent Environment
 
-We can use this counter in a concurrent environment, such as counting the number of requests in a RESTful API.
+We can also use `Ref` in concurrent scenarios, where multiple tasks might be updating shared state at the same time.
+
+**Example** (Concurrent Updates to Shared Counter)
+
 For this example, let's update the counter concurrently:
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
 
 ```ts twoslash collapse={3-15}
 import { Effect, Ref } from "effect"
@@ -161,6 +113,7 @@ const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
 const program = Effect.gen(function* () {
   const counter = yield* make
 
+  // Helper to log the counter's value before running an effect
   const logCounter = <R, E, A>(
     label: string,
     effect: Effect.Effect<A, E, R>
@@ -183,80 +136,19 @@ const program = Effect.gen(function* () {
 Effect.runPromise(program)
 /*
 Output:
-... fiber=#2 message="task 4 get: 0"
-... fiber=#4 message="task 3 get: 1"
-... fiber=#5 message="task 1 get: 0"
-... fiber=#5 message="task 2 get: 1"
-... fiber=#0 message="This counter has a value of 2."
+timestamp=... fiber=#3 message="task 4 get: 0"
+timestamp=... fiber=#6 message="task 3 get: 1"
+timestamp=... fiber=#8 message="task 1 get: 0"
+timestamp=... fiber=#9 message="task 2 get: 1"
+timestamp=... fiber=#0 message="This counter has a value of 2."
 */
 ```
-
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash collapse={3-15}
-import { Effect, Ref } from "effect"
-
-class Counter {
-  inc: Effect.Effect<void>
-  dec: Effect.Effect<void>
-  get: Effect.Effect<number>
-
-  constructor(private value: Ref.Ref<number>) {
-    this.inc = Ref.update(this.value, (n) => n + 1)
-    this.dec = Ref.update(this.value, (n) => n - 1)
-    this.get = Ref.get(this.value)
-  }
-}
-
-const make = Effect.andThen(Ref.make(0), (value) => new Counter(value))
-
-const program = make.pipe(
-  Effect.andThen((counter) => {
-    const logCounter = <R, E, A>(
-      label: string,
-      effect: Effect.Effect<A, E, R>
-    ) =>
-      counter.get.pipe(
-        Effect.andThen((value) => Effect.log(`${label} get: ${value}`)),
-        Effect.andThen(effect)
-      )
-
-    return logCounter("task 1", counter.inc).pipe(
-      Effect.zip(logCounter("task 2", counter.inc), { concurrent: true }),
-      Effect.zip(logCounter("task 3", counter.dec), { concurrent: true }),
-      Effect.zip(logCounter("task 4", counter.inc), { concurrent: true }),
-      Effect.andThen(counter.get),
-      Effect.andThen((value) =>
-        Effect.log(`This counter has a value of ${value}.`)
-      )
-    )
-  })
-)
-
-Effect.runPromise(program)
-/*
-Output:
-... fiber=#2 message="task 4 get: 0"
-... fiber=#4 message="task 3 get: 1"
-... fiber=#5 message="task 1 get: 0"
-... fiber=#5 message="task 2 get: 1"
-... fiber=#0 message="This counter has a value of 2."
-*/
-```
-
-</TabItem>
-
-</Tabs>
 
 ## Using Ref as a Service
 
-You can also pass a `Ref` as a [service](/docs/requirements-management/services/) to share state between different parts of your program. Let's see how this works:
+You can pass a `Ref` as a [service](/docs/requirements-management/services/) to share state across different parts of your program.
 
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
+**Example** (Using `Ref` as a Service)
 
 ```ts twoslash
 import { Effect, Context, Ref } from "effect"
@@ -311,72 +203,15 @@ MyState has a value of 2.
 */
 ```
 
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash
-import { Effect, Context, Ref, Console } from "effect"
-
-// Create a Tag for our state
-class MyState extends Context.Tag("MyState")<
-  MyState,
-  Ref.Ref<number>
->() {}
-
-// Subprogram 1: Increment the state value twice
-const subprogram1 = MyState.pipe(
-  Effect.tap((state) => Ref.update(state, (n) => n + 1)),
-  Effect.andThen((state) => Ref.update(state, (n) => n + 1))
-)
-
-// Subprogram 2: Decrement the state value and then increment it
-const subprogram2 = MyState.pipe(
-  Effect.tap((state) => Ref.update(state, (n) => n - 1)),
-  Effect.andThen((state) => Ref.update(state, (n) => n + 1))
-)
-
-// Subprogram 3: Read and log the current value of the state
-const subprogram3 = MyState.pipe(
-  Effect.andThen((state) => Ref.get(state)),
-  Effect.andThen((value) =>
-    Console.log(`MyState has a value of ${value}.`)
-  )
-)
-
-// Compose subprograms 1, 2, and 3 to create the main program
-const program = subprogram1.pipe(
-  Effect.andThen(subprogram2),
-  Effect.andThen(subprogram3)
-)
-
-// Create a Ref instance with an initial value of 0
-const initialState = Ref.make(0)
-
-// Provide the Ref as a service
-const runnable = Effect.provideServiceEffect(
-  program,
-  MyState,
-  initialState
-)
-
-// Run the program and observe the output
-Effect.runPromise(runnable)
-/*
-Output:
-MyState has a value of 2.
-*/
-```
-
-</TabItem>
-
-</Tabs>
-
 Note that we use `Effect.provideServiceEffect` instead of `Effect.provideService` to provide an actual implementation of the `MyState` service because all the operations on the `Ref` data type are effectful, including the creation `Ref.make(0)`.
 
 ## Sharing State Between Fibers
 
-Let's consider an example where we want to read names from user input until the user enters the command `"q"` to exit.
+You can use `Ref` to manage shared state between multiple fibers in a concurrent environment.
+
+**Example** (Managing Shared State Across Fibers)
+
+Let's look at an example where we continuously read names from user input until the user enters `"q"` to exit.
 
 First, let's introduce a `readLine` utility to read user input (ensure you have `@types/node` installed):
 
@@ -384,6 +219,7 @@ First, let's introduce a `readLine` utility to read user input (ensure you have 
 import { Effect } from "effect"
 import * as NodeReadLine from "node:readline"
 
+// Utility to read user input
 const readLine = (message: string): Effect.Effect<string> =>
   Effect.promise(
     () =>
@@ -400,16 +236,13 @@ const readLine = (message: string): Effect.Effect<string> =>
   )
 ```
 
-Now, let's take a look at the main program:
+Next, we implement the main program to collect names:
 
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
-
-```ts twoslash collapse={4-17}
+```ts twoslash collapse={5-18}
 import { Effect, Chunk, Ref } from "effect"
 import * as NodeReadLine from "node:readline"
 
+// Utility to read user input
 const readLine = (message: string): Effect.Effect<string> =>
   Effect.promise(
     () =>
@@ -450,76 +283,17 @@ Please enter a name or `q` to exit: q
 */
 ```
 
-</TabItem>
+Now that we have learned how to use the `Ref` data type, we can use it to manage the state concurrently.
 
-<TabItem label="Using pipe">
+For example, assume while we are reading from the console, we have another fiber that is trying to update the state from a different source.
 
-```ts twoslash collapse={4-17}
-import { Effect, Chunk, Ref } from "effect"
-import * as NodeReadLine from "node:readline"
+Here, one fiber reads names from user input, while another fiber concurrently adds preset names at regular intervals:
 
-const readLine = (message: string): Effect.Effect<string> =>
-  Effect.promise(
-    () =>
-      new Promise((resolve) => {
-        const rl = NodeReadLine.createInterface({
-          input: process.stdin,
-          output: process.stdout
-        })
-        rl.question(message, (answer) => {
-          rl.close()
-          resolve(answer)
-        })
-      })
-  )
-
-const getNames = Ref.make(Chunk.empty<string>()).pipe(
-  Effect.andThen((ref) =>
-    readLine("Please enter a name or `q` to exit: ").pipe(
-      Effect.repeat({
-        while: (name) => {
-          if (name === "q") {
-            return Effect.succeed(false)
-          } else {
-            return ref.pipe(
-              Ref.update((state) => Chunk.append(state, name)),
-              Effect.as(true)
-            )
-          }
-        }
-      }),
-      Effect.andThen(Ref.get(ref))
-    )
-  )
-)
-
-Effect.runPromise(getNames).then(console.log)
-/*
-Output:
-Please enter a name or `q` to exit: Alice
-Please enter a name or `q` to exit: Bob
-Please enter a name or `q` to exit: q
-{
-  _id: "Chunk",
-  values: [ "Alice", "Bob" ]
-}
-*/
-```
-
-</TabItem>
-
-</Tabs>
-
-Now that we have learned how to use the `Ref` data type, we can use it to manage the state concurrently. For example, assume while we are reading from the console, we have another fiber that is trying to update the state from a different source:
-
-<Tabs syncKey="pipe-vs-gen">
-
-<TabItem label="Using Effect.gen">
-
-```ts twoslash collapse={4-17}
+```ts twoslash collapse={5-18}
 import { Effect, Chunk, Ref, Fiber } from "effect"
 import * as NodeReadLine from "node:readline"
 
+// Utility to read user input
 const readLine = (message: string): Effect.Effect<string> =>
   Effect.promise(
     () =>
@@ -537,6 +311,8 @@ const readLine = (message: string): Effect.Effect<string> =>
 
 const getNames = Effect.gen(function* () {
   const ref = yield* Ref.make(Chunk.empty<string>())
+
+  // Fiber 1: Reading names from user input
   const fiber1 = yield* Effect.fork(
     Effect.gen(function* () {
       while (true) {
@@ -550,6 +326,8 @@ const getNames = Effect.gen(function* () {
       }
     })
   )
+
+  // Fiber 2: Updating the state with predefined names
   const fiber2 = yield* Effect.fork(
     Effect.gen(function* () {
       for (const name of ["John", "Jane", "Joe", "Tom"]) {
@@ -575,80 +353,3 @@ Please enter a name or `q` to exit: q
 }
 */
 ```
-
-</TabItem>
-
-<TabItem label="Using pipe">
-
-```ts twoslash collapse={4-17}
-import { Effect, Chunk, Ref, Fiber } from "effect"
-import * as NodeReadLine from "node:readline"
-
-const readLine = (message: string): Effect.Effect<string> =>
-  Effect.promise(
-    () =>
-      new Promise((resolve) => {
-        const rl = NodeReadLine.createInterface({
-          input: process.stdin,
-          output: process.stdout
-        })
-        rl.question(message, (answer) => {
-          rl.close()
-          resolve(answer)
-        })
-      })
-  )
-
-const getNames = Ref.make(Chunk.empty<string>()).pipe(
-  Effect.andThen((ref) => {
-    const fiber1 = readLine("Please enter a name or `q` to exit: ").pipe(
-      Effect.repeat({
-        while: (name) => {
-          if (name === "q") {
-            return Effect.succeed(false)
-          } else {
-            return ref.pipe(
-              Ref.update((state) => Chunk.append(state, name)),
-              Effect.as(true)
-            )
-          }
-        }
-      }),
-      Effect.fork
-    )
-    const fiber2 = Effect.fork(
-      Effect.forEach(
-        ["John", "Jane", "Joe", "Tom"],
-        (name) =>
-          ref.pipe(
-            Ref.update((state) => Chunk.append(state, name)),
-            Effect.andThen(Effect.sleep("1 second"))
-          ),
-        { concurrency: "unbounded", discard: true }
-      )
-    )
-    return Effect.all([fiber1, fiber2]).pipe(
-      Effect.andThen(([f1, f2]) =>
-        Fiber.join(f1).pipe(Effect.andThen(Fiber.join(f2)))
-      ),
-      Effect.andThen(Ref.get(ref))
-    )
-  })
-)
-
-Effect.runPromise(getNames).then(console.log)
-/*
-Output:
-Please enter a name or `q` to exit: Alice
-Please enter a name or `q` to exit: Bob
-Please enter a name or `q` to exit: q
-{
-  _id: "Chunk",
-  values: [ ... ]
-}
-*/
-```
-
-</TabItem>
-
-</Tabs>
