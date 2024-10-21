@@ -17,11 +17,13 @@ interface SubscriptionRef<A> extends SynchronizedRef<A> {
 }
 ```
 
-You can perform all the usual operations on a `SubscriptionRef`, such as `get`, `set`, or `modify` to work with the current value.
+You can perform all standard operations on a `SubscriptionRef`, such as `get`, `set`, or `modify` to interact with the current value.
 
-The `changes` stream is where the magic happens. It lets you observe the current value and all subsequent changes. Each time you run this stream, you'll get the current value as of that moment and any changes that occurred afterward.
+The key feature of `SubscriptionRef` is its `changes` stream. This stream allows you to observe the current value at the moment of subscription and receive all subsequent changes. Every time the stream is run, it emits the current value and tracks future updates.
 
-To create a `SubscriptionRef`, you can use the `make` constructor, specifying the initial value:
+To create a `SubscriptionRef`, you can use the `SubscriptionRef.make` constructor, specifying the initial value:
+
+**Example** (Creating a `SubscriptionRef`)
 
 ```ts twoslash
 import { SubscriptionRef } from "effect"
@@ -29,25 +31,32 @@ import { SubscriptionRef } from "effect"
 const ref = SubscriptionRef.make(0)
 ```
 
-A `SubscriptionRef` can be invaluable when modeling shared state, especially when multiple observers need to react to every change in that shared state. For example, in a functional reactive programming context, the `SubscriptionRef` value might represent a part of the application state, and each observer could update various user interface elements based on changes to that state.
+`SubscriptionRef` is particularly useful for modeling shared state when multiple observers need to react to changes. For example, in functional reactive programming, the `SubscriptionRef` could represent a portion of the application state, and various observers (like UI components) would update in response to state changes.
 
-To see how this works, let's create a simple example where a "server" repeatedly updates a value observed by multiple "clients":
+**Example** (Server-Client Model with `SubscriptionRef`)
+
+In the following example, a "server" continually updates a shared value, while multiple "clients" observe the changes:
 
 ```ts twoslash
 import { Ref, Effect } from "effect"
 
+// Server function that increments a shared value forever
 const server = (ref: Ref.Ref<number>) =>
   Ref.update(ref, (n) => n + 1).pipe(Effect.forever)
 ```
 
-Note that the `server` function operates on a regular `Ref` and doesn't need to know about `SubscriptionRef`. It simply updates a value.
+The `server` function operates on a regular `Ref` and continuously updates the value. It doesn't need to know about `SubscriptionRef` directly.
+
+Next, let's define a `client` that subscribes to changes and collects a specified number of values:
 
 ```ts twoslash
 import { Ref, Effect, Stream, Random } from "effect"
 
+// Server function that increments a shared value forever
 const server = (ref: Ref.Ref<number>) =>
   Ref.update(ref, (n) => n + 1).pipe(Effect.forever)
 
+// Client function that observes the stream of changes
 const client = (changes: Stream.Stream<number>) =>
   Effect.gen(function* () {
     const n = yield* Random.nextIntBetween(1, 10)
@@ -70,9 +79,11 @@ import {
   Fiber
 } from "effect"
 
+// Server function that increments a shared value forever
 const server = (ref: Ref.Ref<number>) =>
   Ref.update(ref, (n) => n + 1).pipe(Effect.forever)
 
+// Client function that observes the stream of changes
 const client = (changes: Stream.Stream<number>) =>
   Effect.gen(function* () {
     const n = yield* Random.nextIntBetween(1, 10)
@@ -81,11 +92,22 @@ const client = (changes: Stream.Stream<number>) =>
   })
 
 const program = Effect.gen(function* () {
+  // Create a SubscriptionRef with an initial value of 0
   const ref = yield* SubscriptionRef.make(0)
+
+  // Fork the server to run concurrently
   const serverFiber = yield* Effect.fork(server(ref))
+
+  // Create 5 clients that subscribe to the changes stream
   const clients = new Array(5).fill(null).map(() => client(ref.changes))
+
+  // Run all clients in concurrently and collect their results
   const chunks = yield* Effect.all(clients, { concurrency: "unbounded" })
+
+  // Interrupt the server when clients are done
   yield* Fiber.interrupt(serverFiber)
+
+  // Output the results collected by each client
   for (const chunk of chunks) {
     console.log(chunk)
   }
@@ -93,27 +115,12 @@ const program = Effect.gen(function* () {
 
 Effect.runPromise(program)
 /*
-Output:
-{
-  _id: "Chunk",
-  values: [ 2, 3, 4 ]
-}
-{
-  _id: "Chunk",
-  values: [ 2 ]
-}
-{
-  _id: "Chunk",
-  values: [ 2, 3, 4, 5, 6, 7 ]
-}
-{
-  _id: "Chunk",
-  values: [ 2, 3, 4 ]
-}
-{
-  _id: "Chunk",
-  values: [ 2, 3, 4, 5, 6, 7, 8, 9 ]
-}
+Example Output:
+{ _id: 'Chunk', values: [ 4, 5, 6, 7, 8, 9 ] }
+{ _id: 'Chunk', values: [ 4 ] }
+{ _id: 'Chunk', values: [ 4, 5, 6, 7, 8, 9 ] }
+{ _id: 'Chunk', values: [ 4, 5 ] }
+{ _id: 'Chunk', values: [ 4, 5, 6, 7, 8, 9 ] }
 */
 ```
 
