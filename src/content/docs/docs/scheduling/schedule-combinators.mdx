@@ -9,29 +9,18 @@ import { Aside } from "@astrojs/starlight/components"
 
 Schedules define stateful, possibly effectful, recurring schedules of events, and compose in a variety of ways. Combinators allow us to take schedules and combine them together to get other schedules.
 
-To demonstrate the functionality of different schedules, we will be working with the following helper:
+To demonstrate the functionality of different schedules, we will use the following helper function that logs the delay between executions.
 
-```ts showLineNumbers=false
-declare const log: <A, Out>(
-  action: Effect.Effect<A>,
-  schedule: Schedule.Schedule<Out, void>
-) => void
-```
-
-<details>
-
-<summary>Click to see the implementation</summary>
-
-```ts twoslash
+```ts twoslash collapse={7-33}
 import { Effect, Schedule, TestClock, Fiber, TestContext } from "effect"
-
-let start = 0
-let i = 0
 
 const log = <A, Out>(
   action: Effect.Effect<A>,
   schedule: Schedule.Schedule<Out, void>
-) => {
+): void => {
+  let start = 0
+  let i = 0
+
   Effect.gen(function* () {
     const fiber: Fiber.RuntimeFiber<[Out, number]> = yield* Effect.gen(
       function* () {
@@ -59,38 +48,38 @@ const log = <A, Out>(
 }
 ```
 
-</details>
-
-The `log` helper logs the time delay between each execution. We will use this helper to showcase the behavior of various built-in schedules.
-
 <Aside type="note" title="Implementation Details">
-  The `log` helper accelerates time using
-  [TestClock](/docs/testing/testclock/), which means it simulates the
-  passing of time that would normally occur in a real-world application.
+  The `log` helper uses [TestClock](/docs/testing/testclock/) to simulate
+  time passing. This allows us to observe the behavior of schedules as if
+  time were advancing in a real-world scenario.
 </Aside>
 
 ## Composition
 
-Schedules compose in the following primary ways:
+Schedules can be composed in different ways:
 
-- **Union**. This performs the union of the intervals of two schedules.
-- **Intersection**. This performs the intersection of the intervals of two schedules.
-- **Sequencing**. This concatenates the intervals of one schedule onto another.
+| Mode             | Description                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------- |
+| **Union**        | Combines two schedules and recurs if either schedule wants to continue, using the shorter delay.   |
+| **Intersection** | Combines two schedules and recurs only if both schedules want to continue, using the longer delay. |
+| **Sequencing**   | Combines two schedules by running the first one fully, then switching to the second.               |
 
 ### Union
 
-Combines two schedules through union, by recurring if either schedule wants to recur, using the minimum of the two delays between recurrences.
+Combines two schedules using union. The schedule recurs as long as one of the schedules wants to, using the minimum delay between recurrences.
 
-```ts twoslash collapse={3-32}
+**Example** (Union of Exponential and Spaced Schedules)
+
+```ts twoslash collapse={3-34}
 import { Effect, Schedule, TestClock, Fiber, TestContext } from "effect"
-
-let start = 0
-let i = 0
 
 const log = <A, Out>(
   action: Effect.Effect<A>,
   schedule: Schedule.Schedule<Out, void>
-) => {
+): void => {
+  let start = 0
+  let i = 0
+
   Effect.gen(function* () {
     const fiber: Fiber.RuntimeFiber<[Out, number]> = yield* Effect.gen(
       function* () {
@@ -143,18 +132,20 @@ When we use the combined schedule with `Effect.repeat`, we observe that the effe
 
 ### Intersection
 
-Combines two schedules through the intersection, by recurring only if both schedules want to recur, using the maximum of the two delays between recurrences.
+Combines two schedules using intersection. The schedule recurs only if both schedules want to continue, using the maximum delay between them.
 
-```ts twoslash collapse={3-32}
+**Example** (Intersection of Exponential and Recurs Schedules)
+
+```ts twoslash collapse={3-34}
 import { Effect, Schedule, TestClock, Fiber, TestContext } from "effect"
-
-let start = 0
-let i = 0
 
 const log = <A, Out>(
   action: Effect.Effect<A>,
   schedule: Schedule.Schedule<Out, void>
-) => {
+): void => {
+  let start = 0
+  let i = 0
+
   Effect.gen(function* () {
     const fiber: Fiber.RuntimeFiber<[Out, number]> = yield* Effect.gen(
       function* () {
@@ -185,7 +176,9 @@ const schedule = Schedule.intersect(
   Schedule.exponential("10 millis"),
   Schedule.recurs(5)
 )
+
 const action = Effect.void
+
 log(action, schedule)
 /*
 Output:
@@ -203,18 +196,20 @@ When we use the combined schedule with `Effect.repeat`, we observe that the effe
 
 ### Sequencing
 
-Combines two schedules sequentially, by following the first policy until it ends, and then following the second policy.
+Combines two schedules in sequence. First, it follows the policy of the first schedule, then switches to the second schedule once the first completes.
 
-```ts twoslash collapse={3-32}
+**Example** (Sequencing Recurs and Spaced Schedules)
+
+```ts twoslash collapse={3-34}
 import { Effect, Schedule, TestClock, Fiber, TestContext } from "effect"
-
-let start = 0
-let i = 0
 
 const log = <A, Out>(
   action: Effect.Effect<A>,
   schedule: Schedule.Schedule<Out, void>
-) => {
+): void => {
+  let start = 0
+  let i = 0
+
   Effect.gen(function* () {
     const fiber: Fiber.RuntimeFiber<[Out, number]> = yield* Effect.gen(
       function* () {
@@ -245,7 +240,9 @@ const schedule = Schedule.andThen(
   Schedule.recurs(5),
   Schedule.spaced("1 second")
 )
+
 const action = Effect.void
+
 log(action, schedule)
 /*
 Output:
@@ -273,16 +270,18 @@ When a resource is out of service due to overload or contention, retrying and ba
 
 [Research](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/) shows that `Schedule.jittered(0.0, 1.0)` is very suitable for retrying.
 
-```ts twoslash collapse={3-32}
-import { Effect, Schedule, TestClock, Fiber, TestContext } from "effect"
+**Example** (Jittered Exponential Schedule)
 
-let start = 0
-let i = 0
+```ts twoslash collapse={3-34}
+import { Effect, Schedule, TestClock, Fiber, TestContext } from "effect"
 
 const log = <A, Out>(
   action: Effect.Effect<A>,
   schedule: Schedule.Schedule<Out, void>
-) => {
+): void => {
+  let start = 0
+  let i = 0
+
   Effect.gen(function* () {
     const fiber: Fiber.RuntimeFiber<[Out, number]> = yield* Effect.gen(
       function* () {
@@ -310,7 +309,9 @@ const log = <A, Out>(
 }
 
 const schedule = Schedule.jittered(Schedule.exponential("10 millis"))
+
 const action = Effect.void
+
 log(action, schedule)
 /*
 Output:
@@ -332,18 +333,20 @@ In this example, we use the `jittered` combinator to apply jitter to an exponent
 
 ## Filtering
 
-We can filter inputs or outputs of a schedule with `whileInput` and `whileOutput`.
+Schedules can be filtered using `Schedule.whileInput` or `Schedule.whileOutput` to control repetition based on input or output conditions.
 
-```ts twoslash collapse={3-32}
+**Example** (Filtering Output)
+
+```ts twoslash collapse={3-34}
 import { Effect, Schedule, TestClock, Fiber, TestContext } from "effect"
-
-let start = 0
-let i = 0
 
 const log = <A, Out>(
   action: Effect.Effect<A>,
   schedule: Schedule.Schedule<Out, void>
-) => {
+): void => {
+  let start = 0
+  let i = 0
+
   Effect.gen(function* () {
     const fiber: Fiber.RuntimeFiber<[Out, number]> = yield* Effect.gen(
       function* () {
@@ -371,7 +374,9 @@ const log = <A, Out>(
 }
 
 const schedule = Schedule.whileOutput(Schedule.recurs(5), (n) => n <= 2)
+
 const action = Effect.void
+
 log(action, schedule)
 /*
 Output:
@@ -387,18 +392,20 @@ In this example, we create a schedule using `Schedule.recurs(5)` to repeat a cer
 
 ## Modifying
 
-Modifies the delay of a schedule.
+The `Schedule.modifyDelay` combinator allows you to adjust the delay of a schedule.
 
-```ts twoslash collapse={3-32}
+**Example** (Modified Delay Schedule)
+
+```ts twoslash collapse={3-34}
 import { Effect, Schedule, TestClock, Fiber, TestContext } from "effect"
-
-let start = 0
-let i = 0
 
 const log = <A, Out>(
   action: Effect.Effect<A>,
   schedule: Schedule.Schedule<Out, void>
-) => {
+): void => {
+  let start = 0
+  let i = 0
+
   Effect.gen(function* () {
     const fiber: Fiber.RuntimeFiber<[Out, number]> = yield* Effect.gen(
       function* () {
@@ -429,7 +436,9 @@ const schedule = Schedule.modifyDelay(
   Schedule.spaced("1 second"),
   (_) => "100 millis"
 )
+
 const action = Effect.void
+
 log(action, schedule)
 /*
 Output:
@@ -449,11 +458,11 @@ delay: 0
 
 ## Tapping
 
-Whenever we need to effectfully process each schedule input/output, we can use `tapInput` and `tapOutput`.
+Whenever we need to effectfully process each schedule input/output, we can use `Schedule.tapInput` and `Schedule.tapOutput`.
 
-We can use these two functions for logging purposes:
+**Example** (Logging with tapOutput)
 
-```ts twoslash collapse={10-39}
+```ts twoslash collapse={10-41}
 import {
   Effect,
   Schedule,
@@ -463,13 +472,13 @@ import {
   Console
 } from "effect"
 
-let start = 0
-let i = 0
-
 const log = <A, Out>(
   action: Effect.Effect<A>,
   schedule: Schedule.Schedule<Out, void>
-) => {
+): void => {
+  let start = 0
+  let i = 0
+
   Effect.gen(function* () {
     const fiber: Fiber.RuntimeFiber<[Out, number]> = yield* Effect.gen(
       function* () {
@@ -499,7 +508,9 @@ const log = <A, Out>(
 const schedule = Schedule.tapOutput(Schedule.recurs(2), (n) =>
   Console.log(`repeating ${n}`)
 )
+
 const action = Effect.void
+
 log(action, schedule)
 /*
 Output:
