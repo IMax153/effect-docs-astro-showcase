@@ -7,6 +7,20 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
+You can import the necessary types and functions from the `effect/Schema` module:
+
+**Example** (Namespace Import)
+
+```ts showLineNumbers=false
+import * as Schema from "effect/Schema"
+```
+
+**Example** (Named Import)
+
+```ts showLineNumbers=false
+import { Schema } from "effect"
+```
+
 ## Defining a schema
 
 One common way to define a `Schema` is by utilizing the `Struct` constructor.
@@ -21,7 +35,7 @@ Consider the following schema that describes a person object with:
 - an `age` property of type `number`
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -41,7 +55,7 @@ Once you've defined a schema (`Schema<Type, Encoded, Context>`), you can extract
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -69,7 +83,7 @@ Alternatively, you can extract the `Person` type using the `interface` keyword.
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -91,7 +105,7 @@ In cases where in a `Schema<Type, Encoded, Context>` the `Encoded` type differs 
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -122,7 +136,7 @@ Alternatively, you can extract the `PersonEncoded` type using the `interface` ke
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -142,7 +156,7 @@ You can also extract the inferred type `Context` that represents the context req
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -165,7 +179,7 @@ When defining a schema, you may want to create a schema with an opaque type. Thi
 To create a schema with an opaque type, you can use the following technique that re-declares the schema:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const _Person = Schema.Struct({
   name: Schema.String,
@@ -185,7 +199,7 @@ Note that the technique shown above becomes more complex when the schema is defi
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const _Person = Schema.Struct({
   name: Schema.String,
@@ -206,14 +220,14 @@ In this case, the field `"age"` is of type `string` in the `Encoded` type of the
 ## Readonly Types by Default
 
 It's important to note that by default, most constructors exported by
-`@effect/schema` return `readonly` types.
+`effect/Schema` return `readonly` types.
 
 **Example**
 
 For instance, in the `Person` schema below:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -232,7 +246,7 @@ the resulting inferred `Type` would be:
 
 ## Decoding
 
-When working with unknown data types in TypeScript, decoding them into a known structure can be challenging. Luckily, `@effect/schema` provides several functions to help with this process. Let's explore how to decode unknown values using these functions.
+When working with unknown data types in TypeScript, decoding them into a known structure can be challenging. Luckily, `effect/Schema` provides several functions to help with this process. Let's explore how to decode unknown values using these functions.
 
 | API                    | Description                                                                      |
 | ---------------------- | -------------------------------------------------------------------------------- |
@@ -249,7 +263,7 @@ The `Schema.decodeUnknownSync` function is useful when you want to parse a value
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -276,7 +290,7 @@ The `Schema.decodeUnknownEither` function returns an [Either](/docs/data-types/e
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Either } from "effect"
 
 const Person = Schema.Struct({
@@ -319,7 +333,7 @@ In such cases, you should use the `Schema.decodeUnknown` function, which returns
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Effect } from "effect"
 
 const PersonId = Schema.Number
@@ -381,7 +395,7 @@ The `Schema` module provides several `encode*` functions to encode data accordin
 **Example** (`Schema.encodeSync`)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   // A schema that ensures a string is not empty
@@ -419,8 +433,7 @@ In such cases, the `Forbidden` error can be used to handle unsupported encoding.
 Here is an example of a transformation that never fails during decoding. It returns an [Either](/docs/data-types/either/) containing either the decoded value or the original input. For encoding, it is reasonable to not support it and use `Forbidden` as the result.
 
 ```ts twoslash
-import { ParseResult, Schema } from "@effect/schema"
-import { Either } from "effect"
+import { Either, ParseResult, Schema } from "effect"
 
 // Define a schema that safely decodes to Either type
 export const SafeDecode = <A, I>(self: Schema.Schema<A, I, never>) => {
@@ -502,7 +515,7 @@ However, you can use the `onExcessProperty` option (default value: `"ignore"`) t
 **Example** (`onExcessProperty` set to `"error"`)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -542,7 +555,7 @@ If you want to allow excess properties to remain, you can use `onExcessProperty`
 **Example** (`onExcessProperty` set to `"preserve"`)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -571,7 +584,7 @@ The `errors` option allows you to receive all parsing errors when attempting to 
 **Example** (`errors` set to `"all"`)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -608,7 +621,7 @@ Setting `propertyOrder` to `"original"` ensures that the keys are ordered as the
 **Example** (Synchronous Decoding)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   a: Schema.Number,
@@ -633,9 +646,8 @@ console.log(
 **Example** (Asynchronous Decoding)
 
 ```ts twoslash
-import { ParseResult, Schema } from "@effect/schema"
 import type { Duration } from "effect"
-import { Effect } from "effect"
+import { Effect, ParseResult, Schema } from "effect"
 
 // Function to simulate an asynchronous process within the schema
 const effectify = (duration: Duration.DurationInput) =>
@@ -678,7 +690,7 @@ These options allow for specific parsing behavior at various levels of the schem
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Either } from "effect"
 
 const schema = Schema.Struct({
@@ -741,7 +753,7 @@ Here's how the `Schema.is` function works:
 **Example** (Creating and Using a Type Guard)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Define a schema for a Person object
 const Person = Schema.Struct({
@@ -784,7 +796,7 @@ If the input does not match the schema, it throws a detailed error, making it us
 **Example** (Creating and Using an Assertion)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Define a schema for a Person object
 const Person = Schema.Struct({
@@ -837,7 +849,7 @@ When decoding, it's important to understand how missing properties are processed
 **Example** (Default Behavior)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({ a: Schema.Unknown })
 const input = {}
@@ -853,7 +865,7 @@ If your validation logic needs to distinguish between truly missing properties a
 **Example** (`exact` set to `true`)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({ a: Schema.Unknown })
 const input = {}
@@ -872,8 +884,8 @@ For the APIs `Schema.is` and `Schema.asserts`, however, the default behavior is 
 **Example** (Default Behavior for `Schema.is` and `Schema.asserts`)
 
 ```ts twoslash
-import type { AST } from "@effect/schema"
-import { Schema } from "@effect/schema"
+import type { SchemaAST } from "effect"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({ a: Schema.Unknown })
 const input = {}
@@ -883,7 +895,7 @@ console.log(Schema.is(schema)(input, { exact: false })) // Output: true
 
 const asserts: (
   u: unknown,
-  overrideOptions?: AST.ParseOptions
+  overrideOptions?: SchemaAST.ParseOptions
 ) => asserts u is {
   readonly a: unknown
 } = Schema.asserts(schema)
@@ -915,7 +927,7 @@ try {
 
 ## Naming Conventions
 
-The naming conventions in `@effect/schema` are designed to be straightforward and logical, **focusing primarily on compatibility with JSON serialization**. This approach simplifies the understanding and use of schemas, especially for developers who are integrating web technologies where JSON is a standard data interchange format.
+The naming conventions in `effect/Schema` are designed to be straightforward and logical, **focusing primarily on compatibility with JSON serialization**. This approach simplifies the understanding and use of schemas, especially for developers who are integrating web technologies where JSON is a standard data interchange format.
 
 ### Overview of Naming Strategies
 

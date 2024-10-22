@@ -15,7 +15,7 @@ You can manage these annotations using the `annotations` method or the `Schema.a
 **Example** (Using Annotations to Customize Schema)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Define a Password schema, starting with a string type
 const Password = Schema.String
@@ -90,7 +90,7 @@ Here’s a shorter version presented in a table:
 In this example, we define three tasks that simulate asynchronous operations with different durations. Since no concurrency is specified, the tasks are executed sequentially, one after the other.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import type { Duration } from "effect"
 import { Effect } from "effect"
 
@@ -126,7 +126,7 @@ Task 3 done
 By adding a `concurrency` annotation set to `"unbounded"`, the tasks can now run concurrently, meaning they don't wait for one another to finish before starting. This allows faster execution when multiple tasks are involved.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import type { Duration } from "effect"
 import { Effect } from "effect"
 
@@ -174,7 +174,7 @@ This annotation enables you to specify fallback behavior when decoding fails, ma
 In this basic example, when decoding fails (e.g., the input is `null`), the fallback value is returned instead of an error.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Either } from "effect"
 
 // Schema with a fallback value
@@ -195,7 +195,7 @@ In this advanced example, when a decoding error occurs, the schema logs the issu
 This demonstrates how you can incorporate logging and other side effects during error handling.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Effect } from "effect"
 
 // Schema with logging and fallback
@@ -229,7 +229,7 @@ In addition to built-in annotations, you can define custom annotations to meet s
 **Example** (Defining a Custom Annotation)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Define a unique identifier for your custom annotation
 const DeprecatedId = Symbol.for(
@@ -261,7 +261,7 @@ You can retrieve custom annotations using the `AST.getAnnotation` helper method.
 **Example** (Reading a Custom Annotation)
 
 ```ts twoslash collapse={4-10}
-import { AST, Schema } from "@effect/schema"
+import { SchemaAST, Schema } from "effect"
 import { Option } from "effect"
 
 // Define the unique identifier for the custom annotation
@@ -274,7 +274,7 @@ const MyString = Schema.String.annotations({ [DeprecatedId]: true })
 
 // Helper function to check if a schema is marked as deprecated
 const isDeprecated = <A, I, R>(schema: Schema.Schema<A, I, R>): boolean =>
-  AST.getAnnotation<boolean>(DeprecatedId)(schema.ast).pipe(
+  SchemaAST.getAnnotation<boolean>(DeprecatedId)(schema.ast).pipe(
     Option.getOrElse(() => false)
   )
 

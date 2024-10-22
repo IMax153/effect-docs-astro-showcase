@@ -8,24 +8,100 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-Welcome to the documentation for `@effect/schema`, **a library for defining and using schemas** to validate and transform data in TypeScript.
+Welcome to the documentation for `effect/Schema`, a module for defining and using schemas to validate and transform data in TypeScript.
 
-`@effect/schema` allows you to define a `Schema<Type, Encoded, Context>` that provides a blueprint for describing the structure and data types of your data. Once defined, you can leverage this schema to perform a range of operations, including:
+The `effect/Schema` module allows you to define a `Schema<Type, Encoded, Requirements>` that provides a blueprint for describing the structure and data types of your data. Once defined, you can leverage this schema to perform a range of operations, including:
 
-| Operation       | Description                                                                                                         |
-| --------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Decoding        | Transforming data from an input type `Encoded` to an output type `Type`.                                            |
-| Encoding        | Converting data from an output type `Type` back to an input type `Encoded`.                                         |
-| Asserting       | Verifying that a value adheres to the schema's output type `Type`.                                                  |
-| Arbitraries     | Generate arbitraries for [fast-check](https://github.com/dubzzz/fast-check) testing.                                |
-| JSON Schemas    | Create JSON Schemas based on defined schemas.                                                                       |
-| Equivalence     | Create [Equivalences](https://effect-ts.github.io/effect/docs/schema/Equivalence.ts.html) based on defined schemas. |
-| Pretty printing | Support pretty printing for data structures.                                                                        |
+| Operation           | Description                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Decoding**        | Transforming data from an input type `Encoded` to an output type `Type`.                                            |
+| **Encoding**        | Converting data from an output type `Type` back to an input type `Encoded`.                                         |
+| **Asserting**       | Verifying that a value adheres to the schema's output type `Type`.                                                  |
+| **Arbitraries**     | Generate arbitraries for [fast-check](https://github.com/dubzzz/fast-check) testing.                                |
+| **JSON Schemas**    | Create JSON Schemas based on defined schemas.                                                                       |
+| **Equivalence**     | Create [Equivalences](https://effect-ts.github.io/effect/docs/schema/Equivalence.ts.html) based on defined schemas. |
+| **Pretty printing** | Support pretty printing for data structures.                                                                        |
 
-<Aside type="caution" title="Pre-Release Notice">
-  This is a pre-release version. Expect possible breaking changes and
-  inconsistencies until the stable release (v1.0) is achieved.
-</Aside>
+## Requirements
+
+- TypeScript 5.4 or newer.
+- The `strict` flag enabled in your `tsconfig.json` file.
+- (Optional) The `exactOptionalPropertyTypes` flag enabled in your `tsconfig.json` file.
+
+```json showLineNumbers=false
+{
+  "compilerOptions": {
+    "strict": true,
+    "exactOptionalPropertyTypes": true // optional
+  }
+}
+```
+
+### exactOptionalPropertyTypes
+
+The `effect/Schema` module takes advantage of the `exactOptionalPropertyTypes` option of `tsconfig.json`. This option affects how optional properties are typed (to learn more about this option, you can refer to the official [TypeScript documentation](https://www.typescriptlang.org/tsconfig#exactOptionalPropertyTypes)).
+
+**With exactOptionalPropertyTypes Enabled**
+
+```ts showLineNumbers=false
+import { Schema } from "effect"
+
+const Person = Schema.Struct({
+  name: Schema.optionalWith(Schema.String.pipe(Schema.nonEmptyString()), {
+    exact: true
+  })
+})
+
+type Type = Schema.Schema.Type<typeof Person>
+/*
+type Type = {
+    readonly name?: string;
+}
+*/
+
+// @ts-expect-error
+Schema.decodeSync(Person)({ name: undefined })
+/*
+Argument of type '{ name: undefined; }' is not assignable to parameter of type '{ readonly name?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'name' are incompatible.
+    Type 'undefined' is not assignable to type 'string'.ts(2379)
+*/
+```
+
+Here, notice that the type of `name` is "exact" (`string`), which means the type checker will catch any attempt to assign an invalid value (like `undefined`).
+
+**With exactOptionalPropertyTypes Disabled**
+
+If, for some reason, you can't enable the `exactOptionalPropertyTypes` option (perhaps due to conflicts with other third-party libraries), you can still use `effect/Schema`. However, there will be a mismatch between the types and the runtime behavior:
+
+```ts showLineNumbers=false
+import { Schema } from "effect"
+
+const Person = Schema.Struct({
+  name: Schema.optionalWith(Schema.String.pipe(Schema.nonEmptyString()), {
+    exact: true
+  })
+})
+
+type Type = Schema.Schema.Type<typeof Person>
+/*
+type Type = {
+    readonly name?: string | undefined;
+}
+*/
+
+// No type error, but a decoding failure occurs
+Schema.decodeSync(Person)({ name: undefined })
+/*
+Error: { name?: a non empty string }
+└─ ["name"]
+   └─ a non empty string
+      └─ From side refinement failure
+         └─ Expected a string, actual undefined
+*/
+```
+
+In this case, the type of `name` is widened to `string | undefined`, which means the type checker won't catch the invalid value (`undefined`). However, during decoding, you'll encounter an error, indicating that `undefined` is not allowed.
 
 ## The Schema Type
 
@@ -57,7 +133,7 @@ The `Schema` type has three type parameters with the following meanings:
 
 ## Understanding Schema Values
 
-**Immutability**. `Schema` values are immutable, and every function in the `@effect/schema` library produces a new `Schema` value.
+**Immutability**. `Schema` values are immutable, and every function in the `effect/Schema` mpodule produces a new `Schema` value.
 
 **Modeling Data Structure**. These values do not perform any actions themselves, they simply model or describe the structure of your data.
 
@@ -76,7 +152,32 @@ For instance, when working with forms in the frontend, you often receive untyped
 
 Below is a diagram that shows the relationship between encoding and decoding using a `Schema<A, I, R>`:
 
-![Encoding and Decoding](../_assets/encoding-and-decoding.svg "A sequence diagram which demonstrates the relationship between encoding and decoding in Effect Schema")
+```text showLineNumbers=false
+┌─────────┐       ┌───┐       ┌───┐       ┌─────────┐
+| unknown |       | A |       | I |       | unknown |
+└─────────┘       └───┘       └───┘       └─────────┘
+     |              |           |              |
+     | validate     |           |              |
+     |─────────────►│           |              |
+     |              |           |              |
+     | is           |           |              |
+     |─────────────►│           |              |
+     |              |           |              |
+     | asserts      |           |              |
+     |─────────────►│           |              |
+     |              |           |              |
+     | encodeUnknown|           |              |
+     |─────────────────────────►|              |
+                    |           |              |
+                    | encode    |              |
+                    |──────────►│              |
+                    |           |              |
+                    |    decode |              |
+                    | ◄─────────|              |
+                    |           |              |
+                    |           | decodeUnknown|
+                    | ◄────────────────────────|
+```
 
 We'll break down these concepts using an example with a `Schema<Date, string, never>`. This schema serves as a tool to transform a `string` into a `Date` and vice versa.
 
