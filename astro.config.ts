@@ -67,7 +67,9 @@ const rehypeAutolinkHeadingsOptions: RehypeAutolinkHeadingsOptions = {
         ariaLabelledBy: node.properties.id
       }
     }
-    throw new Error("[rehype-autolink-headings]: Cannot generate a link for a heading without an identifier")
+    throw new Error(
+      "[rehype-autolink-headings]: Cannot generate a link for a heading without an identifier"
+    )
   }
 }
 
@@ -264,15 +266,14 @@ export default defineConfig({
           collapsed: false
         },
         {
-          label: "Micro",
-          badge: { text: "Unstable", variant: "caution" },
-          autogenerate: { directory: "docs/micro" },
+          label: "Schema",
+          autogenerate: { directory: "docs/schema" },
           collapsed: false
         },
         {
-          label: "Schema",
+          label: "Micro",
           badge: { text: "Unstable", variant: "caution" },
-          autogenerate: { directory: "docs/schema" },
+          autogenerate: { directory: "docs/micro" },
           collapsed: false
         },
         {
