@@ -7,7 +7,11 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-In a typical Effect application, when an error occurs, it usually fails with the first error encountered by the Effect runtime:
+When working with Effect, if an error occurs, the default behavior is to fail with the first error encountered.
+
+**Example** (Failing on the First Error)
+
+Here, the program fails with the first error it encounters, `"Oh uh!"`.
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -15,10 +19,8 @@ import { Effect } from "effect"
 const fail = Effect.fail("Oh uh!")
 const die = Effect.dieMessage("Boom!")
 
-const program = Effect.all([fail, die]).pipe(
-  Effect.andThen(die),
-  Effect.asVoid
-)
+// Run both effects sequentially
+const program = Effect.all([fail, die])
 
 Effect.runPromiseExit(program).then(console.log)
 /*
@@ -31,11 +33,13 @@ Output:
 */
 ```
 
-In this case, the program will fail with the first error, which is "Oh uh!":
-
 ## Parallel Errors
 
-However, in some situations, you may encounter multiple errors, especially when performing parallel computations. When parallel computations are involved, the application may fail due to multiple errors:
+In some cases, you might encounter multiple errors, especially during concurrent computations. When tasks are run concurrently, multiple errors can happen at the same time.
+
+**Example** (Handling Multiple Errors in Concurrent Computations)
+
+In this example, both the `fail` and `die` effects are executed concurrently. Since both fail, the program will report multiple errors in the output.
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -43,6 +47,7 @@ import { Effect } from "effect"
 const fail = Effect.fail("Oh uh!")
 const die = Effect.dieMessage("Boom!")
 
+// Run both effects concurrently
 const program = Effect.all([fail, die], {
   concurrency: "unbounded"
 }).pipe(Effect.asVoid)
@@ -63,13 +68,13 @@ Output:
 */
 ```
 
-In this example, the program runs both `fail` and `die` concurrently, and if both fail, it will result in multiple errors.
-
 ### parallelErrors
 
-Effect provides a useful function called `Effect.parallelErrors` that exposes all parallel failure errors in the error channel.
+Effect provides a function called `Effect.parallelErrors` that captures all failure errors from concurrent operations in the error channel.
 
-**Example**
+**Example** (Capturing Multiple Concurrent Failures)
+
+In this example, `Effect.parallelErrors` combines the errors from `fail1` and `fail2` into a single error.
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -78,6 +83,7 @@ const fail1 = Effect.fail("Oh uh!")
 const fail2 = Effect.fail("Oh no!")
 const die = Effect.dieMessage("Boom!")
 
+// Run all effects concurrently and capture all errors
 const program = Effect.all([fail1, fail2, die], {
   concurrency: "unbounded"
 }).pipe(Effect.asVoid, Effect.parallelErrors)
@@ -93,8 +99,6 @@ Output:
 */
 ```
 
-In this example, `Effect.parallelErrors` combines the errors from `fail1` and `fail2` into a single error.
-
 <Aside type="note" title="Applicability">
   Note that `Effect.parallelErrors` is only for failures, not defects or
   interruptions.
@@ -103,14 +107,22 @@ In this example, `Effect.parallelErrors` combines the errors from `fail1` and `f
 ## Sequential Errors
 
 When working with resource-safety operators like `Effect.ensuring`, you may encounter multiple sequential errors.
-This happens because regardless of whether the original effect has any errors or not, the finalizer is uninterruptible and will run:
+This happens because regardless of whether the original effect has any errors or not, the finalizer is uninterruptible and will always run.
+
+**Example** (Handling Multiple Sequential Errors)
+
+In this example, both `fail` and the finalizer `die` result in sequential errors, and both are captured.
 
 ```ts twoslash
 import { Effect } from "effect"
 
+// Simulate an effect that fails
 const fail = Effect.fail("Oh uh!")
+
+// Simulate a finalizer that causes a defect
 const die = Effect.dieMessage("Boom!")
 
+// The finalizer 'die' will always run, even if 'fail' fails
 const program = fail.pipe(Effect.ensuring(die))
 
 Effect.runPromiseExit(program).then(console.log)
@@ -128,5 +140,3 @@ Output:
 }
 */
 ```
-
-In this case, the program will result in multiple sequential errors if both `fail` and the finalizer `die` encounter errors.

@@ -7,10 +7,7 @@ sidebar:
 
 import { Aside } from "@astrojs/starlight/components"
 
-In the world of programming, we often deal with tasks that take some time to complete.
-Sometimes, we want to set a limit on how long we are willing to wait for a task to finish.
-This is where the `Effect.timeout` function comes into play.
-It allows us to put a time constraint on an operation, ensuring that it doesn't run indefinitely.
+In programming, it's common to deal with tasks that may take some time to complete. Often, we want to enforce a limit on how long we're willing to wait for these tasks. The `Effect.timeout` function helps by placing a time constraint on an operation, ensuring it doesn't run indefinitely.
 
 ## Basic Usage
 
@@ -18,7 +15,9 @@ It allows us to put a time constraint on an operation, ensuring that it doesn't 
 
 The `Effect.timeout` function employs a [Duration](/docs/data-types/duration/) parameter to establish a time limit on an operation. If the operation exceeds this limit, a `TimeoutException` is triggered, indicating a timeout has occurred.
 
-**Example**
+**Example** (Setting a Timeout)
+
+Here, the task completes within the timeout duration, so the result is returned successfully.
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -30,7 +29,7 @@ const task = Effect.gen(function* () {
   return "Result"
 })
 
-// wraps this effect, setting a maximum allowable duration of 3 seconds
+// Sets a 3-second timeout for the task
 const timedEffect = task.pipe(Effect.timeout("3 seconds"))
 
 // Output will show that the task completes successfully
@@ -44,11 +43,9 @@ Processing complete.
 */
 ```
 
-In the above example, the operation completes within the specified duration, so the result is returned successfully.
+If the operation exceeds the specified duration, a `TimeoutException` is raised:
 
-If the operation takes longer than the specified duration, a `TimeoutException` is raised:
-
-```ts collapse={3-8}
+```ts
 import { Effect } from "effect"
 
 const task = Effect.gen(function* () {
@@ -78,9 +75,11 @@ Start processing...
 
 ### timeoutOption
 
-If you want to handle the timeout as a regular result, you can use `Effect.timeoutOption` instead of `Effect.timeout`.
+If you want to handle timeouts more gracefully, consider using `Effect.timeoutOption`. This function treats timeouts as regular results, wrapping the outcome in an [Option](/docs/data-types/option/).
 
-**Example**
+**Example** (Handling Timeout as an Option)
+
+In this example, the first task completes successfully, while the second times out. The result of the timed-out task is represented as `None` in the `Option` type.
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -110,12 +109,9 @@ Start processing...
 */
 ```
 
-In this example, the first effect completes within the specified duration, while the second effect times out.
-The result of the timed-out effect is wrapped in an [Option](/docs/data-types/option/) type, allowing you to handle the timeout as a regular result.
-
 ## Handling Timeouts
 
-When an operation does not finish within the specified duration, the behavior of the `Effect.timeout` depends on whether the operation is uninterruptible.
+When an operation does not finish within the specified duration, the behavior of the `Effect.timeout` depends on whether the operation is "uninterruptible".
 
 <Aside type="note" title="Uninterruptible Effects">
   An uninterruptible effect is one that, once started, cannot be stopped
@@ -192,9 +188,7 @@ When an operation does not finish within the specified duration, the behavior of
 
 ## Disconnection on Timeout
 
-The `Effect.disconnect` function is used to handle timeouts in a nuanced way, particularly when dealing with uninterruptible effects.
-
-It allows the uninterruptible effect to complete its operations in the background, while the main control flow proceeds as if a timeout had occurred.
+The `Effect.disconnect` function provides a way to handle timeouts in uninterruptible effects more flexibly. It allows an uninterruptible effect to complete in the background, while the main control flow proceeds as if a timeout had occurred.
 
 Here's the distinction:
 
@@ -209,7 +203,7 @@ Here's the distinction:
 - The main control flow recognizes the timeout immediately and proceeds with the timeout error or alternative logic, without having to wait for the effect to complete.
 - This method is particularly useful when the operations of the effect do not need to block the continuation of the program, despite being marked as uninterruptible.
 
-**Example**
+**Example** (Running Uninterruptible Tasks with Timeout and Background Completion)
 
 Consider a scenario where a long-running data processing task is initiated, and you want to ensure the system remains responsive, even if the data processing takes too long:
 
@@ -225,7 +219,7 @@ const longRunningTask = Effect.gen(function* () {
 
 const timedEffect = longRunningTask.pipe(
   Effect.uninterruptible,
-  // Allows the task to finish independently if it times out
+  // Allows the task to finish in the background if it times out
   Effect.disconnect,
   Effect.timeout("1 second")
 )
@@ -247,13 +241,17 @@ Heavy processing done.
 */
 ```
 
+In this example, the system detects the timeout after one second, but the long-running task continues and completes in the background, without blocking the program's flow.
+
 ## Customizing Timeout Behavior
 
 In addition to the basic `Effect.timeout` function, there are variations available that allow you to customize the behavior when a timeout occurs.
 
 ### timeoutFail
 
-The `Effect.timeoutFail` function allows you to produce a specific error when a timeout happens:
+The `Effect.timeoutFail` function allows you to produce a specific error when a timeout happens.
+
+**Example** (Custom Timeout Error)
 
 ```ts twoslash
 import { Effect } from "effect"
@@ -272,7 +270,7 @@ class MyTimeoutError {
 const program = task.pipe(
   Effect.timeoutFail({
     duration: "1 second",
-    onTimeout: () => new MyTimeoutError()
+    onTimeout: () => new MyTimeoutError() // Custom timeout error
   })
 )
 
@@ -294,8 +292,9 @@ Start processing...
 
 ### timeoutFailCause
 
-The `Effect.timeoutFailCause` function allows you to produce a specific defect when a timeout occurs.
-This is useful when you need to handle timeouts as exceptional cases in your code:
+`Effect.timeoutFailCause` lets you define a specific defect to throw when a timeout occurs. This is helpful for treating timeouts as exceptional cases in your code.
+
+**Example** (Custom Defect on Timeout)
 
 ```ts twoslash
 import { Effect, Cause } from "effect"
@@ -310,7 +309,7 @@ const task = Effect.gen(function* () {
 const program = task.pipe(
   Effect.timeoutFailCause({
     duration: "1 second",
-    onTimeout: () => Cause.die("Timed out!")
+    onTimeout: () => Cause.die("Timed out!") // Custom defect for timeout
   })
 )
 
@@ -328,8 +327,9 @@ Start processing...
 
 ### timeoutTo
 
-The `Effect.timeoutTo` function is similar to `Effect.timeout`, but it provides more control over the final result type.
-It allows you to define alternative outcomes for both successful and timed-out operations:
+`Effect.timeoutTo` provides more flexibility compared to `Effect.timeout`, allowing you to define different outcomes for both successful and timed-out operations. This can be useful when you want to customize the result based on whether the operation completes in time or not.
+
+**Example** (Handling Success and Timeout with [Either](/docs/data-types/either/))
 
 ```ts twoslash
 import { Effect, Either } from "effect"
@@ -344,7 +344,6 @@ const task = Effect.gen(function* () {
 const program = task.pipe(
   Effect.timeoutTo({
     duration: "1 second",
-    // let's return an Either
     onSuccess: (result): Either.Either<string, string> =>
       Either.right(result),
     onTimeout: (): Either.Either<string, string> =>
