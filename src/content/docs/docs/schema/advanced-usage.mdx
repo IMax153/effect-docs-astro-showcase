@@ -16,7 +16,7 @@ To declare a schema for a primitive data type, such as `File`, you can use the `
 **Example** (Declaring a Schema for `File`)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Declare a schema for the File type using a type guard
 const FileFromSelf = Schema.declare(
@@ -52,7 +52,7 @@ A "title" should be concise, while a "description" provides a more detailed expl
 **Example** (Adding Annotations)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Declare a schema for the File type with additional annotations
 const FileFromSelf = Schema.declare(
@@ -89,7 +89,7 @@ Type constructors are generic types that take one or more types as arguments and
 **Example** (Declaring a Schema for `ReadonlySet<A>`)
 
 ```ts twoslash
-import { ParseResult, Schema } from "@effect/schema"
+import { ParseResult, Schema } from "effect"
 
 export const MyReadonlySet = <A, I, R>(
   // Schema for the elements of the Set
@@ -180,7 +180,7 @@ This can result in an error, as the compiler may lack the necessary information 
 **Example** (Missing Annotations)
 
 ```ts twoslash
-import { Arbitrary, Schema } from "@effect/schema"
+import { Arbitrary, Schema } from "effect"
 
 // Define a schema for the File type
 const FileFromSelf = Schema.declare(
@@ -205,7 +205,7 @@ In the above example, attempting to generate arbitrary values for the `FileFromS
 **Example** (Adding Arbitrary Annotations)
 
 ```ts twoslash
-import { Arbitrary, FastCheck, Pretty, Schema } from "@effect/schema"
+import { Arbitrary, FastCheck, Pretty, Schema } from "effect"
 
 const FileFromSelf = Schema.declare(
   (input: unknown): input is File => input instanceof File,
@@ -290,7 +290,7 @@ To define a schema for a branded type from scratch, use the `Schema.brand` funct
 **Example** (Creating a schema for a Branded Type)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const UserId = Schema.String.pipe(Schema.brand("UserId"))
 
@@ -303,7 +303,7 @@ Note that you can use `unique symbol`s as brands to ensure uniqueness across mod
 **Example** (Using a unique symbol as a Brand)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const UserIdBrand: unique symbol = Symbol.for("UserId")
 
@@ -320,7 +320,7 @@ If you have already defined a branded type using the [`effect/Brand`](/docs/code
 **Example** (Reusing an Existing Branded Type)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Brand } from "effect"
 
 // the existing branded type
@@ -337,7 +337,7 @@ const UserIdSchema = Schema.String.pipe(Schema.fromBrand(UserId))
 The `Schema.brand` function includes a default constructor to facilitate the creation of branded values.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const UserId = Schema.String.pipe(Schema.brand("UserId"))
 
@@ -353,7 +353,7 @@ A `PropertySignature` represents a transformation from a "From" field to a "To" 
 Let's start with the simple definition of a property signature that can be used to add annotations:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -410,7 +410,7 @@ Sometimes, the source field (the "From" field) may have a different name from th
 **Example** (Mapping from a Different Key)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Person = Schema.Struct({
   name: Schema.String,
@@ -451,7 +451,7 @@ PropertySignature<":", number, "AGE", ":", string, false, never>
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   a: Schema.optional(Schema.NumberFromString)
@@ -497,7 +497,7 @@ console.log(Schema.encodeSync(schema)({ a: undefined }))
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   a: Schema.optionalWith(Schema.NumberFromString, { nullable: true })
@@ -542,7 +542,7 @@ console.log(Schema.encodeSync(schema)({ a: undefined }))
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   a: Schema.optionalWith(Schema.NumberFromString, { exact: true })
@@ -591,7 +591,7 @@ console.log(Schema.encodeSync(schema)({}))
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   a: Schema.optionalWith(Schema.NumberFromString, {
@@ -648,7 +648,7 @@ the approach varies based on the `exactOptionalPropertyTypes` configuration in y
 When this feature is turned off, you can employ the `Schema.optional` function. This approach allows the field to implicitly accept `undefined` as a value.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   a: Schema.optional(Schema.Never)
@@ -667,7 +667,7 @@ When this feature is turned on, the `Schema.optionalWith` function is recommende
 It ensures stricter enforcement of the field's absence.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   foo: Schema.optionalWith(Schema.Never, { exact: true })
@@ -704,7 +704,7 @@ Schema.optionalWith(schema: Schema<A, I, R>, { default: () => A })
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Product = Schema.Struct({
   name: Schema.String,
@@ -819,7 +819,7 @@ optionalWith(schema: Schema<A, I, R>, { as: "Option" })
 **Example**
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Product = Schema.Struct({
   name: Schema.String,
@@ -945,7 +945,7 @@ Additionally, you can control the presence or absence of the field using `decode
 Suppose we have an optional field of type `string`, and we want to exclude empty strings from the output. In other words, if the input contains an empty string, we want the field to be absent in the output.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { identity, Option } from "effect"
 
 const schema = Schema.Struct({
@@ -1020,7 +1020,7 @@ You can control the presence or absence of the field using `decode` and `encode`
 For instance, a common use case is to assign a default value to the field in the output if it's missing in the input.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Option } from "effect"
 
 const schema = Schema.Struct({
@@ -1081,7 +1081,7 @@ You can control the presence or absence of the field using `decode` and `encode`
 Let's look at a practical example where a field `name` that is typically required can be considered optional if it's an empty string during decoding, and ensure there is always a value during encoding by providing a default.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Option } from "effect"
 
 const schema = Schema.Struct({
@@ -1116,7 +1116,7 @@ Structs expose their fields through a `fields` property. This feature can be uti
 **Example** (Adding Fields)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Struct1 = Schema.Struct({
   a: Schema.String,
@@ -1134,7 +1134,7 @@ const Extended = Schema.Struct({
 **Example** (Integrating Additional Index Signatures)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Struct = Schema.Struct({
   a: Schema.String,
@@ -1150,7 +1150,7 @@ const Extended = Schema.Struct(
 **Example** (Merging Fields from Two Structs)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Struct1 = Schema.Struct({
   a: Schema.String,
@@ -1191,7 +1191,7 @@ Possible extensions include:
 **Example** (Extending a Struct with a Union of Structs)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Struct = Schema.Struct({
   a: Schema.String
@@ -1208,7 +1208,7 @@ const Extended = Schema.extend(Struct, UnionOfStructs)
 This example shows an attempt to extend a struct with another struct where field names overlap, leading to an error:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Struct = Schema.Struct({
   a: Schema.String
@@ -1231,7 +1231,7 @@ details: cannot extend string with number
 **Example** (Extending a refinement of Schema.String with another refinement)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const Integer = Schema.Int.pipe(Schema.brand("Int"))
 const Positive = Schema.Positive.pipe(Schema.brand("Positive"))
@@ -1267,7 +1267,7 @@ To rename a property directly during schema creation, you can utilize the `Schem
 **Example** (Renaming a Required Property)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   a: Schema.propertySignature(Schema.String).pipe(Schema.fromKey("c")),
@@ -1281,7 +1281,7 @@ console.log(Schema.decodeUnknownSync(schema)({ c: "c", b: 1 }))
 **Example** (Renaming an Optional Property)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Struct({
   a: Schema.optional(Schema.String).pipe(Schema.fromKey("c")),
@@ -1304,7 +1304,7 @@ For existing schemas, the `rename` API offers a way to systematically change pro
 **Example** (Renaming Properties in a Struct Schema)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Original Schema
 const originalSchema = Schema.Struct({
@@ -1322,7 +1322,7 @@ console.log(Schema.decodeUnknownSync(renamedSchema)({ c: "c", b: 1 }))
 **Example** (Renaming Properties in Union Schemas)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const originalSchema = Schema.Union(
   Schema.Struct({
@@ -1354,7 +1354,7 @@ The `Schema.suspend` function is useful when you need to define a schema that de
 In this example, the `Category` schema depends on itself because it has a field `subcategories` that is an array of `Category` objects.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 interface Category {
   readonly name: string
@@ -1377,7 +1377,7 @@ const Category = Schema.Struct({
 </Aside>
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // @ts-expect-error
 const Category = Schema.Struct({
@@ -1397,7 +1397,7 @@ As we've observed, it's necessary to define an interface for the `Type` of the s
 One pattern to mitigate this is to **separate the field responsible for recursion** from all other fields.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const fields = {
   name: Schema.String
@@ -1424,7 +1424,7 @@ const Category = Schema.Struct({
 Here's an example of two mutually recursive schemas, `Expression` and `Operation`, that represent a simple arithmetic expression tree.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 interface Expression {
   readonly type: "expression"
@@ -1465,7 +1465,7 @@ It's important to note that `NumberFromString` is a schema that transforms a str
 When we add this field to the `Category` schema, TypeScript raises an error:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const fields = {
   id: Schema.NumberFromString,
@@ -1493,7 +1493,7 @@ Type 'Struct<{ subcategories: Array$<suspend<Category, Category, never>>; id: ty
 This error occurs because the explicit annotation `Schema.Schema<Category>` is no longer sufficient and needs to be adjusted by explicitly adding the `Encoded` type:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const fields = {
   id: Schema.NumberFromString,

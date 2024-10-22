@@ -31,7 +31,7 @@ This function results in a schema `Schema<D, A, R1 | R2>`, integrating both the 
 Here's an example that demonstrates a schema transformation to double an input number:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Define a transformation that doubles the input number
 const transformedSchema = Schema.transform(
@@ -57,7 +57,7 @@ In this example, if you input `2`, the schema will decode it to `4` and encode i
 Here's how you can convert an array to a `ReadonlySet`:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const ReadonlySetFromArray = <A, I, R>(
   itemSchema: Schema.Schema<A, I, R>
@@ -85,7 +85,7 @@ const ReadonlySetFromArray = <A, I, R>(
 Here's how to use the `transform` function to trim whitespace from strings:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const transformedSchema = Schema.transform(
   // Source schema: accepts any string
@@ -109,7 +109,7 @@ This schema automatically trims leading and trailing whitespace from a string du
 To ensure that strings are not only trimmed but also validated to exclude untrimmed inputs, you can restrict the target schema to only accept strings that are already trimmed:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const transformedSchema = Schema.transform(
   // Source schema: accepts any string
@@ -137,7 +137,7 @@ Sometimes the strict type checking can impede certain operations where types mig
 Let's consider the scenario where you need to define a constructor `clamp` that ensures a number falls within a specific range. This function returns a schema that "clamps" a number to a specified minimum and maximum range:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Number } from "effect"
 
 const clamp =
@@ -179,7 +179,7 @@ There are two ways to resolve the type mismatch:
    Setting `strict: false` in the transformation options allows the schema to bypass some of TypeScript's type-checking rules, accommodating the type discrepancy:
 
    ```ts twoslash
-   import { Schema } from "@effect/schema"
+   import { Schema } from "effect"
    import { Number } from "effect"
 
    const clamp =
@@ -235,7 +235,7 @@ These tools allow for detailed and specific error handling, enhancing the reliab
 A common use case for `Schema.transformOrFail` is converting string representations of numbers into actual numeric types. This scenario is typical when dealing with user inputs or data from external sources.
 
 ```ts twoslash
-import { ParseResult, Schema } from "@effect/schema"
+import { ParseResult, Schema } from "effect"
 
 export const NumberFromString = Schema.transformOrFail(
   Schema.String, // Source schema: accepts any string
@@ -276,8 +276,7 @@ In modern applications, especially those interacting with external APIs, you mig
 Consider a situation where you need to validate a person's ID by fetching data from an external API. Here's how you can implement it:
 
 ```ts twoslash
-import { ParseResult, Schema, TreeFormatter } from "@effect/schema"
-import { Effect } from "effect"
+import { Effect, Schema, ParseResult } from "effect"
 
 // Define an API call function
 const api = (url: string): Effect.Effect<unknown, Error> =>
@@ -311,7 +310,7 @@ const PeopleIdFromString = Schema.transformOrFail(
 
 const decode = (id: string) =>
   Effect.mapError(Schema.decodeUnknown(PeopleIdFromString)(id), (e) =>
-    TreeFormatter.formatErrorSync(e)
+    ParseResult.TreeFormatter.formatErrorSync(e)
   )
 
 Effect.runPromiseExit(decode("1")).then(console.log)
@@ -346,8 +345,7 @@ For more complex scenarios where your transformation might depend on external se
 Here's how to inject a fetch dependency into your transformation process:
 
 ```ts twoslash
-import { ParseResult, Schema, TreeFormatter } from "@effect/schema"
-import { Context, Effect, Layer } from "effect"
+import { Context, Effect, Layer, Schema, ParseResult } from "effect"
 
 const Fetch = Context.GenericTag<"Fetch", typeof fetch>("Fetch")
 
@@ -386,7 +384,7 @@ const PeopleIdFromString = Schema.transformOrFail(
 
 const decode = (id: string) =>
   Effect.mapError(Schema.decodeUnknown(PeopleIdFromString)(id), (e) =>
-    TreeFormatter.formatErrorSync(e)
+    ParseResult.TreeFormatter.formatErrorSync(e)
   )
 
 const FetchLive = Layer.succeed(Fetch, fetch)
@@ -424,7 +422,7 @@ Combining and reusing schemas is a common requirement, the `Schema.compose` comb
 It enables you to combine two schemas, `Schema<B, A, R1>` and `Schema<C, B, R2>`, into a single schema `Schema<C, A, R1 | R2>`:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Schema<readonly string[], string>
 const schema1 = Schema.split(",")
@@ -445,7 +443,7 @@ Now, by using the `compose` combinator, we can create a new schema, `ComposedSch
 If you need to be less restrictive when composing your schemas, i.e., when you have something like `Schema<R1, A, B>` and `Schema<R2, C, D>` where `C` is different from `B`, you can make use of the `{ strict: false }` option:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 Schema.compose(
   // @ts-expect-error
@@ -468,7 +466,7 @@ The `Schema.filterEffect` function enhances the `Schema.filter` functionality by
 **Example** (Validating Usernames Asynchronously)
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { Effect } from "effect"
 
 async function validateUsername(username: string) {
@@ -502,7 +500,7 @@ ParseError: ValidUsername
 Splits a string into an array of strings.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.split(",")
 
@@ -519,7 +517,7 @@ console.log(decode("a,b")) // ["a", "b"]
 Removes whitespaces from the beginning and end of a string.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.Trim)
 
@@ -536,7 +534,7 @@ console.log(decode(" a ")) // "a"
 Converts a string to lowercase.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.Lowercase)
 
@@ -557,7 +555,7 @@ console.log(decode(" ABc ")) // " abc "
 Converts a string to uppercase.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.Uppercase)
 
@@ -578,7 +576,7 @@ console.log(decode(" abC ")) // " ABC "
 Converts a string to capitalized one.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.Capitalize)
 
@@ -599,7 +597,7 @@ console.log(decode(" abC ")) // " abC "
 Converts a string to uncapitalized one.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.Uncapitalize)
 
@@ -621,7 +619,7 @@ The `Schema.parseJson` constructor offers a method to convert JSON strings into 
 It also employs `JSON.stringify` for encoding.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.parseJson()
 const decode = Schema.decodeUnknownSync(schema)
@@ -643,7 +641,7 @@ ParseError: (JsonString <-> unknown)
 Additionally, you can refine the parsing result by providing a schema to the `parseJson` constructor:
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // Schema<{ readonly a: number; }, string, never>
 const schema = Schema.parseJson(Schema.Struct({ a: Schema.Number }))
@@ -656,7 +654,7 @@ In this example, we've used `parseJson` with a struct schema to ensure that the 
 Decodes a base64 (RFC4648) encoded string into a UTF-8 string.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.StringFromBase64)
 
@@ -668,7 +666,7 @@ console.log(decode("Zm9vYmFy")) // "foobar"
 Decodes a base64 (URL) encoded string into a UTF-8 string.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.StringFromBase64Url)
 
@@ -680,7 +678,7 @@ console.log(decode("Zm9vYmFy")) // "foobar"
 Decodes a hex encoded string into a UTF-8 string.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.StringFromHex)
 
@@ -703,7 +701,7 @@ Transforms a string into a number by parsing the string using `parseFloat`.
 The following special string values are supported: "NaN", "Infinity", "-Infinity".
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.NumberFromString
 
@@ -732,7 +730,7 @@ ParseError: NumberFromString
 Clamps a number between a minimum and a maximum value.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.Number.pipe(Schema.clamp(-1, 1)) // clamps the input to -1 <= x <= 1
 
@@ -752,7 +750,7 @@ It returns an error if the value can't be converted (for example when non-numeri
 The following special string values are supported: "NaN", "Infinity", "-Infinity".
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const schema = Schema.String.pipe(Schema.parseNumber)
 
@@ -777,7 +775,7 @@ ParseError: (string <-> number)
 Negates a boolean value.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.Not)
 
@@ -792,7 +790,7 @@ console.log(decode(false)) // true
 Transforms a string into a symbol by parsing the string using `Symbol.for`.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.Symbol)
 
@@ -806,7 +804,7 @@ console.log(decode("a")) // Symbol(a)
 Transforms a string into a `BigInt` by parsing the string using the `BigInt` constructor.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.BigInt)
 
@@ -833,7 +831,7 @@ decode("-Infinity") // throws
 Transforms a number into a `BigInt` by parsing the number using the `BigInt` constructor.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.BigIntFromNumber)
 const encode = Schema.encodeSync(Schema.BigIntFromNumber)
@@ -864,7 +862,7 @@ encode(BigInt(Number.MIN_SAFE_INTEGER) - 1n) // throws
 Clamps a `BigInt` between a minimum and a maximum value.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 // clamps the input to -1n <= x <= 1n
 const schema = Schema.BigIntFromSelf.pipe(Schema.clampBigInt(-1n, 1n))
@@ -883,7 +881,7 @@ console.log(decode(3n)) // 1n
 Transforms a string into a **valid** `Date`, ensuring that invalid dates, such as `new Date("Invalid Date")`, are rejected.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.Date)
 
@@ -916,7 +914,7 @@ ParseError: Date
 Transforms a string into a `BigDecimal`.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.BigDecimal)
 
@@ -933,7 +931,7 @@ Transforms a number into a `BigDecimal`.
 </Aside>
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 
 const decode = Schema.decodeUnknownSync(Schema.BigDecimalFromNumber)
 
@@ -945,7 +943,7 @@ console.log(decode(0.111)) // { _id: 'BigDecimal', value: '111', scale: 3 }
 Clamps a `BigDecimal` between a minimum and a maximum value.
 
 ```ts twoslash
-import { Schema } from "@effect/schema"
+import { Schema } from "effect"
 import { BigDecimal } from "effect"
 
 const schema = Schema.BigDecimal.pipe(
