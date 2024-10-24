@@ -427,7 +427,7 @@
     },
     {
       "source": "/docs/guides/concurrency/concurrency-options",
-      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/concurrency/concurrency-options/"
+      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/concurrency/basic-concurrency/"
     },
     {
       "source": "/docs/guides/concurrency/fibers",
@@ -435,7 +435,7 @@
     },
     {
       "source": "/docs/guides/concurrency/interruption-model",
-      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/concurrency/interruption-model/"
+      "destination": "https://effect-docs-astro-showcase.vercel.app/docs/concurrency/fibers/"
     },
     {
       "source": "/docs/guides/concurrency/deferred",
