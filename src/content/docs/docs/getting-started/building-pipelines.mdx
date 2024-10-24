@@ -407,7 +407,7 @@ const combinedEffect = Effect.all([effect1, effect2, ...])
 
 By default the `Effect.all` function executes all the provided effects **sequentially** (to explore options for
 managing concurrency and controlling how these effects are executed, you can
-refer to the [Concurrency Options](/docs/concurrency/concurrency-options/)
+refer to the [Concurrency Options](/docs/concurrency/basic-concurrency/#concurrency-options)
 documentation).
 
 Each effect runs in order, and the function returns a new effect that contains the results of the original effects as a tuple.

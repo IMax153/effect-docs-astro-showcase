@@ -387,7 +387,7 @@ The `Effect.forEach` function allows you to iterate over an `Iterable` and perfo
 const combinedEffect = Effect.forEach(iterable, operation, options)
 ```
 
-It applies the specified effectful operation to each element in the `Iterable`. By default, the effects are executed **sequentially**. If you'd like to explore options for controlling concurrency, refer to the [Concurrency Options](/docs/concurrency/concurrency-options/) documentation.
+It applies the specified effectful operation to each element in the `Iterable`. By default, the effects are executed **sequentially**. If you'd like to explore options for controlling concurrency, refer to the [Concurrency Options](/docs/concurrency/basic-concurrency/#concurrency-options) documentation.
 
 This function returns a new effect that produces an array containing the results of each individual effect.
 
@@ -457,7 +457,7 @@ const combinedEffect = Effect.all(effects, options)
 
 Where `effects` is a collection of effects to be combined.
 
-By default, `Effect.all` runs each effect **sequentially**. If you'd like to explore options for running effects concurrently or with other behaviors, refer to the [Concurrency Options](/docs/concurrency/concurrency-options/) documentation.
+By default, `Effect.all` runs each effect **sequentially**. If you'd like to explore options for running effects concurrently or with other behaviors, refer to the [Concurrency Options](/docs/concurrency/basic-concurrency/#concurrency-options) documentation.
 
 The final result will match the structure of the input collection of effects.
 
